@@ -16,6 +16,13 @@
 # next.js
 /.next/
 /out/
+*.md*
+
+*.pdf*
+*.html*
+
+*.sh*
+*.ps1*
 
 # production
 /build
@@ -39,3 +46,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+*.md
+*.ps1
+*.sh
+
+
