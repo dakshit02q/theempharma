@@ -3,6 +3,8 @@ import ScrollToTopButton from '@/components/ScrollToTopButton'
 import { getAllCourses } from '@/lib/data'
 import { generateOGMetadata, generateTwitterMetadata } from '@/lib/seo'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata() {
     const metadata = {
         title: 'Pharmacy Courses - B.Pharm, M.Pharm, Pharm.D Programs | THEEM College',

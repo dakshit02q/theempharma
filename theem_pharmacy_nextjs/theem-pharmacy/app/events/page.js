@@ -2,6 +2,8 @@ import EventsPage from '@/components/pages/EventsPage'
 import ScrollToTopButton from '@/components/ScrollToTopButton'
 import { generateOGMetadata, generateTwitterMetadata, generateStructuredData } from '@/lib/seo'
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata() {
     return {
         title: 'Events & Activities | THEEM College of Pharmacy - Campus Events & Programs',
@@ -34,7 +36,9 @@ export async function generateMetadata() {
 async function getEventsData() {
     try {
         // Fetch events from the database API
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+        const baseUrl =
+            process.env.NEXT_PUBLIC_API_URL ||
+            (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
         const response = await fetch(`${baseUrl}/api/events`, {
             cache: 'no-store' // Ensure fresh data on each request
         })
