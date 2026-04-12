@@ -1,6 +1,16 @@
 'use client'
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/AdminLayout';
+import { apiClient } from '@/lib/api-client';
+
+function toOptionalInt(value) {
+    if (value === '' || value === null || value === undefined) {
+        return null;
+    }
+
+    const parsed = Number.parseInt(String(value), 10);
+    return Number.isNaN(parsed) ? null : parsed;
+}
 
 export default function AdminStudents() {
     const [students, setStudents] = useState([]);
@@ -8,6 +18,9 @@ export default function AdminStudents() {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingStudent, setEditingStudent] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
+    const [deletingStudentId, setDeletingStudentId] = useState(null);
     const [formData, setFormData] = useState({
         rollNumber: '',
         name: '',
@@ -26,58 +39,60 @@ export default function AdminStudents() {
 
     const fetchData = async () => {
         try {
-            const [studentsRes, coursesRes] = await Promise.all([
-                fetch('/api/students'),
-                fetch('/api/courses')
-            ]);
-            
+            setErrorMessage('');
             const [studentsData, coursesData] = await Promise.all([
-                studentsRes.json(),
-                coursesRes.json()
+                apiClient.getStudentsData({ limit: 200, sortBy: 'createdAt', sortOrder: 'desc' }),
+                apiClient.getCourses({ limit: 200, sortBy: 'name', sortOrder: 'asc' })
             ]);
-            
-            if (studentsData.success) {
-                setStudents(studentsData.data.students || []);
-            }
-            if (coursesData.success) {
-                setCourses(coursesData.data || []);
-            }
+
+            setStudents(studentsData?.students || []);
+            setCourses(Array.isArray(coursesData) ? coursesData : []);
         } catch (error) {
             console.error('Error fetching data:', error);
+            setErrorMessage(error.message || 'Failed to load students data.');
         } finally {
             setLoading(false);
         }
     };
 
+    const closeModal = () => {
+        setShowModal(false);
+        setEditingStudent(null);
+        resetForm();
+    };
+
+    const openCreateModal = () => {
+        setErrorMessage('');
+        setEditingStudent(null);
+        resetForm();
+        setShowModal(true);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage('');
+        setIsSaving(true);
         try {
-            const url = editingStudent ? `/api/admin/students/${editingStudent.id}` : '/api/students';
-            const method = editingStudent ? 'PUT' : 'POST';
-            
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ...formData,
-                    courseId: parseInt(formData.courseId),
-                    semester: parseInt(formData.semester),
-                    admissionYear: parseInt(formData.admissionYear)
-                }),
-                credentials: 'include'
-            });
+            const payload = {
+                ...formData,
+                courseId: toOptionalInt(formData.courseId),
+                semester: toOptionalInt(formData.semester),
+                admissionYear: toOptionalInt(formData.admissionYear)
+            };
 
-            const data = await response.json();
-            if (data.success) {
-                fetchData();
-                setShowModal(false);
-                setEditingStudent(null);
-                resetForm();
+            if (editingStudent) {
+                await apiClient.adminUpdateStudent(editingStudent.id, payload);
+            } else {
+                await apiClient.createStudent(payload);
             }
+
+            await fetchData();
+            closeModal();
         } catch (error) {
             console.error('Error saving student:', error);
+            setErrorMessage(error.message || 'Failed to save student.');
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -96,6 +111,7 @@ export default function AdminStudents() {
     };
 
     const handleEdit = (student) => {
+        setErrorMessage('');
         setEditingStudent(student);
         setFormData({
             rollNumber: student.rollNumber || '',
@@ -113,17 +129,16 @@ export default function AdminStudents() {
 
     const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this student?')) {
+            setErrorMessage('');
+            setDeletingStudentId(id);
             try {
-                const response = await fetch(`/api/admin/students/${id}`, {
-                    method: 'DELETE',
-                    credentials: 'include'
-                });
-                
-                if (response.ok) {
-                    fetchData();
-                }
+                await apiClient.adminDeleteStudent(id);
+                await fetchData();
             } catch (error) {
                 console.error('Error deleting student:', error);
+                setErrorMessage(error.message || 'Failed to delete student.');
+            } finally {
+                setDeletingStudentId(null);
             }
         }
     };
@@ -145,13 +160,19 @@ export default function AdminStudents() {
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Students Management</h1>
                     <button
-                        onClick={() => setShowModal(true)}
+                        onClick={openCreateModal}
                         className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base min-h-[44px] flex items-center justify-center"
                     >
                         <i className="fas fa-plus mr-2"></i>
                         Add Student
                     </button>
                 </div>
+
+                {errorMessage && (
+                    <div className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {errorMessage}
+                    </div>
+                )}
 
                 {/* Students Table - Desktop */}
                 <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -199,26 +220,27 @@ export default function AdminStudents() {
                                             <div className="text-sm text-gray-500">{student.phone}</div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-2 py-1 text-xs rounded-full ${
-                                                student.status === 'active' ? 'bg-green-100 text-green-800' :
-                                                student.status === 'inactive' ? 'bg-red-100 text-red-800' :
-                                                'bg-yellow-100 text-yellow-800'
-                                            }`}>
+                                            <span className={`px-2 py-1 text-xs rounded-full ${student.status === 'active' ? 'bg-green-100 text-green-800' :
+                                                    student.status === 'inactive' ? 'bg-red-100 text-red-800' :
+                                                        'bg-yellow-100 text-yellow-800'
+                                                }`}>
                                                 {student.status}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <button
                                                 onClick={() => handleEdit(student)}
-                                                className="text-blue-600 hover:text-blue-900 mr-3"
+                                                className="text-blue-600 hover:text-blue-900 mr-3 disabled:opacity-50"
+                                                disabled={isSaving || deletingStudentId === student.id}
                                             >
                                                 <i className="fas fa-edit"></i>
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(student.id)}
-                                                className="text-red-600 hover:text-red-900"
+                                                className="text-red-600 hover:text-red-900 disabled:opacity-50"
+                                                disabled={isSaving || deletingStudentId === student.id}
                                             >
-                                                <i className="fas fa-trash"></i>
+                                                <i className={`fas ${deletingStudentId === student.id ? 'fa-spinner fa-spin' : 'fa-trash'}`}></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -237,15 +259,14 @@ export default function AdminStudents() {
                                     <h3 className="font-semibold text-gray-900">{student.name}</h3>
                                     <p className="text-sm text-gray-600">Roll: {student.rollNumber}</p>
                                 </div>
-                                <span className={`px-2 py-1 text-xs rounded-full ${
-                                    student.status === 'active' ? 'bg-green-100 text-green-800' :
-                                    student.status === 'inactive' ? 'bg-red-100 text-red-800' :
-                                    'bg-yellow-100 text-yellow-800'
-                                }`}>
+                                <span className={`px-2 py-1 text-xs rounded-full ${student.status === 'active' ? 'bg-green-100 text-green-800' :
+                                        student.status === 'inactive' ? 'bg-red-100 text-red-800' :
+                                            'bg-yellow-100 text-yellow-800'
+                                    }`}>
                                     {student.status}
                                 </span>
                             </div>
-                            
+
                             <div className="space-y-2 text-sm text-gray-600 mb-4">
                                 <div className="flex items-center">
                                     <i className="fas fa-graduation-cap w-4 mr-2"></i>
@@ -264,21 +285,23 @@ export default function AdminStudents() {
                                     <span>{student.phone}</span>
                                 </div>
                             </div>
-                            
+
                             <div className="flex space-x-2">
                                 <button
                                     onClick={() => handleEdit(student)}
-                                    className="flex-1 bg-blue-50 text-blue-600 py-2 px-3 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center"
+                                    className="flex-1 bg-blue-50 text-blue-600 py-2 px-3 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center disabled:opacity-50"
+                                    disabled={isSaving || deletingStudentId === student.id}
                                 >
                                     <i className="fas fa-edit mr-2"></i>
                                     Edit
                                 </button>
                                 <button
                                     onClick={() => handleDelete(student.id)}
-                                    className="flex-1 bg-red-50 text-red-600 py-2 px-3 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center"
+                                    className="flex-1 bg-red-50 text-red-600 py-2 px-3 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center disabled:opacity-50"
+                                    disabled={isSaving || deletingStudentId === student.id}
                                 >
-                                    <i className="fas fa-trash mr-2"></i>
-                                    Delete
+                                    <i className={`fas ${deletingStudentId === student.id ? 'fa-spinner fa-spin' : 'fa-trash'} mr-2`}></i>
+                                    {deletingStudentId === student.id ? 'Deleting...' : 'Delete'}
                                 </button>
                             </div>
                         </div>
@@ -292,7 +315,7 @@ export default function AdminStudents() {
                             <h2 className="text-lg sm:text-xl font-bold mb-4">
                                 {editingStudent ? 'Edit Student' : 'Add New Student'}
                             </h2>
-                            
+
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
@@ -307,7 +330,7 @@ export default function AdminStudents() {
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
-                                    
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Full Name
@@ -320,7 +343,7 @@ export default function AdminStudents() {
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
-                                    
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Course
@@ -338,7 +361,7 @@ export default function AdminStudents() {
                                             ))}
                                         </select>
                                     </div>
-                                    
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Semester
@@ -352,7 +375,7 @@ export default function AdminStudents() {
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
-                                    
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Email
@@ -364,7 +387,7 @@ export default function AdminStudents() {
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
-                                    
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Phone
@@ -376,7 +399,7 @@ export default function AdminStudents() {
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
-                                    
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Admission Year
@@ -390,7 +413,7 @@ export default function AdminStudents() {
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         />
                                     </div>
-                                    
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Status
@@ -406,7 +429,7 @@ export default function AdminStudents() {
                                         </select>
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Address
@@ -418,24 +441,22 @@ export default function AdminStudents() {
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     />
                                 </div>
-                                
+
                                 <div className="flex justify-end space-x-3 pt-4">
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            setShowModal(false);
-                                            setEditingStudent(null);
-                                            resetForm();
-                                        }}
-                                        className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                                        onClick={closeModal}
+                                        className="px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50"
+                                        disabled={isSaving}
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                        disabled={isSaving}
                                     >
-                                        {editingStudent ? 'Update' : 'Create'}
+                                        {isSaving ? 'Saving...' : editingStudent ? 'Update' : 'Create'}
                                     </button>
                                 </div>
                             </form>

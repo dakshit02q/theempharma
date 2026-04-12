@@ -103,14 +103,14 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
-        <meta name="theme-color" content="#2563eb" />
+        <meta name="theme-color" content="#223975" />
         <meta name="application-name" content={siteConfig.shortName} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content={siteConfig.shortName} />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
-        <meta name="msapplication-TileColor" content="#2563eb" />
+        <meta name="msapplication-TileColor" content="#223975" />
         <meta name="contact" content={siteConfig.contact.email} />
         <meta name="geo.region" content="IN-MH" />
         <meta name="geo.placename" content="Boisar, Maharashtra" />

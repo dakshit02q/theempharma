@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import ScrollToTopButton from '@/components/ScrollToTopButton'
+import { apiClient } from '@/lib/api-client'
 
 export default function Contact() {
     const [formData, setFormData] = useState({
@@ -29,26 +30,15 @@ export default function Contact() {
         setSubmitStatus('')
 
         try {
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+            await apiClient.submitContact(formData)
+            setSubmitStatus('success')
+            setFormData({
+                name: '',
+                email: '',
+                phone: '',
+                subject: '',
+                message: ''
             })
-
-            if (response.ok) {
-                setSubmitStatus('success')
-                setFormData({
-                    name: '',
-                    email: '',
-                    phone: '',
-                    subject: '',
-                    message: ''
-                })
-            } else {
-                setSubmitStatus('error')
-            }
         } catch (error) {
             setSubmitStatus('error')
         } finally {

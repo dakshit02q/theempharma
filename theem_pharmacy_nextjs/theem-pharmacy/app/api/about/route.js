@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { aboutContent } from '@/lib/db/schema';
-import { NextResponse } from 'next/server';
-import { eq } from 'drizzle-orm';
+import { apiError, apiSuccess, handleApiError } from '@/lib/api/response';
+import { getMissingFields } from '@/lib/api/validation';
 
 export async function GET() {
   try {
@@ -9,26 +9,31 @@ export async function GET() {
       where: (table, { eq }) => eq(table.isActive, true),
       orderBy: (table, { asc }) => asc(table.order),
     });
-    return NextResponse.json(content);
+
+    return apiSuccess(content);
   } catch (error) {
-    console.error('Error fetching about content:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch about content' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Error fetching about content:', 'Failed to fetch about content');
   }
 }
 
 export async function POST(request) {
   try {
     const body = await request.json();
+    const missingFields = getMissingFields(body, ['title', 'content']);
+
+    if (missingFields.length > 0) {
+      return apiError('Missing required fields', {
+        status: 400,
+        details: { missingFields },
+      });
+    }
+
     const newContent = await db.insert(aboutContent).values(body).returning();
-    return NextResponse.json(newContent[0], { status: 201 });
+    return apiSuccess(newContent[0], {
+      status: 201,
+      message: 'About content created successfully',
+    });
   } catch (error) {
-    console.error('Error creating about content:', error);
-    return NextResponse.json(
-      { error: 'Failed to create about content' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Error creating about content:', 'Failed to create about content');
   }
 }

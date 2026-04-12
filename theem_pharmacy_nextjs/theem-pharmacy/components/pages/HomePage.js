@@ -6,7 +6,7 @@ export default function HomePage() {
     return (
         <>
             {/* Hero Section */}
-            <section className="relative min-h-screen flex items-center pt-16 sm:pt-20 overflow-hidden">
+            <section className="relative min-h-screen flex items-center pt-8 sm:pt-10 overflow-hidden">
                 {/* Background Shapes */}
                 <div className="absolute inset-0 hero-bg-shapes"></div>
 
@@ -15,7 +15,7 @@ export default function HomePage() {
                     <div className="space-y-6 sm:space-y-8 text-center lg:text-left order-2 lg:order-1">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
                             <span className="block text-reveal">Excellence in</span>
-                            <span className="block text-reveal gradient-text">Pharmaceutical</span>
+                            <span className="block text-reveal gradient-text">Pharmacy</span>
                             <span className="block text-reveal">Education</span>
                         </h1>
 
@@ -108,7 +108,7 @@ export default function HomePage() {
                         <div className="space-y-6 order-2 lg:order-1">
                             <div>
                                 <span className="text-blue-600 font-semibold text-xs sm:text-sm uppercase tracking-wider">About Theem</span>
-                                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mt-2 mb-4 sm:mb-6">Pioneering Pharmaceutical Education</h2>
+                                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mt-2 mb-4 sm:mb-6">About Theem: Pioneering Pharmaceutical Education</h2>
                             </div>
 
                             <p className="text-gray-600 text-base sm:text-lg leading-relaxed">

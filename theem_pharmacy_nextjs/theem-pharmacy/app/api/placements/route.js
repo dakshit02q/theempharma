@@ -1,33 +1,50 @@
-import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { placements, students } from '@/lib/db/schema';
+import { placements } from '@/lib/db/schema';
+import { apiError, apiSuccess, handleApiError } from '@/lib/api/response';
+import { parseListQuery, applyListQuery } from '@/lib/api/query';
+import { getMissingFields } from '@/lib/api/validation';
 
-export async function GET() {
+export async function GET(request) {
     try {
+        const query = parseListQuery(request, { defaultSortBy: 'placementDate' });
         const allPlacements = await db.query.placements.findMany({
             where: (table, { eq }) => eq(table.isActive, true),
             orderBy: (table, { desc }) => desc(table.placementDate),
         });
 
-        return NextResponse.json({
-            success: true,
-            data: allPlacements
+        const { data, meta } = applyListQuery(allPlacements, query, {
+            searchFields: ['company', 'position', 'location'],
+            defaultSortBy: 'placementDate',
         });
+
+        return apiSuccess(data, { meta });
     } catch (error) {
-        console.error('Error fetching placements:', error);
-        return NextResponse.json(
-            { success: false, error: 'Failed to fetch placements' },
-            { status: 500 }
-        );
+        return handleApiError(error, 'Error fetching placements:', 'Failed to fetch placements');
     }
 }
 
 export async function POST(request) {
     try {
         const body = await request.json();
-        
+        const missingFields = getMissingFields(body, ['company']);
+
+        if (missingFields.length > 0) {
+            return apiError('Missing required fields', {
+                status: 400,
+                details: { missingFields },
+            });
+        }
+
+        const parsedStudentId = body.studentId
+            ? Number.parseInt(body.studentId, 10)
+            : null;
+
+        if (body.studentId && Number.isNaN(parsedStudentId)) {
+            return apiError('Invalid studentId', { status: 400 });
+        }
+
         const newPlacement = await db.insert(placements).values({
-            studentId: body.studentId,
+            studentId: parsedStudentId,
             company: body.company,
             position: body.position,
             package: body.package,
@@ -36,15 +53,11 @@ export async function POST(request) {
             isActive: body.isActive !== false
         }).returning();
 
-        return NextResponse.json({
-            success: true,
-            data: newPlacement[0]
+        return apiSuccess(newPlacement[0], {
+            status: 201,
+            message: 'Placement created successfully',
         });
     } catch (error) {
-        console.error('Error creating placement:', error);
-        return NextResponse.json(
-            { success: false, error: 'Failed to create placement' },
-            { status: 500 }
-        );
+        return handleApiError(error, 'Error creating placement:', 'Failed to create placement');
     }
 }

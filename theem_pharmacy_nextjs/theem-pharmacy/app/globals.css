@@ -4,6 +4,9 @@
 :root {
   --font-poppins: 'Poppins', sans-serif;
   --font-montserrat: 'Montserrat', sans-serif;
+  --brand-primary: #223975;
+  --brand-primary-dark: #1a2d5d;
+  --brand-primary-soft: #e9edf7;
 }
 
 .font-poppins {
@@ -34,7 +37,7 @@ body {
 }
 
 .nav-link:hover {
-  color: #2563eb;
+  color: var(--brand-primary);
 }
 
 .nav-link::after {
@@ -44,8 +47,62 @@ body {
   left: 0;
   width: 0;
   height: 2px;
-  background: linear-gradient(to right, #3b82f6, #1d4ed8);
+  background: linear-gradient(to right, var(--brand-primary), var(--brand-primary-dark));
   transition: width 0.3s ease;
+}
+
+.announcement-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 2.5rem;
+  background: #f6fbfc;
+  border-bottom: 1px solid #dbe7eb;
+}
+
+.announcement-label {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: white;
+  background: var(--brand-primary);
+  padding: 0.45rem 0.7rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.announcement-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  padding: 0 0.75rem;
+}
+
+.announcement-track {
+  display: inline-flex;
+  min-width: max-content;
+  gap: 3rem;
+  color: #203038;
+  font-size: 0.85rem;
+  font-weight: 500;
+  animation: announcementScroll 24s linear infinite;
+}
+
+.announcement-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes announcementScroll {
+  from {
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .nav-link:hover::after,
@@ -57,7 +114,7 @@ body {
 .cursor {
   width: 10px;
   height: 10px;
-  background: #3b82f6;
+  background: var(--brand-primary);
   border-radius: 50%;
   position: fixed;
   top: 0;
@@ -71,7 +128,7 @@ body {
 .cursor-follower {
   width: 30px;
   height: 30px;
-  border: 2px solid #3b82f6;
+  border: 2px solid var(--brand-primary);
   border-radius: 50%;
   position: fixed;
   top: 0;
@@ -115,7 +172,7 @@ body {
   right: 10%;
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
   border-radius: 50%;
   opacity: 0.1;
   animation: float 6s ease-in-out infinite;
@@ -128,7 +185,7 @@ body {
   left: 5%;
   width: 200px;
   height: 200px;
-  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
   border-radius: 50%;
   opacity: 0.1;
   animation: float 8s ease-in-out infinite reverse;
@@ -162,7 +219,7 @@ body {
 
 /* Button Styles */
 .btn-primary {
-  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  background: linear-gradient(to right, var(--brand-primary), var(--brand-primary-dark));
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
@@ -170,7 +227,8 @@ body {
   transition: all 0.3s ease;
   transform: translateY(0);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  min-height: 44px; /* Touch-friendly minimum height */
+  min-height: 44px;
+  /* Touch-friendly minimum height */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -185,20 +243,21 @@ body {
 }
 
 .btn-primary:hover {
-  background: linear-gradient(to right, #1d4ed8, #1e40af);
+  background: linear-gradient(to right, var(--brand-primary-dark), #0d4a58);
   transform: translateY(-2px);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .btn-secondary {
   background: transparent;
-  color: #2563eb;
-  border: 2px solid #2563eb;
+  color: var(--brand-primary);
+  border: 2px solid var(--brand-primary);
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  min-height: 44px; /* Touch-friendly minimum height */
+  min-height: 44px;
+  /* Touch-friendly minimum height */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -213,7 +272,7 @@ body {
 }
 
 .btn-secondary:hover {
-  background: #2563eb;
+  background: var(--brand-primary);
   color: white;
 }
 
@@ -229,7 +288,7 @@ body {
 
 /* Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -242,13 +301,13 @@ body {
   right: 20px;
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
   color: white;
   border: none;
   border-radius: 50%;
   cursor: pointer;
   font-size: 1rem;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 15px rgba(34, 57, 117, 0.3);
   transition: all 0.3s ease;
   z-index: 1000;
   animation: fadeInUp 0.3s ease;
@@ -266,7 +325,7 @@ body {
 
 .scroll-to-top:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 6px 20px rgba(34, 57, 117, 0.4);
 }
 
 @keyframes fadeInUp {
@@ -296,7 +355,20 @@ body.dark-mode .nav-link {
 }
 
 body.dark-mode .nav-link:hover {
-  color: #60a5fa;
+  color: #5fc2d8;
+}
+
+@media (max-width: 1023px) {
+  .announcement-label {
+    font-size: 0.65rem;
+    padding: 0.35rem 0.55rem;
+  }
+
+  .announcement-track {
+    font-size: 0.78rem;
+    gap: 2rem;
+    animation-duration: 20s;
+  }
 }
 
 /* Loading Animation */
@@ -371,4 +443,31 @@ body.dark-mode .nav-link:hover {
     padding-left: max(1rem, env(safe-area-inset-left));
     padding-right: max(1rem, env(safe-area-inset-right));
   }
+}
+
+/* App-wide primary color alignment for common Tailwind blue utilities used across pages. */
+.text-blue-600 {
+  color: var(--brand-primary) !important;
+}
+
+.bg-blue-600 {
+  background-color: var(--brand-primary) !important;
+}
+
+.to-blue-700 {
+  --tw-gradient-to: var(--brand-primary-dark) var(--tw-gradient-to-position) !important;
+}
+
+.from-blue-600 {
+  --tw-gradient-from: var(--brand-primary) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(34 57 117 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.bg-blue-100 {
+  background-color: var(--brand-primary-soft) !important;
+}
+
+.border-blue-200 {
+  border-color: #c9d3eb !important;
 }

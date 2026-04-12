@@ -1,32 +1,51 @@
-const { db } = require('@/lib/db');
-const { courses } = require('@/lib/db/schema');
-const { NextResponse } = require('next/server');
+import { db } from '@/lib/db';
+import { courses } from '@/lib/db/schema';
+import { apiError, apiSuccess, handleApiError } from '@/lib/api/response';
+import { parseListQuery, applyListQuery } from '@/lib/api/query';
+import { getMissingFields } from '@/lib/api/validation';
 
-async function GET() {
+export async function GET(request) {
     try {
+        const query = parseListQuery(request, { defaultSortBy: 'createdAt' });
         const allCourses = await db.query.courses.findMany();
-        return NextResponse.json(allCourses);
+        const { data, meta } = applyListQuery(allCourses, query, {
+            searchFields: ['name', 'description', 'duration', 'eligibility'],
+            defaultSortBy: 'createdAt',
+        });
+
+        return apiSuccess(data, { meta });
     } catch (error) {
-        console.error('Error fetching courses:', error);
-        return NextResponse.json(
-            { error: 'Failed to fetch courses' },
-            { status: 500 }
-        );
+        return handleApiError(error, 'Error fetching courses:', 'Failed to fetch courses');
     }
 }
 
-async function POST(request) {
+export async function POST(request) {
     try {
         const body = await request.json();
-        const newCourse = await db.insert(courses).values(body).returning();
-        return NextResponse.json(newCourse[0], { status: 201 });
+        const missingFields = getMissingFields(body, ['name']);
+
+        if (missingFields.length > 0) {
+            return apiError('Missing required fields', {
+                status: 400,
+                details: { missingFields },
+            });
+        }
+
+        const newCourse = await db
+            .insert(courses)
+            .values({
+                name: body.name,
+                description: body.description,
+                duration: body.duration,
+                eligibility: body.eligibility,
+            })
+            .returning();
+
+        return apiSuccess(newCourse[0], {
+            status: 201,
+            message: 'Course created successfully',
+        });
     } catch (error) {
-        console.error('Error creating course:', error);
-        return NextResponse.json(
-            { error: 'Failed to create course' },
-            { status: 500 }
-        );
+        return handleApiError(error, 'Error creating course:', 'Failed to create course');
     }
 }
-
-module.exports = { GET, POST };

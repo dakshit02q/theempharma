@@ -1,135 +1,333 @@
-// API utility functions for client-side interactions
+// API utility functions for frontend interactions
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+
+function buildQueryString(query) {
+    if (!query || typeof query !== 'object') {
+        return '';
+    }
+
+    const params = new URLSearchParams();
+    Object.entries(query).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === '') {
+            return;
+        }
+        params.set(key, String(value));
+    });
+
+    const serialized = params.toString();
+    return serialized ? `?${serialized}` : '';
+}
+
+function buildUrl(path, query) {
+    return `${API_URL}${path}${buildQueryString(query)}`;
+}
+
+async function request(path, options = {}) {
+    const {
+        method = 'GET',
+        data,
+        query,
+        headers = {},
+        credentials,
+    } = options;
+
+    const response = await fetch(buildUrl(path, query), {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            ...headers,
+        },
+        body: data !== undefined ? JSON.stringify(data) : undefined,
+        credentials,
+    });
+
+    let payload = null;
+    try {
+        payload = await response.json();
+    } catch {
+        payload = null;
+    }
+
+    if (!response.ok || payload?.success === false) {
+        const message = payload?.error || payload?.message || `Request failed: ${response.status}`;
+        throw new Error(message);
+    }
+
+    return payload?.data !== undefined ? payload.data : payload;
+}
 
 const apiClient = {
+    // Navigation and dynamic content
+    async getNavigationTree() {
+        return request('/api/navigation');
+    },
+
+    async getPageContent(slug) {
+        return request(`/api/content/${encodeURIComponent(slug)}`);
+    },
+
+    // Announcements
+    async getAnnouncements(query) {
+        return request('/api/announcements', { query });
+    },
+
+    async createAnnouncement(data) {
+        return request('/api/announcements', { method: 'POST', data });
+    },
+
     // Courses
-    async getCourses() {
-        const response = await fetch(`${API_URL}/api/courses`);
-        if (!response.ok) throw new Error('Failed to fetch courses');
-        return response.json();
+    async getCourses(query) {
+        return request('/api/courses', { query });
     },
 
     async createCourse(data) {
-        const response = await fetch(`${API_URL}/api/courses`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error('Failed to create course');
-        return response.json();
+        return request('/api/courses', { method: 'POST', data });
     },
 
     // Faculty
-    async getFaculty() {
-        const response = await fetch(`${API_URL}/api/faculty`);
-        if (!response.ok) throw new Error('Failed to fetch faculty');
-        return response.json();
+    async getFaculty(query) {
+        return request('/api/faculty', { query });
     },
 
     async createFacultyMember(data) {
-        const response = await fetch(`${API_URL}/api/faculty`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error('Failed to create faculty member');
-        return response.json();
+        return request('/api/faculty', { method: 'POST', data });
     },
 
     // Admissions
-    async getAdmissions() {
-        const response = await fetch(`${API_URL}/api/admissions`);
-        if (!response.ok) throw new Error('Failed to fetch admissions');
-        return response.json();
+    async getAdmissions(query) {
+        return request('/api/admissions', { query });
     },
 
     async submitAdmission(data) {
-        const response = await fetch(`${API_URL}/api/admissions`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error('Failed to submit admission');
-        return response.json();
+        return request('/api/admissions', { method: 'POST', data });
     },
 
     // About
-    async getAbout() {
-        const response = await fetch(`${API_URL}/api/about`);
-        if (!response.ok) throw new Error('Failed to fetch about content');
-        return response.json();
+    async getAbout(query) {
+        return request('/api/about', { query });
     },
 
     async createAboutContent(data) {
-        const response = await fetch(`${API_URL}/api/about`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error('Failed to create about content');
-        return response.json();
+        return request('/api/about', { method: 'POST', data });
     },
 
     // Features
-    async getFeatures() {
-        const response = await fetch(`${API_URL}/api/features`);
-        if (!response.ok) throw new Error('Failed to fetch features');
-        return response.json();
+    async getFeatures(query) {
+        return request('/api/features', { query });
     },
 
     async createFeature(data) {
-        const response = await fetch(`${API_URL}/api/features`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error('Failed to create feature');
-        return response.json();
+        return request('/api/features', { method: 'POST', data });
     },
 
     // Statistics
-    async getStatistics() {
-        const response = await fetch(`${API_URL}/api/statistics`);
-        if (!response.ok) throw new Error('Failed to fetch statistics');
-        return response.json();
+    async getStatistics(query) {
+        return request('/api/statistics', { query });
     },
 
     async createStatistic(data) {
-        const response = await fetch(`${API_URL}/api/statistics`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) throw new Error('Failed to create statistic');
-        return response.json();
+        return request('/api/statistics', { method: 'POST', data });
     },
 
-    // Students
-    async getStudentsData(type = 'all') {
-        const response = await fetch(`${API_URL}/api/students?type=${type}`);
-        if (!response.ok) throw new Error('Failed to fetch students data');
-        return response.json();
-    },
-
-    async createStudent(data) {
-        const response = await fetch(`${API_URL}/api/students`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type: 'student', ...data }),
-        });
-        if (!response.ok) throw new Error('Failed to create student');
-        return response.json();
+    // Events
+    async getEvents(query) {
+        return request('/api/events', { query });
     },
 
     async createEvent(data) {
-        const response = await fetch(`${API_URL}/api/students`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type: 'event', ...data }),
+        return request('/api/events', { method: 'POST', data });
+    },
+
+    // Placements
+    async getPlacements(query) {
+        return request('/api/placements', { query });
+    },
+
+    async createPlacement(data) {
+        return request('/api/placements', { method: 'POST', data });
+    },
+
+    // Students
+    async getStudentsData(query) {
+        return request('/api/students', { query });
+    },
+
+    async createStudent(data) {
+        return request('/api/students', { method: 'POST', data });
+    },
+
+    // Contact
+    async submitContact(data) {
+        return request('/api/contact', { method: 'POST', data });
+    },
+
+    // Admin
+    async adminUpdateStudent(id, data) {
+        return request(`/api/admin/students/${id}`, {
+            method: 'PUT',
+            data,
+            credentials: 'include',
         });
-        if (!response.ok) throw new Error('Failed to create event');
-        return response.json();
+    },
+
+    async adminDeleteStudent(id) {
+        return request(`/api/admin/students/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+    },
+
+    async adminUpdateAdmissionStatus(id, status) {
+        return request(`/api/admin/admissions/${id}`, {
+            method: 'PUT',
+            data: { status },
+            credentials: 'include',
+        });
+    },
+
+    async adminUpdateCourse(id, data) {
+        return request(`/api/admin/courses/${id}`, {
+            method: 'PUT',
+            data,
+            credentials: 'include',
+        });
+    },
+
+    async adminDeleteCourse(id) {
+        return request(`/api/admin/courses/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+    },
+
+    async adminUpdateFaculty(id, data) {
+        return request(`/api/admin/faculty/${id}`, {
+            method: 'PUT',
+            data,
+            credentials: 'include',
+        });
+    },
+
+    async adminDeleteFaculty(id) {
+        return request(`/api/admin/faculty/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+    },
+
+    async adminUpdateEvent(id, data) {
+        return request(`/api/admin/events/${id}`, {
+            method: 'PUT',
+            data,
+            credentials: 'include',
+        });
+    },
+
+    async adminDeleteEvent(id) {
+        return request(`/api/admin/events/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+    },
+
+    async adminUpdatePlacement(id, data) {
+        return request(`/api/admin/placements/${id}`, {
+            method: 'PUT',
+            data,
+            credentials: 'include',
+        });
+    },
+
+    async adminDeletePlacement(id) {
+        return request(`/api/admin/placements/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+    },
+
+    async adminUpdateFeature(id, data) {
+        return request(`/api/admin/features/${id}`, {
+            method: 'PUT',
+            data,
+            credentials: 'include',
+        });
+    },
+
+    async adminDeleteFeature(id) {
+        return request(`/api/admin/features/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+    },
+
+    async adminUpdateStatistic(id, data) {
+        return request(`/api/admin/statistics/${id}`, {
+            method: 'PUT',
+            data,
+            credentials: 'include',
+        });
+    },
+
+    async adminDeleteStatistic(id) {
+        return request(`/api/admin/statistics/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+    },
+
+    async adminGetNavigationItems() {
+        return request('/api/admin/navigation', { credentials: 'include' });
+    },
+
+    async adminCreateNavigationItem(data) {
+        return request('/api/admin/navigation', {
+            method: 'POST',
+            data,
+            credentials: 'include',
+        });
+    },
+
+    async adminUpdateNavigationItem(id, data) {
+        return request(`/api/admin/navigation/${id}`, {
+            method: 'PUT',
+            data,
+            credentials: 'include',
+        });
+    },
+
+    async adminDeleteNavigationItem(id) {
+        return request(`/api/admin/navigation/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+    },
+
+    async adminGetContentSections() {
+        return request('/api/admin/content', { credentials: 'include' });
+    },
+
+    async adminCreateContentSection(data) {
+        return request('/api/admin/content', {
+            method: 'POST',
+            data,
+            credentials: 'include',
+        });
+    },
+
+    async adminUpdateContentSection(id, data) {
+        return request(`/api/admin/content/${id}`, {
+            method: 'PUT',
+            data,
+            credentials: 'include',
+        });
+    },
+
+    async adminDeleteContentSection(id) {
+        return request(`/api/admin/content/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
     },
 };
 

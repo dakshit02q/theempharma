@@ -1,6 +1,7 @@
 import EventsPage from '@/components/pages/EventsPage'
 import ScrollToTopButton from '@/components/ScrollToTopButton'
 import { generateOGMetadata, generateTwitterMetadata, generateStructuredData } from '@/lib/seo'
+import { db } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
@@ -35,25 +36,10 @@ export async function generateMetadata() {
 
 async function getEventsData() {
     try {
-        // Fetch events from the database API
-        const baseUrl =
-            process.env.NEXT_PUBLIC_API_URL ||
-            (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-        const response = await fetch(`${baseUrl}/api/events`, {
-            cache: 'no-store' // Ensure fresh data on each request
+        const allEvents = await db.query.events.findMany({
+            where: (table, { eq }) => eq(table.isActive, true),
+            orderBy: (table, { desc }) => desc(table.eventDate),
         })
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch events')
-        }
-
-        const result = await response.json()
-
-        if (!result.success || !result.data) {
-            throw new Error('Invalid response format')
-        }
-
-        const allEvents = result.data
         const currentDate = new Date()
         currentDate.setHours(0, 0, 0, 0) // Reset time to start of day for accurate comparison
 

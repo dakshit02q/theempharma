@@ -1,12 +1,23 @@
 'use client'
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/AdminLayout';
+import { apiClient } from '@/lib/api-client';
+
+function truncate(value, maxLength = 100) {
+    if (!value) {
+        return 'No description available';
+    }
+    return value.length > maxLength ? `${value.substring(0, maxLength)}...` : value;
+}
 
 export default function AdminCourses() {
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingCourse, setEditingCourse] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
+    const [deletingCourseId, setDeletingCourseId] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -20,46 +31,57 @@ export default function AdminCourses() {
 
     const fetchCourses = async () => {
         try {
-            const response = await fetch('/api/courses');
-            const data = await response.json();
-            if (data.success) {
-                setCourses(data.data);
-            }
+            setErrorMessage('');
+            const data = await apiClient.getCourses({
+                limit: 200,
+                sortBy: 'createdAt',
+                sortOrder: 'desc',
+            });
+            setCourses(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching courses:', error);
+            setErrorMessage(error.message || 'Failed to load courses.');
         } finally {
             setLoading(false);
         }
     };
 
+    const closeModal = () => {
+        setShowModal(false);
+        setEditingCourse(null);
+        setFormData({ name: '', description: '', duration: '', eligibility: '' });
+    };
+
+    const openCreateModal = () => {
+        setErrorMessage('');
+        setEditingCourse(null);
+        setFormData({ name: '', description: '', duration: '', eligibility: '' });
+        setShowModal(true);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage('');
+        setIsSaving(true);
         try {
-            const url = editingCourse ? `/api/admin/courses/${editingCourse.id}` : '/api/courses';
-            const method = editingCourse ? 'PUT' : 'POST';
-            
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-                credentials: 'include'
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                fetchCourses();
-                setShowModal(false);
-                setEditingCourse(null);
-                setFormData({ name: '', description: '', duration: '', eligibility: '' });
+            if (editingCourse) {
+                await apiClient.adminUpdateCourse(editingCourse.id, formData);
+            } else {
+                await apiClient.createCourse(formData);
             }
+
+            await fetchCourses();
+            closeModal();
         } catch (error) {
             console.error('Error saving course:', error);
+            setErrorMessage(error.message || 'Failed to save course.');
+        } finally {
+            setIsSaving(false);
         }
     };
 
     const handleEdit = (course) => {
+        setErrorMessage('');
         setEditingCourse(course);
         setFormData({
             name: course.name,
@@ -72,17 +94,16 @@ export default function AdminCourses() {
 
     const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this course?')) {
+            setErrorMessage('');
+            setDeletingCourseId(id);
             try {
-                const response = await fetch(`/api/admin/courses/${id}`, {
-                    method: 'DELETE',
-                    credentials: 'include'
-                });
-                
-                if (response.ok) {
-                    fetchCourses();
-                }
+                await apiClient.adminDeleteCourse(id);
+                await fetchCourses();
             } catch (error) {
                 console.error('Error deleting course:', error);
+                setErrorMessage(error.message || 'Failed to delete course.');
+            } finally {
+                setDeletingCourseId(null);
             }
         }
     };
@@ -104,13 +125,19 @@ export default function AdminCourses() {
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl font-bold text-gray-900">Courses Management</h1>
                     <button
-                        onClick={() => setShowModal(true)}
+                        onClick={openCreateModal}
                         className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                     >
                         <i className="fas fa-plus mr-2"></i>
                         Add Course
                     </button>
                 </div>
+
+                {errorMessage && (
+                    <div className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {errorMessage}
+                    </div>
+                )}
 
                 {/* Courses Table - Desktop */}
                 <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -141,7 +168,7 @@ export default function AdminCourses() {
                                         <td className="px-4 lg:px-6 py-4">
                                             <div>
                                                 <div className="text-sm font-medium text-gray-900">{course.name}</div>
-                                                <div className="text-sm text-gray-500">{course.description?.substring(0, 100)}...</div>
+                                                <div className="text-sm text-gray-500">{truncate(course.description, 100)}</div>
                                             </div>
                                         </td>
                                         <td className="px-4 lg:px-6 py-4 text-sm text-gray-900">
@@ -156,15 +183,17 @@ export default function AdminCourses() {
                                         <td className="px-4 lg:px-6 py-4 text-right text-sm font-medium">
                                             <button
                                                 onClick={() => handleEdit(course)}
-                                                className="text-blue-600 hover:text-blue-900 mr-3 p-1"
+                                                className="text-blue-600 hover:text-blue-900 mr-3 p-1 disabled:opacity-50"
+                                                disabled={isSaving || deletingCourseId === course.id}
                                             >
                                                 <i className="fas fa-edit"></i>
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(course.id)}
-                                                className="text-red-600 hover:text-red-900 p-1"
+                                                className="text-red-600 hover:text-red-900 p-1 disabled:opacity-50"
+                                                disabled={isSaving || deletingCourseId === course.id}
                                             >
-                                                <i className="fas fa-trash"></i>
+                                                <i className={`fas ${deletingCourseId === course.id ? 'fa-spinner fa-spin' : 'fa-trash'}`}></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -181,20 +210,22 @@ export default function AdminCourses() {
                             <div className="flex justify-between items-start mb-3">
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-sm font-medium text-gray-900 truncate">{course.name}</h3>
-                                    <p className="text-xs text-gray-500 mt-1">{course.description?.substring(0, 80)}...</p>
+                                    <p className="text-xs text-gray-500 mt-1">{truncate(course.description, 80)}</p>
                                 </div>
                                 <div className="flex space-x-2 ml-2">
                                     <button
                                         onClick={() => handleEdit(course)}
-                                        className="text-blue-600 hover:text-blue-900 p-2"
+                                        className="text-blue-600 hover:text-blue-900 p-2 disabled:opacity-50"
+                                        disabled={isSaving || deletingCourseId === course.id}
                                     >
                                         <i className="fas fa-edit text-sm"></i>
                                     </button>
                                     <button
                                         onClick={() => handleDelete(course.id)}
-                                        className="text-red-600 hover:text-red-900 p-2"
+                                        className="text-red-600 hover:text-red-900 p-2 disabled:opacity-50"
+                                        disabled={isSaving || deletingCourseId === course.id}
                                     >
-                                        <i className="fas fa-trash text-sm"></i>
+                                        <i className={`fas ${deletingCourseId === course.id ? 'fa-spinner fa-spin' : 'fa-trash'} text-sm`}></i>
                                     </button>
                                 </div>
                             </div>
@@ -223,7 +254,7 @@ export default function AdminCourses() {
                             <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">
                                 {editingCourse ? 'Edit Course' : 'Add New Course'}
                             </h2>
-                            
+
                             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -238,7 +269,7 @@ export default function AdminCourses() {
                                         placeholder="Enter course name"
                                     />
                                 </div>
-                                
+
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Description
@@ -251,7 +282,7 @@ export default function AdminCourses() {
                                         placeholder="Enter course description"
                                     />
                                 </div>
-                                
+
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -265,7 +296,7 @@ export default function AdminCourses() {
                                             placeholder="e.g., 4 Years"
                                         />
                                     </div>
-                                    
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
                                             Eligibility
@@ -279,24 +310,22 @@ export default function AdminCourses() {
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4 sm:pt-6 border-t">
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            setShowModal(false);
-                                            setEditingCourse(null);
-                                            setFormData({ name: '', description: '', duration: '', eligibility: '' });
-                                        }}
-                                        className="w-full sm:w-auto px-4 py-2.5 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base"
+                                        onClick={closeModal}
+                                        className="w-full sm:w-auto px-4 py-2.5 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base disabled:opacity-50"
+                                        disabled={isSaving}
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="w-full sm:w-auto bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base font-medium"
+                                        className="w-full sm:w-auto bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base font-medium disabled:cursor-not-allowed disabled:opacity-60"
+                                        disabled={isSaving}
                                     >
-                                        {editingCourse ? 'Update Course' : 'Create Course'}
+                                        {isSaving ? 'Saving...' : editingCourse ? 'Update Course' : 'Create Course'}
                                     </button>
                                 </div>
                             </form>

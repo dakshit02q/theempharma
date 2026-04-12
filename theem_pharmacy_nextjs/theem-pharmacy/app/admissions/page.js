@@ -1,4 +1,5 @@
 import AdmissionsPage from '@/components/pages/AdmissionsPage'
+import AdmissionsApplicationForm from '@/components/pages/AdmissionsApplicationForm'
 import ScrollToTopButton from '@/components/ScrollToTopButton'
 
 export const metadata = {
@@ -11,6 +12,7 @@ export default function Admissions() {
     return (
         <>
             <AdmissionsPage />
+            <AdmissionsApplicationForm />
             <ScrollToTopButton />
         </>
     )

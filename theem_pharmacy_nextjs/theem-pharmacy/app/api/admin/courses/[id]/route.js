@@ -1,24 +1,34 @@
-import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { courses } from '@/lib/db/schema';
 import { requireAuth } from '@/lib/auth';
 import { eq } from 'drizzle-orm';
+import { apiError, apiSuccess, handleApiError } from '@/lib/api/response';
+import { parseId, getMissingFields } from '@/lib/api/validation';
 
 // Update course
 export async function PUT(request, { params }) {
     // Check authentication
     const authResult = requireAuth(request);
     if (!authResult.success) {
-        return NextResponse.json(
-            { success: false, error: authResult.error },
-            { status: 401 }
-        );
+        return apiError(authResult.error, { status: 401 });
     }
 
     try {
-        const { id } = params;
+        const id = parseId(params.id);
         const body = await request.json();
-        
+
+        if (!id) {
+            return apiError('Invalid course id', { status: 400 });
+        }
+
+        const missingFields = getMissingFields(body, ['name']);
+        if (missingFields.length > 0) {
+            return apiError('Missing required fields', {
+                status: 400,
+                details: { missingFields },
+            });
+        }
+
         const updatedCourse = await db
             .update(courses)
             .set({
@@ -28,26 +38,16 @@ export async function PUT(request, { params }) {
                 eligibility: body.eligibility,
                 updatedAt: new Date()
             })
-            .where(eq(courses.id, parseInt(id)))
+            .where(eq(courses.id, id))
             .returning();
 
         if (updatedCourse.length === 0) {
-            return NextResponse.json(
-                { success: false, error: 'Course not found' },
-                { status: 404 }
-            );
+            return apiError('Course not found', { status: 404 });
         }
 
-        return NextResponse.json({
-            success: true,
-            data: updatedCourse[0]
-        });
+        return apiSuccess(updatedCourse[0], { message: 'Course updated successfully' });
     } catch (error) {
-        console.error('Error updating course:', error);
-        return NextResponse.json(
-            { success: false, error: 'Failed to update course' },
-            { status: 500 }
-        );
+        return handleApiError(error, 'Error updating course:', 'Failed to update course');
     }
 }
 
@@ -56,36 +56,29 @@ export async function DELETE(request, { params }) {
     // Check authentication
     const authResult = requireAuth(request);
     if (!authResult.success) {
-        return NextResponse.json(
-            { success: false, error: authResult.error },
-            { status: 401 }
-        );
+        return apiError(authResult.error, { status: 401 });
     }
 
     try {
-        const { id } = params;
-        
+        const id = parseId(params.id);
+
+        if (!id) {
+            return apiError('Invalid course id', { status: 400 });
+        }
+
         const deletedCourse = await db
             .delete(courses)
-            .where(eq(courses.id, parseInt(id)))
+            .where(eq(courses.id, id))
             .returning();
 
         if (deletedCourse.length === 0) {
-            return NextResponse.json(
-                { success: false, error: 'Course not found' },
-                { status: 404 }
-            );
+            return apiError('Course not found', { status: 404 });
         }
 
-        return NextResponse.json({
-            success: true,
+        return apiSuccess({}, {
             message: 'Course deleted successfully'
         });
     } catch (error) {
-        console.error('Error deleting course:', error);
-        return NextResponse.json(
-            { success: false, error: 'Failed to delete course' },
-            { status: 500 }
-        );
+        return handleApiError(error, 'Error deleting course:', 'Failed to delete course');
     }
 }

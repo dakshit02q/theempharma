@@ -1,78 +1,160 @@
-import { NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+import { contactSubmissions } from '@/lib/db/schema'
+import { apiError, apiSuccess, handleApiError } from '@/lib/api/response'
+import { getMissingFields } from '@/lib/api/validation'
 import nodemailer from 'nodemailer'
+
+function toPort(value, fallback = 587) {
+    const parsed = Number.parseInt(String(value), 10)
+    return Number.isNaN(parsed) ? fallback : parsed
+}
+
+function isSmtpConfigured() {
+    return Boolean(
+        process.env.SMTP_HOST &&
+        process.env.SMTP_PORT &&
+        process.env.SMTP_USER &&
+        process.env.SMTP_PASS &&
+        (process.env.SMTP_FROM || process.env.SMTP_USER) &&
+        (process.env.CONTACT_EMAIL || process.env.SMTP_USER)
+    )
+}
+
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+}
+
+async function forwardContactEmail({ name, email, phone, subject, message, submissionId }) {
+    if (!isSmtpConfigured()) {
+        return { attempted: false, sent: false, reason: 'SMTP not configured' }
+    }
+
+    const smtpPort = toPort(process.env.SMTP_PORT)
+    const isSecure = smtpPort === 465
+
+    const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: smtpPort,
+        secure: isSecure,
+        auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+        },
+    })
+
+    const safeName = escapeHtml(name)
+    const safeEmail = escapeHtml(email)
+    const safePhone = escapeHtml(phone || 'Not provided')
+    const safeSubject = escapeHtml(subject)
+    const safeMessage = escapeHtml(message).replace(/\n/g, '<br/>')
+
+    await transporter.sendMail({
+        from: process.env.SMTP_FROM || process.env.SMTP_USER,
+        to: process.env.CONTACT_EMAIL || process.env.SMTP_USER,
+        replyTo: email,
+        subject: `[Theem Contact] ${subject}`,
+        text: [
+            `Submission ID: ${submissionId || 'N/A'}`,
+            `Name: ${name}`,
+            `Email: ${email}`,
+            `Phone: ${phone || 'Not provided'}`,
+            `Subject: ${subject}`,
+            '',
+            message,
+        ].join('\n'),
+        html: `
+            <h2>New Contact Form Submission</h2>
+            <p><strong>Submission ID:</strong> ${escapeHtml(submissionId || 'N/A')}</p>
+            <p><strong>Name:</strong> ${safeName}</p>
+            <p><strong>Email:</strong> ${safeEmail}</p>
+            <p><strong>Phone:</strong> ${safePhone}</p>
+            <p><strong>Subject:</strong> ${safeSubject}</p>
+            <p><strong>Message:</strong><br/>${safeMessage}</p>
+        `,
+    })
+
+    return { attempted: true, sent: true }
+}
 
 export async function POST(request) {
     try {
         const { name, email, phone, subject, message } = await request.json()
 
         // Validate required fields
-        if (!name || !email || !subject || !message) {
-            return NextResponse.json(
-                { error: 'Missing required fields' },
-                { status: 400 }
-            )
+        const missingFields = getMissingFields(
+            { name, email, subject, message },
+            ['name', 'email', 'subject', 'message']
+        )
+
+        if (missingFields.length > 0) {
+            return apiError('Missing required fields', {
+                status: 400,
+                details: { missingFields },
+            })
         }
 
-        // Create transporter (you'll need to configure this with your email service)
-        // For now, we'll just log the contact form data
-        console.log('Contact Form Submission:', {
-            name,
-            email,
-            phone,
-            subject,
-            message,
-            timestamp: new Date().toISOString()
-        })
+        const newSubmission = await db
+            .insert(contactSubmissions)
+            .values({
+                name,
+                email,
+                phone,
+                subject,
+                message,
+                status: 'new',
+            })
+            .returning()
 
-        // TODO: Uncomment and configure when you have email service setup
-        // const transporter = nodemailer.createTransporter({
-        //   host: process.env.SMTP_HOST,
-        //   port: process.env.SMTP_PORT,
-        //   secure: false,
-        //   auth: {
-        //     user: process.env.SMTP_USER,
-        //     pass: process.env.SMTP_PASS,
-        //   },
-        // })
+        const submission = newSubmission[0]
 
-        // const mailOptions = {
-        //   from: process.env.SMTP_FROM,
-        //   to: process.env.CONTACT_EMAIL,
-        //   subject: `Contact Form: ${subject}`,
-        //   html: `
-        //     <h2>New Contact Form Submission</h2>
-        //     <p><strong>Name:</strong> ${name}</p>
-        //     <p><strong>Email:</strong> ${email}</p>
-        //     <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
-        //     <p><strong>Subject:</strong> ${subject}</p>
-        //     <p><strong>Message:</strong></p>
-        //     <p>${message.replace(/\n/g, '<br>')}</p>
-        //   `,
-        // }
+        let smtpResult = { attempted: false, sent: false }
+        try {
+            smtpResult = await forwardContactEmail({
+                name,
+                email,
+                phone,
+                subject,
+                message,
+                submissionId: submission?.id,
+            })
+        } catch (smtpError) {
+            console.error('SMTP forward failed (non-blocking):', smtpError)
+            smtpResult = {
+                attempted: true,
+                sent: false,
+                reason: 'SMTP send failed',
+            }
+        }
 
-        // await transporter.sendMail(mailOptions)
-
-        // For now, simulate successful email sending
-        await new Promise(resolve => setTimeout(resolve, 1000))
-
-        return NextResponse.json(
-            { message: 'Contact form submitted successfully' },
-            { status: 200 }
+        return apiSuccess(
+            {
+                id: submission?.id,
+                name,
+                email,
+                phone,
+                subject,
+                smtpForwarded: smtpResult.sent,
+            },
+            {
+                message: 'Contact form submitted successfully',
+                meta: {
+                    smtpAttempted: smtpResult.attempted,
+                    smtpReason: smtpResult.reason,
+                },
+            }
         )
 
     } catch (error) {
-        console.error('Contact form error:', error)
-        return NextResponse.json(
-            { error: 'Failed to submit contact form' },
-            { status: 500 }
-        )
+        return handleApiError(error, 'Contact form error:', 'Failed to submit contact form')
     }
 }
 
 // Handle other HTTP methods
 export async function GET() {
-    return NextResponse.json(
-        { error: 'Method not allowed' },
-        { status: 405 }
-    )
+    return apiError('Method not allowed', { status: 405 })
 }

@@ -12,6 +12,7 @@
     "db:push": "drizzle-kit push",
     "db:seed": "node -r dotenv/config lib/db/seed.js",
     "db:studio": "drizzle-kit studio",
+    "smoke:api": "node scripts/smoke-nav-content.mjs",
     "analyze": "cross-env ANALYZE=true next build",
     "sitemap": "next-sitemap"
   },

@@ -1,11 +1,14 @@
 'use client'
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/AdminLayout';
+import { apiClient } from '@/lib/api-client';
 
 export default function AdminAdmissions() {
     const [admissions, setAdmissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [updatingAdmissionId, setUpdatingAdmissionId] = useState(null);
 
     useEffect(() => {
         fetchAdmissions();
@@ -13,34 +16,32 @@ export default function AdminAdmissions() {
 
     const fetchAdmissions = async () => {
         try {
-            const response = await fetch('/api/admissions');
-            const data = await response.json();
-            if (data.success) {
-                setAdmissions(data.data);
-            }
+            setErrorMessage('');
+            const data = await apiClient.getAdmissions({
+                limit: 300,
+                sortBy: 'submittedAt',
+                sortOrder: 'desc',
+            });
+            setAdmissions(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching admissions:', error);
+            setErrorMessage(error.message || 'Failed to load admissions.');
         } finally {
             setLoading(false);
         }
     };
 
     const updateStatus = async (id, newStatus) => {
+        setUpdatingAdmissionId(id);
+        setErrorMessage('');
         try {
-            const response = await fetch(`/api/admin/admissions/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ status: newStatus }),
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                fetchAdmissions();
-            }
+            await apiClient.adminUpdateAdmissionStatus(id, newStatus);
+            await fetchAdmissions();
         } catch (error) {
             console.error('Error updating admission status:', error);
+            setErrorMessage(error.message || 'Failed to update admission status.');
+        } finally {
+            setUpdatingAdmissionId(null);
         }
     };
 
@@ -74,7 +75,7 @@ export default function AdminAdmissions() {
                 {/* Header */}
                 <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Admissions Management</h1>
-                    
+
                     {/* Filter Buttons */}
                     <div className="flex flex-wrap gap-2">
                         <button
@@ -103,6 +104,12 @@ export default function AdminAdmissions() {
                         </button>
                     </div>
                 </div>
+
+                {errorMessage && (
+                    <div className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {errorMessage}
+                    </div>
+                )}
 
                 {/* Admissions Table - Desktop */}
                 <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -168,27 +175,30 @@ export default function AdminAdmissions() {
                                                 <div className="flex justify-end space-x-2">
                                                     <button
                                                         onClick={() => updateStatus(admission.id, 'approved')}
-                                                        className="text-green-600 hover:text-green-900"
+                                                        className="text-green-600 hover:text-green-900 disabled:opacity-50"
                                                         title="Approve"
+                                                        disabled={updatingAdmissionId === admission.id}
                                                     >
-                                                        <i className="fas fa-check"></i>
+                                                        <i className={`fas ${updatingAdmissionId === admission.id ? 'fa-spinner fa-spin' : 'fa-check'}`}></i>
                                                     </button>
                                                     <button
                                                         onClick={() => updateStatus(admission.id, 'rejected')}
-                                                        className="text-red-600 hover:text-red-900"
+                                                        className="text-red-600 hover:text-red-900 disabled:opacity-50"
                                                         title="Reject"
+                                                        disabled={updatingAdmissionId === admission.id}
                                                     >
-                                                        <i className="fas fa-times"></i>
+                                                        <i className={`fas ${updatingAdmissionId === admission.id ? 'fa-spinner fa-spin' : 'fa-times'}`}></i>
                                                     </button>
                                                 </div>
                                             )}
                                             {admission.status !== 'pending' && (
                                                 <button
                                                     onClick={() => updateStatus(admission.id, 'pending')}
-                                                    className="text-blue-600 hover:text-blue-900"
+                                                    className="text-blue-600 hover:text-blue-900 disabled:opacity-50"
                                                     title="Reset to Pending"
+                                                    disabled={updatingAdmissionId === admission.id}
                                                 >
-                                                    <i className="fas fa-undo"></i>
+                                                    <i className={`fas ${updatingAdmissionId === admission.id ? 'fa-spinner fa-spin' : 'fa-undo'}`}></i>
                                                 </button>
                                             )}
                                         </td>
@@ -197,7 +207,7 @@ export default function AdminAdmissions() {
                             </tbody>
                         </table>
                     </div>
-                    
+
                     {filteredAdmissions.length === 0 && (
                         <div className="text-center py-12">
                             <i className="fas fa-inbox text-4xl text-gray-400 mb-4"></i>
@@ -221,52 +231,59 @@ export default function AdminAdmissions() {
                                     {admission.status}
                                 </span>
                             </div>
-                            
+
                             <div className="space-y-2 text-sm text-gray-600 mb-4">
                                 <div className="flex items-center">
                                     <i className="fas fa-phone w-4 mr-2"></i>
                                     <span>{admission.phone}</span>
                                 </div>
                                 <div className="flex items-center">
-                                    <i className="fas fa-calendar w-4 mr-2"></i>
-                                    <span>{new Date(admission.dateOfBirth).toLocaleDateString()}</span>
+                                    <i className="fas fa-file-alt w-4 mr-2"></i>
+                                    <span>Course ID: {admission.courseId || 'N/A'}</span>
                                 </div>
                                 <div className="flex items-center">
-                                    <i className="fas fa-map-marker-alt w-4 mr-2"></i>
-                                    <span>{admission.address}</span>
+                                    <i className="fas fa-briefcase w-4 mr-2"></i>
+                                    <span>Experience: {admission.experienceYears || 0} years</span>
+                                </div>
+                                <div className="flex items-center">
+                                    <i className="fas fa-calendar w-4 mr-2"></i>
+                                    <span>{new Date(admission.submittedAt).toLocaleDateString()}</span>
                                 </div>
                             </div>
-                            
+
                             {admission.status === 'pending' && (
                                 <div className="flex space-x-2">
                                     <button
                                         onClick={() => updateStatus(admission.id, 'approved')}
-                                        className="flex-1 bg-green-50 text-green-600 py-2 px-3 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center"
+                                        className="flex-1 bg-green-50 text-green-600 py-2 px-3 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center disabled:opacity-50"
+                                        disabled={updatingAdmissionId === admission.id}
                                     >
-                                        <i className="fas fa-check mr-2"></i>
-                                        Approve
+                                        <i className={`fas ${updatingAdmissionId === admission.id ? 'fa-spinner fa-spin' : 'fa-check'} mr-2`}></i>
+                                        {updatingAdmissionId === admission.id ? 'Updating...' : 'Approve'}
                                     </button>
                                     <button
                                         onClick={() => updateStatus(admission.id, 'rejected')}
-                                        className="flex-1 bg-red-50 text-red-600 py-2 px-3 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center"
+                                        className="flex-1 bg-red-50 text-red-600 py-2 px-3 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center disabled:opacity-50"
+                                        disabled={updatingAdmissionId === admission.id}
                                     >
-                                        <i className="fas fa-times mr-2"></i>
-                                        Reject
+                                        <i className={`fas ${updatingAdmissionId === admission.id ? 'fa-spinner fa-spin' : 'fa-times'} mr-2`}></i>
+                                        {updatingAdmissionId === admission.id ? 'Updating...' : 'Reject'}
                                     </button>
                                 </div>
                             )}
                             {admission.status !== 'pending' && (
                                 <button
                                     onClick={() => updateStatus(admission.id, 'pending')}
-                                    className="w-full bg-blue-50 text-blue-600 py-2 px-3 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center"
+                                    className="w-full bg-blue-50 text-blue-600 py-2 px-3 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium min-h-[44px] flex items-center justify-center disabled:opacity-50"
+                                    disabled={updatingAdmissionId === admission.id}
                                 >
-                                    <i className="fas fa-undo mr-2"></i>
-                                    Reset to Pending
+                                    <i className={`fas ${updatingAdmissionId === admission.id ? 'fa-spinner fa-spin' : 'fa-undo'} mr-2`}></i>
+                                    {updatingAdmissionId === admission.id ? 'Updating...' : 'Reset to Pending'}
                                 </button>
                             )}
                         </div>
                     ))}
-                    
+
                     {filteredAdmissions.length === 0 && (
                         <div className="text-center py-12">
                             <i className="fas fa-inbox text-4xl text-gray-400 mb-4"></i>

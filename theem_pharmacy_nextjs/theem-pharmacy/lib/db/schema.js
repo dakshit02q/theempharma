@@ -249,23 +249,60 @@ export const approvals = pgTable('approvals', {
   updatedAt: timestamp('updated_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-// Export all tables for use in other modules
-export {
-  courses,
-  faculty,
-  admissions,
-  aboutContent,
-  contactSubmissions,
-  features,
-  statistics,
-  committee,
-  academicCalendar,
-  syllabus,
-  researchProjects,
-  publications,
-  students,
-  placements,
-  alumni,
-  events,
-  approvals,
-};
+
+export const announcements = pgTable('announcements', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  message: text('message').notNull(),
+  priority: integer('priority').default(0),
+  isActive: boolean('is_active').default(true),
+  startsAt: timestamp('starts_at'),
+  endsAt: timestamp('ends_at'),
+  createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const navigationItems = pgTable('navigation_items', {
+  id: serial('id').primaryKey(),
+  label: varchar('label', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).notNull(),
+  parentId: integer('parent_id'),
+  icon: varchar('icon', { length: 100 }),
+  order: integer('order').default(0),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const pageContentSections = pgTable('page_content_sections', {
+  id: serial('id').primaryKey(),
+  pageSlug: varchar('page_slug', { length: 255 }).notNull(),
+  sectionKey: varchar('section_key', { length: 255 }).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content'),
+  order: integer('order').default(0),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// // Export all tables for use in other modules
+// export {
+//   courses,
+//   faculty,
+//   admissions,
+//   aboutContent,
+//   contactSubmissions,
+//   features,
+//   statistics,
+//   committee,
+//   academicCalendar,
+//   syllabus,
+//   researchProjects,
+//   publications,
+//   students,
+//   placements,
+//   alumni,
+//   events,
+//   approvals,
+// };

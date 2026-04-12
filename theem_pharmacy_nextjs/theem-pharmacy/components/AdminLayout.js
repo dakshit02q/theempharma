@@ -55,6 +55,8 @@ export default function AdminLayout({ children }) {
         { name: 'Admissions', href: '/admin/admissions', icon: 'fas fa-file-alt' },
         { name: 'Events', href: '/admin/events', icon: 'fas fa-calendar-alt' },
         { name: 'Placements', href: '/admin/placements', icon: 'fas fa-briefcase' },
+        { name: 'Features', href: '/admin/features', icon: 'fas fa-star' },
+        { name: 'Statistics', href: '/admin/statistics', icon: 'fas fa-chart-line' },
         { name: 'Research', href: '/admin/research', icon: 'fas fa-microscope' },
         { name: 'Committee', href: '/admin/committee', icon: 'fas fa-users' },
         { name: 'Contact', href: '/admin/contact', icon: 'fas fa-envelope' },

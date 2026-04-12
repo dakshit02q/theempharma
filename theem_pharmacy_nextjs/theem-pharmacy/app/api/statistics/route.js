@@ -1,7 +1,7 @@
 import { db } from '@/lib/db/index.js';
 import { statistics } from '@/lib/db/schema.js';
-import { NextResponse } from 'next/server';
-import { eq } from 'drizzle-orm';
+import { apiError, apiSuccess, handleApiError } from '@/lib/api/response';
+import { getMissingFields } from '@/lib/api/validation';
 
 export async function GET() {
   try {
@@ -9,26 +9,30 @@ export async function GET() {
       where: (table, { eq }) => eq(table.isActive, true),
       orderBy: (table, { asc }) => asc(table.order),
     });
-    return NextResponse.json(allStats);
+    return apiSuccess(allStats);
   } catch (error) {
-    console.error('Error fetching statistics:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch statistics' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Error fetching statistics:', 'Failed to fetch statistics');
   }
 }
 
 export async function POST(request) {
   try {
     const body = await request.json();
+    const missingFields = getMissingFields(body, ['label', 'value']);
+
+    if (missingFields.length > 0) {
+      return apiError('Missing required fields', {
+        status: 400,
+        details: { missingFields },
+      });
+    }
+
     const newStat = await db.insert(statistics).values(body).returning();
-    return NextResponse.json(newStat[0], { status: 201 });
+    return apiSuccess(newStat[0], {
+      status: 201,
+      message: 'Statistic created successfully',
+    });
   } catch (error) {
-    console.error('Error creating statistic:', error);
-    return NextResponse.json(
-      { error: 'Failed to create statistic' },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Error creating statistic:', 'Failed to create statistic');
   }
 }

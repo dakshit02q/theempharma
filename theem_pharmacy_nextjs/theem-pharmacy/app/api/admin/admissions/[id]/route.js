@@ -1,49 +1,57 @@
-import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { admissions } from '@/lib/db/schema';
 import { requireAuth } from '@/lib/auth';
 import { eq } from 'drizzle-orm';
+import { apiError, apiSuccess, handleApiError } from '@/lib/api/response';
+import { parseId, getMissingFields } from '@/lib/api/validation';
 
 // Update admission status
 export async function PUT(request, { params }) {
     // Check authentication
     const authResult = requireAuth(request);
     if (!authResult.success) {
-        return NextResponse.json(
-            { success: false, error: authResult.error },
-            { status: 401 }
-        );
+        return apiError(authResult.error, { status: 401 });
     }
 
     try {
-        const { id } = params;
+        const id = parseId(params.id);
         const body = await request.json();
-        
+
+        if (!id) {
+            return apiError('Invalid admission id', { status: 400 });
+        }
+
+        const missingFields = getMissingFields(body, ['status']);
+        if (missingFields.length > 0) {
+            return apiError('Missing required fields', {
+                status: 400,
+                details: { missingFields },
+            });
+        }
+
+        const allowedStatuses = ['pending', 'approved', 'rejected'];
+        if (!allowedStatuses.includes(body.status)) {
+            return apiError('Invalid status value', {
+                status: 400,
+                details: { allowedStatuses },
+            });
+        }
+
         const updatedAdmission = await db
             .update(admissions)
             .set({
                 status: body.status,
                 updatedAt: new Date()
             })
-            .where(eq(admissions.id, parseInt(id)))
+            .where(eq(admissions.id, id))
             .returning();
 
         if (updatedAdmission.length === 0) {
-            return NextResponse.json(
-                { success: false, error: 'Admission not found' },
-                { status: 404 }
-            );
+            return apiError('Admission not found', { status: 404 });
         }
 
-        return NextResponse.json({
-            success: true,
-            data: updatedAdmission[0]
-        });
+        return apiSuccess(updatedAdmission[0]);
     } catch (error) {
-        console.error('Error updating admission:', error);
-        return NextResponse.json(
-            { success: false, error: 'Failed to update admission' },
-            { status: 500 }
-        );
+        return handleApiError(error, 'Error updating admission:', 'Failed to update admission');
     }
 }

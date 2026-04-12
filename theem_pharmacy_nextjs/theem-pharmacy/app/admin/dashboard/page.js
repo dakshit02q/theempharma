@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/AdminLayout';
+import { apiClient } from '@/lib/api-client';
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState({
@@ -14,6 +15,7 @@ export default function AdminDashboard() {
         recentContacts: []
     });
     const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         fetchDashboardData();
@@ -21,37 +23,29 @@ export default function AdminDashboard() {
 
     const fetchDashboardData = async () => {
         try {
-            // Fetch data from multiple endpoints
-            const [studentsRes, facultyRes, coursesRes, admissionsRes, eventsRes, placementsRes] = await Promise.all([
-                fetch('/api/students'),
-                fetch('/api/faculty'),
-                fetch('/api/courses'),
-                fetch('/api/admissions'),
-                fetch('/api/events'),
-                fetch('/api/placements')
-            ]);
-
+            setErrorMessage('');
             const [students, faculty, courses, admissions, events, placements] = await Promise.all([
-                studentsRes.json(),
-                facultyRes.json(),
-                coursesRes.json(),
-                admissionsRes.json(),
-                eventsRes.json(),
-                placementsRes.json()
+                apiClient.getStudentsData({ limit: 1000 }),
+                apiClient.getFaculty({ limit: 1000 }),
+                apiClient.getCourses({ limit: 1000 }),
+                apiClient.getAdmissions({ limit: 1000, sortBy: 'submittedAt', sortOrder: 'desc' }),
+                apiClient.getEvents({ limit: 1000 }),
+                apiClient.getPlacements({ limit: 1000 })
             ]);
 
             setStats({
-                totalStudents: students.data?.students?.length || 0,
-                totalFaculty: faculty.data?.length || 0,
-                totalCourses: courses.data?.length || 0,
-                totalAdmissions: admissions.data?.length || 0,
-                totalEvents: events.data?.length || 0,
-                totalPlacements: placements.data?.length || 0,
-                recentAdmissions: admissions.data?.slice(0, 5) || [],
+                totalStudents: students?.students?.length || 0,
+                totalFaculty: faculty?.length || 0,
+                totalCourses: courses?.length || 0,
+                totalAdmissions: admissions?.length || 0,
+                totalEvents: events?.length || 0,
+                totalPlacements: placements?.length || 0,
+                recentAdmissions: admissions?.slice(0, 5) || [],
                 recentContacts: [] // Will be populated when contact API is available
             });
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
+            setErrorMessage(error.message || 'Failed to load dashboard data.');
         } finally {
             setLoading(false);
         }
@@ -98,6 +92,12 @@ export default function AdminDashboard() {
                     <h1 className="text-xl sm:text-2xl font-bold mb-2">Welcome to THEEM Admin Panel</h1>
                     <p className="opacity-90 text-sm sm:text-base">Manage your college data and monitor system performance</p>
                 </div>
+
+                {errorMessage && (
+                    <div className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {errorMessage}
+                    </div>
+                )}
 
                 {/* Statistics Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
@@ -163,11 +163,10 @@ export default function AdminDashboard() {
                                             </p>
                                             <p className="text-sm text-gray-600">{admission.email}</p>
                                         </div>
-                                        <span className={`px-2 py-1 text-xs rounded-full ${
-                                            admission.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                            admission.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                            'bg-red-100 text-red-800'
-                                        }`}>
+                                        <span className={`px-2 py-1 text-xs rounded-full ${admission.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                admission.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                                    'bg-red-100 text-red-800'
+                                            }`}>
                                             {admission.status}
                                         </span>
                                     </div>

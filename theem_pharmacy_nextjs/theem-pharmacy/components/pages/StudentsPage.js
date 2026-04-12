@@ -1,134 +1,125 @@
-'use client';
+const defaultStudentsData = {
+    statistics: {
+        totalStudents: 0,
+        activeOrganizations: 0,
+        eventsPerYear: 0,
+        placementRate: 0,
+    },
+    organizations: [],
+    achievements: [],
+    events: [],
+};
 
-import { useState, useEffect } from 'react';
-import { apiClient } from '../../lib/api-client';
+function formatEventDate(dateValue) {
+    if (!dateValue) {
+        return 'Date to be announced';
+    }
 
-export default function StudentsPage() {
-    const [studentsData, setStudentsData] = useState({
-        statistics: {
-            totalStudents: 0,
-            activeOrganizations: 0,
-            eventsPerYear: 0,
-            placementRate: 0
-        },
-        organizations: [],
-        achievements: [],
-        events: []
+    const parsedDate = new Date(dateValue);
+    if (Number.isNaN(parsedDate.getTime())) {
+        return String(dateValue);
+    }
+
+    return parsedDate.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
     });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+}
 
-    useEffect(() => {
-        const fetchStudentsData = async () => {
-            try {
-                setLoading(true);
-                const data = await apiClient.getStudentsData('all');
-                setStudentsData(data);
-            } catch (err) {
-                console.error('Error fetching students data:', err);
-                setError('Failed to load students data');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchStudentsData();
-    }, []);
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Loading students data...</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 flex items-center justify-center">
-                <div className="text-center">
-                    <p className="text-red-600 text-lg">{error}</p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    >
-                        Retry
-                    </button>
-                </div>
-            </div>
-        );
-    }
+export default function StudentsPage({ studentsData = defaultStudentsData, isFallback = false }) {
+    const safeData = {
+        statistics: {
+            ...defaultStudentsData.statistics,
+            ...(studentsData?.statistics || {}),
+        },
+        organizations: Array.isArray(studentsData?.organizations)
+            ? studentsData.organizations
+            : [],
+        achievements: Array.isArray(studentsData?.achievements)
+            ? studentsData.achievements
+            : [],
+        events: Array.isArray(studentsData?.events)
+            ? studentsData.events
+            : [],
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
             {/* Hero Section */}
-            <section className="bg-gradient-to-r from-blue-600 to-teal-600 text-white py-20">
-                <div className="container mx-auto px-6 text-center">
-                    <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <section className="bg-gradient-to-r from-blue-600 to-teal-600 text-white py-14 sm:py-16 lg:py-20">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
                         Student Life at THEEM
                     </h1>
-                    <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed">
                         Experience a vibrant campus life with endless opportunities for growth, learning, and excellence
                     </p>
                 </div>
             </section>
 
+            {/* Data Source Notice */}
+            <section className={`py-4 border-y ${isFallback ? 'bg-amber-50 border-amber-200' : 'bg-green-50 border-green-200'}`}>
+                <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs sm:text-sm font-medium ${isFallback ? 'text-amber-800' : 'text-green-800'}`}>
+                    {isFallback
+                        ? 'Live data is currently unavailable. Showing safe fallback values.'
+                        : 'Showing live student data from the backend.'}
+                </div>
+            </section>
+
             {/* Statistics Section */}
-            <section className="py-16 bg-white">
-                <div className="container mx-auto px-6">
-                    <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
+            <section className="py-12 sm:py-14 lg:py-16 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-8 sm:mb-12">
                         Student Statistics
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                        <div className="text-center">
-                            <div className="text-4xl font-bold text-blue-600 mb-2">
-                                {studentsData.statistics.totalStudents || 0}+
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                        <div className="text-center bg-blue-50 rounded-xl p-4 sm:p-5 lg:p-6">
+                            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600 mb-1 sm:mb-2">
+                                {safeData.statistics.totalStudents || 0}+
                             </div>
-                            <div className="text-gray-600">Total Students</div>
+                            <div className="text-gray-600 text-xs sm:text-sm lg:text-base">Total Students</div>
                         </div>
-                        <div className="text-center">
-                            <div className="text-4xl font-bold text-teal-600 mb-2">
-                                {studentsData.statistics.activeOrganizations || studentsData.organizations?.length || 0}
+                        <div className="text-center bg-teal-50 rounded-xl p-4 sm:p-5 lg:p-6">
+                            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-teal-600 mb-1 sm:mb-2">
+                                {safeData.statistics.activeOrganizations || safeData.organizations.length || 0}
                             </div>
-                            <div className="text-gray-600">Active Organizations</div>
+                            <div className="text-gray-600 text-xs sm:text-sm lg:text-base">Active Organizations</div>
                         </div>
-                        <div className="text-center">
-                            <div className="text-4xl font-bold text-green-600 mb-2">
-                                {studentsData.statistics.eventsPerYear || 0}+
+                        <div className="text-center bg-green-50 rounded-xl p-4 sm:p-5 lg:p-6">
+                            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 mb-1 sm:mb-2">
+                                {safeData.statistics.eventsPerYear || 0}+
                             </div>
-                            <div className="text-gray-600">Events Per Year</div>
+                            <div className="text-gray-600 text-xs sm:text-sm lg:text-base">Events Per Year</div>
                         </div>
-                        <div className="text-center">
-                            <div className="text-4xl font-bold text-purple-600 mb-2">
-                                {studentsData.statistics.placementRate || 0}%
+                        <div className="text-center bg-purple-50 rounded-xl p-4 sm:p-5 lg:p-6">
+                            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-purple-600 mb-1 sm:mb-2">
+                                {safeData.statistics.placementRate || 0}%
                             </div>
-                            <div className="text-gray-600">Placement Rate</div>
+                            <div className="text-gray-600 text-xs sm:text-sm lg:text-base">Placement Rate</div>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* Student Organizations */}
-            <section className="py-16 bg-gray-50">
-                <div className="container mx-auto px-6">
-                    <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
+            <section className="py-12 sm:py-14 lg:py-16 bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-8 sm:mb-12">
                         Student Organizations
                     </h2>
-                    {studentsData.organizations && studentsData.organizations.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {studentsData.organizations.map((org) => (
-                                <div key={org.id} className="bg-white rounded-lg shadow-lg p-6">
-                                    <h3 className="text-xl font-bold text-gray-800 mb-3">{org.name}</h3>
-                                    <p className="text-gray-600 mb-4">{org.description}</p>
+                    {safeData.organizations.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+                            {safeData.organizations.map((org) => (
+                                <div key={org.id} className="bg-white rounded-xl shadow-md p-5 sm:p-6 h-full">
+                                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 leading-snug">{org.name}</h3>
+                                    <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">{org.description}</p>
                                     <div className="text-sm text-blue-600 font-semibold mb-3">
-                                        {org.members} Members
+                                        {org.members || 0} Members
                                     </div>
                                     <div>
                                         <h4 className="font-semibold text-gray-700 mb-2">Activities:</h4>
-                                        <ul className="text-sm text-gray-600">
+                                        <ul className="text-sm text-gray-600 leading-relaxed">
                                             {org.activities && org.activities.map((activity, index) => (
                                                 <li key={index} className="mb-1">• {activity}</li>
                                             ))}
@@ -146,20 +137,20 @@ export default function StudentsPage() {
             </section>
 
             {/* Student Achievements */}
-            <section className="py-16 bg-white">
-                <div className="container mx-auto px-6">
-                    <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
+            <section className="py-12 sm:py-14 lg:py-16 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-8 sm:mb-12">
                         Student Achievements
                     </h2>
-                    {studentsData.achievements && studentsData.achievements.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {studentsData.achievements.map((achievement) => (
-                                <div key={achievement.id} className="bg-gradient-to-r from-blue-50 to-teal-50 rounded-lg p-6">
-                                    <h3 className="text-xl font-bold text-gray-800 mb-2">{achievement.title}</h3>
-                                    <div className="text-blue-600 font-semibold mb-2">
-                                        {achievement.winner} - {achievement.year}
+                    {safeData.achievements.length > 0 ? (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 lg:gap-8">
+                            {safeData.achievements.map((achievement) => (
+                                <div key={achievement.id} className="bg-gradient-to-r from-blue-50 to-teal-50 rounded-xl p-5 sm:p-6">
+                                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 leading-snug">{achievement.title}</h3>
+                                    <div className="text-blue-600 font-semibold text-sm sm:text-base mb-2">
+                                        {(achievement.winner || achievement.student || 'Student')} - {achievement.year}
                                     </div>
-                                    <p className="text-gray-600">{achievement.description}</p>
+                                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{achievement.description}</p>
                                 </div>
                             ))}
                         </div>
@@ -172,22 +163,22 @@ export default function StudentsPage() {
             </section>
 
             {/* Recent Events */}
-            <section className="py-16 bg-gray-50">
-                <div className="container mx-auto px-6">
-                    <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
+            <section className="py-12 sm:py-14 lg:py-16 bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-8 sm:mb-12">
                         Recent Events
                     </h2>
-                    {studentsData.events && studentsData.events.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {studentsData.events.map((event) => (
-                                <div key={event.id} className="bg-white rounded-lg shadow-lg p-6">
+                    {safeData.events.length > 0 ? (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 lg:gap-8">
+                            {safeData.events.map((event) => (
+                                <div key={event.id} className="bg-white rounded-xl shadow-md p-5 sm:p-6">
                                     <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${event.type === 'academic' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
                                         }`}>
                                         {event.type ? event.type.charAt(0).toUpperCase() + event.type.slice(1) : 'General'}
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-800 mb-2">{event.title}</h3>
-                                    <div className="text-sm text-gray-500 mb-3">{event.date}</div>
-                                    <p className="text-gray-600">{event.description}</p>
+                                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 leading-snug">{event.title}</h3>
+                                    <div className="text-sm text-gray-500 mb-3">{formatEventDate(event.date)}</div>
+                                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{event.description}</p>
                                 </div>
                             ))}
                         </div>
