@@ -248,20 +248,65 @@ export default function HomePage() {
                 </div>
             </section>
 
+            {/* Campus Glimpse Section */}
+            <section className="py-12 sm:py-16 lg:py-20 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                        <div className="order-2 lg:order-1">
+                            <Image
+                                src="/images/roberto-sorin-RS0-h_pyByk-unsplash.jpg"
+                                alt="Campus Learning Environment"
+                                width={640}
+                                height={420}
+                                className="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-xl sm:rounded-2xl shadow-xl"
+                            />
+                        </div>
+
+                        <div className="space-y-5 order-1 lg:order-2">
+                            <span className="text-blue-600 font-semibold text-xs sm:text-sm uppercase tracking-wider">Campus Glimpse</span>
+                            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">A Learning Environment Built For Future Pharmacists</h2>
+                            <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
+                                From practical training spaces to academic support systems, every part of our campus is designed
+                                to help students grow with confidence, discipline, and real-world readiness.
+                            </p>
+                            <Link href="/facilities" className="btn-secondary inline-flex items-center px-6 py-3 text-sm sm:text-base">
+                                Explore Facilities
+                                <i className="fas fa-arrow-right ml-2"></i>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* CTA Section */}
-            <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+            <section
+                className="py-8 sm:py-10 lg:py-12 text-white"
+                style={{ background: 'linear-gradient(90deg, #223975 0%, #1a2d5d 100%)' }}
+            >
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">
                         Ready to Start Your Journey?
                     </h2>
-                    <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 opacity-90">
+                    <p className="text-base sm:text-lg lg:text-xl mb-4 sm:mb-6 text-white/90">
                         Join us in shaping the future of pharmaceutical education and research.
                     </p>
+
+                    <div className="relative mb-4 sm:mb-6 mx-auto max-w-3xl">
+                        <Image
+                            src="/images/julia-koblitz-RlOAwXt2fEA-unsplash.jpg"
+                            alt="Modern pharmacy lab"
+                            width={1100}
+                            height={620}
+                            className="w-full h-44 sm:h-56 lg:h-64 object-cover rounded-xl sm:rounded-2xl shadow-2xl"
+                        />
+                        <div className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-t from-black/25 to-transparent" />
+                    </div>
+
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-md sm:max-w-none mx-auto">
-                        <Link href="/admissions" className="bg-white text-blue-600 px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base">
+                        <Link href="/admissions" className="bg-white text-[var(--brand-primary)] px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base shadow-md">
                             Apply Now
                         </Link>
-                        <Link href="/contact" className="border-2 border-white text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors text-sm sm:text-base">
+                        <Link href="/contact" className="border-2 border-white bg-white/10 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-[var(--brand-primary)] transition-colors text-sm sm:text-base">
                             Contact Us
                         </Link>
                     </div>
