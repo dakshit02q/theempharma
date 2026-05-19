@@ -227,21 +227,23 @@ export default function AdminStudents() {
                                                 {student.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button
-                                                onClick={() => handleEdit(student)}
-                                                className="text-blue-600 hover:text-blue-900 mr-3 disabled:opacity-50"
-                                                disabled={isSaving || deletingStudentId === student.id}
-                                            >
-                                                <i className="fas fa-edit"></i>
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(student.id)}
-                                                className="text-red-600 hover:text-red-900 disabled:opacity-50"
-                                                disabled={isSaving || deletingStudentId === student.id}
-                                            >
-                                                <i className={`fas ${deletingStudentId === student.id ? 'fa-spinner fa-spin' : 'fa-trash'}`}></i>
-                                            </button>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right">
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(student)}
+                                                    className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors text-xs font-medium disabled:opacity-50"
+                                                    disabled={isSaving || deletingStudentId === student.id}
+                                                >
+                                                    <i className="fas fa-edit mr-1"></i> Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(student.id)}
+                                                    className="inline-flex items-center px-2 py-1 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors text-xs font-medium disabled:opacity-50"
+                                                    disabled={isSaving || deletingStudentId === student.id}
+                                                >
+                                                    <i className={`fas ${deletingStudentId === student.id ? 'fa-spinner fa-spin' : 'fa-trash'} mr-1`}></i> Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

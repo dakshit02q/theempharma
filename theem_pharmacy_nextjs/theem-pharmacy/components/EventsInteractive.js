@@ -13,17 +13,6 @@ export default function EventsInteractive({ upcomingEvents, pastEvents, categori
         })
     }
 
-    const getCategoryColor = (category) => {
-        switch (category) {
-            case 'academic': return 'bg-blue-100 text-blue-800'
-            case 'cultural': return 'bg-purple-100 text-purple-800'
-            case 'industry': return 'bg-green-100 text-green-800'
-            case 'community': return 'bg-orange-100 text-orange-800'
-            case 'sports': return 'bg-red-100 text-red-800'
-            default: return 'bg-gray-100 text-gray-800'
-        }
-    }
-
     const filteredUpcomingEvents = activeCategory === 'all'
         ? upcomingEvents
         : upcomingEvents.filter(event => event.category === activeCategory)
@@ -33,213 +22,136 @@ export default function EventsInteractive({ upcomingEvents, pastEvents, categori
         : pastEvents.filter(event => event.category === activeCategory)
 
     return (
-        <>
+        <div className="space-y-32">
             {/* Event Categories Filter */}
-            <section className="py-8 bg-white sticky top-20 z-40 border-b">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6">
-                    <div className="flex flex-wrap justify-center gap-2">
-                        {categories.map((category) => (
-                            <button
-                                key={category.id}
-                                onClick={() => setActiveCategory(category.id)}
-                                className={`px-6 py-3 rounded-lg font-semibold transition-all ${activeCategory === category.id
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                    }`}
-                            >
-                                {category.name} ({category.count})
-                            </button>
-                        ))}
-                    </div>
+            <section className="sticky top-20 z-40">
+                <div className="max-w-fit mx-auto px-6 py-3 bg-white/80 backdrop-blur-xl rounded-full shadow-2xl shadow-gray-200/50 border border-gray-100/50 flex items-center gap-2 overflow-x-auto no-scrollbar">
+                    {categories.map((category) => (
+                        <button
+                            key={category.id}
+                            onClick={() => setActiveCategory(category.id)}
+                            className={`px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider transition-all whitespace-nowrap ${activeCategory === category.id
+                                    ? 'bg-[var(--brand-primary)] text-white shadow-lg shadow-[var(--brand-primary)]/20'
+                                    : 'text-gray-400 hover:text-[var(--brand-primary)] hover:bg-gray-50'
+                                }`}
+                        >
+                            {category.name} <span className="opacity-40 ml-1">({category.count})</span>
+                        </button>
+                    ))}
                 </div>
             </section>
 
             {/* Upcoming Events */}
-            <section className="py-20">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-bold mb-6">Upcoming Events</h2>
-                        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                            Don't miss out on these exciting upcoming events. Register now to secure your participation.
-                        </p>
-                    </div>
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-20">
+                    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
+                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Institutional Pipeline</span>
+                                </div>
+                    <h2 className="text-4xl lg:text-5xl font-black text-[var(--brand-primary)] tracking-tight">Upcoming Protocols</h2>
+                </div>
 
-                    {filteredUpcomingEvents.length > 0 ? (
-                        <div className="grid lg:grid-cols-2 gap-8">
-                            {filteredUpcomingEvents.map((event) => (
-                                <div key={event.id} className="bg-white rounded-2xl p-8 shadow-xl border-l-4 border-blue-600">
-                                    <div className="flex justify-between items-start mb-6">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(event.category)}`}>
-                                            {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
-                                        </span>
-                                        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
-                                            Upcoming
-                                        </span>
+                {filteredUpcomingEvents.length > 0 ? (
+                    <div className="grid lg:grid-cols-2 gap-12">
+                        {filteredUpcomingEvents.map((event, i) => (
+                            <div key={event.id} className="bg-white rounded-[3rem] overflow-hidden shadow-xl shadow-gray-200/50 border border-gray-100 group flex flex-col md:flex-row">
+                                <div className="md:w-2/5 relative min-h-[300px] overflow-hidden">
+                                    <Image
+                                        src={event.image || '/images/placeholder-event.jpg'}
+                                        alt={event.title}
+                                        fill
+                                        className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                                    />
+                                    <div className="absolute top-6 left-6 px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-xl text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)] shadow-sm">
+                                        {event.category}
                                     </div>
+                                </div>
 
-                                    <div className="mb-6">
-                                        <div className="w-full h-48 bg-gray-200 rounded-lg mb-4 overflow-hidden">
-                                            <Image
-                                                src={event.image || '/images/placeholder-event.jpg'}
-                                                alt={event.title}
-                                                width={400}
-                                                height={200}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
+                                <div className="md:w-3/5 p-10 flex flex-col">
+                                    <div className="flex items-center gap-2 text-[10px] font-black text-[var(--bcp-teal)] uppercase tracking-widest mb-4">
+                                        <i className="fas fa-calendar-check"></i> {formatDate(event.eventDate)}
                                     </div>
-
-                                    <h3 className="text-2xl font-bold mb-4">{event.title}</h3>
-                                    <p className="text-gray-600 mb-6">{event.description}</p>
-
-                                    <div className="space-y-3 mb-6">
-                                        <div className="flex items-center text-gray-600">
-                                            <i className="fas fa-calendar w-5 mr-3 text-blue-600"></i>
-                                            <span>{formatDate(event.eventDate)}</span>
-                                        </div>
-                                        <div className="flex items-center text-gray-600">
-                                            <i className="fas fa-clock w-5 mr-3 text-blue-600"></i>
+                                    <h3 className="text-2xl font-black text-[var(--brand-primary)] tracking-tight mb-4 group-hover:text-[var(--bcp-teal)] transition-colors line-clamp-2">{event.title}</h3>
+                                    <p className="text-gray-500 font-medium text-sm leading-relaxed mb-8 line-clamp-3">{event.description}</p>
+                                    
+                                    <div className="space-y-3 mb-8 text-sm font-bold uppercase tracking-wider text-gray-400">
+                                        <div className="flex items-center gap-3">
+                                            <i className="fas fa-clock text-[var(--brand-accent)]"></i>
                                             <span>{event.startTime} - {event.endTime}</span>
                                         </div>
-                                        <div className="flex items-center text-gray-600">
-                                            <i className="fas fa-map-marker-alt w-5 mr-3 text-blue-600"></i>
+                                        <div className="flex items-center gap-3">
+                                            <i className="fas fa-map-marker-alt text-[var(--brand-accent)]"></i>
                                             <span>{event.venue}</span>
                                         </div>
-                                        <div className="flex items-center text-gray-600">
-                                            <i className="fas fa-user-tie w-5 mr-3 text-blue-600"></i>
-                                            <span>Organized by: {event.organizer}</span>
-                                        </div>
-                                        {event.registrationRequired && (
-                                            <div className="flex items-center text-gray-600">
-                                                <i className="fas fa-users w-5 mr-3 text-blue-600"></i>
-                                                <span>
-                                                    {event.registeredCount}/{event.maxParticipants} registered
-                                                </span>
-                                            </div>
-                                        )}
                                     </div>
 
-                                    <div className="flex space-x-4">
-                                        {event.registrationRequired ? (
-                                            <button className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                                                <i className="fas fa-user-plus mr-2"></i>
-                                                Register Now
-                                            </button>
-                                        ) : (
-                                            <button className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
-                                                <i className="fas fa-info-circle mr-2"></i>
-                                                Learn More
-                                            </button>
-                                        )}
-                                        <button className="bg-gray-100 text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors">
-                                            <i className="fas fa-share-alt"></i>
+                                    <div className="mt-auto">
+                                        <button className={`w-full py-4 rounded-2xl text-sm font-bold uppercase tracking-wider transition-all ${event.registrationRequired 
+                                            ? 'bg-[var(--brand-primary)] text-white hover:bg-[var(--bcp-teal)]' 
+                                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+                                            {event.registrationRequired ? 'Protocol Registration' : 'View Details'}
                                         </button>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-12">
-                            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i className="fas fa-calendar-times text-gray-400 text-3xl"></i>
                             </div>
-                            <p className="text-gray-500 text-lg">No upcoming events in this category.</p>
-                        </div>
-                    )}
-                </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-20 bg-white rounded-[3rem] border border-dashed border-gray-200">
+                        <i className="fas fa-calendar-times text-4xl text-gray-100 mb-6 block"></i>
+                        <p className="text-gray-400 font-black uppercase tracking-widest text-sm">No scheduled events in this category</p>
+                    </div>
+                )}
             </section>
 
-            {/* Past Events */}
-            <section className="py-20 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-bold mb-6">Past Events</h2>
-                        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                            Highlights from our recent events and activities that made a significant impact
-                            on our academic and cultural community.
-                        </p>
+            {/* Past Events Archive */}
+            <section className="bg-gray-50/50 py-32">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-20">
+                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
+                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Archival Repository</span>
+                                </div>
+                        <h2 className="text-4xl lg:text-5xl font-black text-[var(--brand-primary)] tracking-tight">Institutional Memory</h2>
                     </div>
 
                     {filteredPastEvents.length > 0 ? (
-                        <div className="space-y-8">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                             {filteredPastEvents.map((event) => (
-                                <div key={event.id} className="bg-white rounded-2xl p-8 shadow-xl">
-                                    <div className="flex flex-col lg:flex-row gap-8">
-                                        <div className="lg:w-1/3">
-                                            <div className="w-full h-48 bg-gray-200 rounded-lg overflow-hidden">
-                                                <Image
-                                                    src={event.image || '/images/placeholder-event.jpg'}
-                                                    alt={event.title}
-                                                    width={300}
-                                                    height={200}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            </div>
+                                <article key={event.id} className="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
+                                    <div className="aspect-video relative overflow-hidden">
+                                        <Image
+                                            src={event.image || '/images/placeholder-event.jpg'}
+                                            alt={event.title}
+                                            fill
+                                            className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale group-hover:grayscale-0"
+                                        />
+                                        <div className="absolute inset-0 bg-[var(--brand-primary)]/20"></div>
+                                    </div>
+                                    <div className="p-8">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <span className="text-sm font-bold uppercase tracking-wider text-[var(--bcp-teal)]">{formatDate(event.eventDate)}</span>
+                                            <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Completed</span>
                                         </div>
-
-                                        <div className="lg:w-2/3">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(event.category)}`}>
-                                                    {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
-                                                </span>
-                                                <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-semibold">
-                                                    Completed
-                                                </span>
+                                        <h3 className="text-xl font-black text-[var(--brand-primary)] tracking-tight mb-4 group-hover:text-[var(--bcp-teal)] transition-colors line-clamp-2">{event.title}</h3>
+                                        <p className="text-gray-500 font-medium text-xs leading-relaxed mb-6 line-clamp-2">{event.description}</p>
+                                        <div className="flex items-center justify-between pt-6 border-t border-gray-50">
+                                            <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                                <i className="fas fa-users text-[var(--brand-accent)]"></i> {event.attendees} Participated
                                             </div>
-
-                                            <h3 className="text-2xl font-bold mb-4">{event.title}</h3>
-                                            <p className="text-gray-600 mb-6">{event.description}</p>
-
-                                            <div className="grid md:grid-cols-2 gap-4 mb-6">
-                                                <div className="space-y-3">
-                                                    <div className="flex items-center text-gray-600">
-                                                        <i className="fas fa-calendar w-5 mr-3 text-blue-600"></i>
-                                                        <span>{formatDate(event.eventDate)}</span>
-                                                    </div>
-                                                    <div className="flex items-center text-gray-600">
-                                                        <i className="fas fa-clock w-5 mr-3 text-blue-600"></i>
-                                                        <span>{event.startTime} - {event.endTime}</span>
-                                                    </div>
-                                                    <div className="flex items-center text-gray-600">
-                                                        <i className="fas fa-map-marker-alt w-5 mr-3 text-blue-600"></i>
-                                                        <span>{event.venue}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-3">
-                                                    <div className="flex items-center text-gray-600">
-                                                        <i className="fas fa-users w-5 mr-3 text-green-600"></i>
-                                                        <span>{event.attendees} attendees</span>
-                                                    </div>
-                                                    <div className="flex items-center text-gray-600">
-                                                        <i className="fas fa-star w-5 mr-3 text-yellow-500"></i>
-                                                        <span>{event.feedback}/5.0 feedback</span>
-                                                    </div>
-                                                    <div className="flex items-center text-gray-600">
-                                                        <i className="fas fa-user-tie w-5 mr-3 text-blue-600"></i>
-                                                        <span>{event.organizer}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <button className="bg-blue-100 text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-200 transition-colors">
-                                                <i className="fas fa-images mr-2"></i>
-                                                View Gallery
-                                            </button>
+                                            <button className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Gallery <i className="fas fa-arrow-right ml-1"></i></button>
                                         </div>
                                     </div>
-                                </div>
+                                </article>
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-12">
-                            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i className="fas fa-calendar-times text-gray-400 text-3xl"></i>
-                            </div>
-                            <p className="text-gray-500 text-lg">No past events in this category.</p>
+                        <div className="text-center py-20">
+                            <p className="text-gray-400 font-black uppercase tracking-widest text-sm italic">Historical archive synchronization in progress...</p>
                         </div>
                     )}
                 </div>
             </section>
-        </>
+        </div>
     )
 }

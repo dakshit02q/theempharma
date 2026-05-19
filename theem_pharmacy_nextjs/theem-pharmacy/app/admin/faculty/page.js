@@ -27,6 +27,7 @@ export default function AdminFaculty() {
     const [editingFaculty, setEditingFaculty] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
     const [deletingFacultyId, setDeletingFacultyId] = useState(null);
     const [formData, setFormData] = useState(initialFormData);
 
@@ -129,6 +130,32 @@ export default function AdminFaculty() {
         }
     };
 
+    const handleImageUpload = async (file) => {
+        if (!file) {
+            return;
+        }
+
+        setErrorMessage('');
+        setIsUploading(true);
+        try {
+            const uploaded = await apiClient.adminUploadFile(file, {
+                folderKind: 'gallery',
+                type: 'image',
+                preferredName: formData.name || 'faculty-photo',
+            });
+
+            setFormData((prev) => ({
+                ...prev,
+                image: uploaded.filePath || prev.image,
+            }));
+        } catch (error) {
+            console.error('Error uploading faculty image:', error);
+            setErrorMessage(error.message || 'Failed to upload faculty image.');
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
     if (loading) {
         return (
             <AdminLayout>
@@ -184,21 +211,23 @@ export default function AdminFaculty() {
                                             <div className="text-sm text-gray-500">{member.phone || 'N/A'}</div>
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-600">{truncate(member.bio)}</td>
-                                        <td className="px-6 py-4 text-right text-sm font-medium">
-                                            <button
-                                                onClick={() => handleEdit(member)}
-                                                className="text-blue-600 hover:text-blue-900 mr-3 disabled:opacity-50"
-                                                disabled={isSaving || deletingFacultyId === member.id}
-                                            >
-                                                <i className="fas fa-edit"></i>
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(member.id)}
-                                                className="text-red-600 hover:text-red-900 disabled:opacity-50"
-                                                disabled={isSaving || deletingFacultyId === member.id}
-                                            >
-                                                <i className={`fas ${deletingFacultyId === member.id ? 'fa-spinner fa-spin' : 'fa-trash'}`}></i>
-                                            </button>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(member)}
+                                                    className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors text-xs font-medium disabled:opacity-50"
+                                                    disabled={isSaving || deletingFacultyId === member.id}
+                                                >
+                                                    <i className="fas fa-edit mr-1"></i> Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(member.id)}
+                                                    className="inline-flex items-center px-2 py-1 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors text-xs font-medium disabled:opacity-50"
+                                                    disabled={isSaving || deletingFacultyId === member.id}
+                                                >
+                                                    <i className={`fas ${deletingFacultyId === member.id ? 'fa-spinner fa-spin' : 'fa-trash'} mr-1`}></i> Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -295,14 +324,31 @@ export default function AdminFaculty() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Image URL / Path</label>
                                         <input
                                             type="text"
                                             value={formData.image}
                                             onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            placeholder="/uploads/gallery/..."
                                         />
                                     </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Upload Photo</label>
+                                    <input
+                                        type="file"
+                                        accept="image/png,image/jpeg,image/webp,image/gif"
+                                        onChange={(e) => handleImageUpload(e.target.files?.[0])}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    />
+                                    {isUploading ? (
+                                        <p className="mt-2 text-sm text-blue-600">
+                                            <i className="fas fa-spinner fa-spin mr-2"></i>
+                                            Uploading image...
+                                        </p>
+                                    ) : null}
                                 </div>
 
                                 <div>
@@ -327,7 +373,7 @@ export default function AdminFaculty() {
                                     <button
                                         type="submit"
                                         className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-                                        disabled={isSaving}
+                                        disabled={isSaving || isUploading}
                                     >
                                         {isSaving ? 'Saving...' : editingFaculty ? 'Update' : 'Create'}
                                     </button>

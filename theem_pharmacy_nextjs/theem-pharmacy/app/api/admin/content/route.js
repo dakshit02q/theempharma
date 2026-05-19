@@ -48,6 +48,7 @@ export async function POST(request) {
       sectionKey: body.sectionKey.trim(),
       title: body.title.trim(),
       content: body.content || null,
+      document: body.document || null,
       order,
       isActive: body.isActive !== false,
     }).returning();

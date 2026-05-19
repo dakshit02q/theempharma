@@ -1,12 +1,40 @@
 @import "tailwindcss";
 
+@theme {
+  --color-blue-600: var(--brand-primary);
+  --color-blue-700: var(--brand-primary-dark);
+  --color-blue-800: #102548;
+  --color-blue-100: var(--brand-primary-soft);
+  --color-teal-600: var(--bcp-teal);
+  --color-teal-500: #0ea5e9;
+}
+
 /* Custom Fonts */
 :root {
-  --font-poppins: 'Poppins', sans-serif;
-  --font-montserrat: 'Montserrat', sans-serif;
+  --font-poppins: var(--font-poppins), 'Poppins', sans-serif;
+  --font-montserrat: var(--font-montserrat), 'Montserrat', sans-serif;
+  --font-playfair: var(--font-playfair), 'Playfair Display', Georgia, serif;
+
+  /* Original Theem Pharmacy Palette */
   --brand-primary: #223975;
-  --brand-primary-dark: #1a2d5d;
+  --brand-secondary: #1a2d5d;
+  --brand-accent: #f59e0b;
+  /* Amber/Gold accent for contrast */
+  --brand-primary-dark: #102548;
   --brand-primary-soft: #e9edf7;
+
+  /* BCP Inspired Palette */
+  --bcp-teal: #0899AC;
+  --bcp-navy: #1a2d5d;
+  --bcp-gold: #f59e0b;
+  --bcp-bg-light: #f8f9fa;
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --shadow-premium: 0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-soft: 0 4px 20px -2px rgba(34, 57, 117, 0.1);
+  --radius-standard: 16px;
+  font-family: var(--font-poppins);
 }
 
 .font-poppins {
@@ -102,6 +130,36 @@ body {
 
   to {
     transform: translateX(-50%);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -445,29 +503,90 @@ body.dark-mode .nav-link:hover {
   }
 }
 
-/* App-wide primary color alignment for common Tailwind blue utilities used across pages. */
-.text-blue-600 {
-  color: var(--brand-primary) !important;
+/* Glassmorphism Utilities */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-premium);
 }
 
-.bg-blue-600 {
-  background-color: var(--brand-primary) !important;
+.glass-header {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
 }
 
-.to-blue-700 {
-  --tw-gradient-to: var(--brand-primary-dark) var(--tw-gradient-to-position) !important;
+/* Section Header Styles */
+.section-header {
+  position: relative;
+  margin-bottom: 2.5rem;
 }
 
-.from-blue-600 {
-  --tw-gradient-from: var(--brand-primary) var(--tw-gradient-from-position) !important;
-  --tw-gradient-to: rgb(34 57 117 / 0) var(--tw-gradient-to-position) !important;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(to right, var(--brand-primary), var(--brand-primary-dark));
+  border-radius: 2px;
 }
 
-.bg-blue-100 {
-  background-color: var(--brand-primary-soft) !important;
+.section-header-center {
+  text-align: center;
 }
 
-.border-blue-200 {
-  border-color: #c9d3eb !important;
+.section-header-center::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Premium Card Hover */
+.premium-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: white;
+}
+
+.premium-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-premium);
+  border-color: var(--brand-primary-soft);
+}
+
+/* Subtle Reveal Animation */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.55s cubic-bezier(.22, .68, 0, 1.2) var(--delay, 0s),
+    transform 0.55s cubic-bezier(.22, .68, 0, 1.2) var(--delay, 0s);
+}
+
+.reveal-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Background Decorations */
+.bg-decoration-blob {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: var(--brand-primary-soft);
+  filter: blur(80px);
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+/* PDF Viewer Custom Styles */
+.pdf-viewer-container {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }

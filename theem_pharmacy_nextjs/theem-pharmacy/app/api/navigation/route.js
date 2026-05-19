@@ -2,6 +2,8 @@ import { db } from '@/lib/db';
 import { navigationItems } from '@/lib/db/schema';
 import { apiSuccess, handleApiError } from '@/lib/api/response';
 
+export const dynamic = 'force-dynamic';
+
 function buildTree(items) {
     const byId = new Map();
     const roots = [];

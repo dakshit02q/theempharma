@@ -21,7 +21,8 @@ export async function PUT(request, { params }) {
     }
 
     try {
-        const id = parseId(params.id);
+        const { id: rawId } = await params;
+        const id = parseId(rawId);
         if (!id) {
             return apiError('Invalid statistic id', { status: 400 });
         }
@@ -77,7 +78,8 @@ export async function DELETE(request, { params }) {
     }
 
     try {
-        const id = parseId(params.id);
+        const { id: rawId } = await params;
+        const id = parseId(rawId);
         if (!id) {
             return apiError('Invalid statistic id', { status: 400 });
         }

@@ -249,6 +249,28 @@ export const approvals = pgTable('approvals', {
   updatedAt: timestamp('updated_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const galleryCarouselItems = pgTable('gallery_carousel_items', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  caption: text('caption'),
+  image: text('image').notNull(),
+  order: integer('order').default(0),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const galleryPhotos = pgTable('gallery_photos', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  caption: text('caption'),
+  image: text('image').notNull(),
+  order: integer('order').default(0),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
 
 export const announcements = pgTable('announcements', {
   id: serial('id').primaryKey(),
@@ -280,6 +302,7 @@ export const pageContentSections = pgTable('page_content_sections', {
   sectionKey: varchar('section_key', { length: 255 }).notNull(),
   title: varchar('title', { length: 255 }).notNull(),
   content: text('content'),
+  document: text('document'),
   order: integer('order').default(0),
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),

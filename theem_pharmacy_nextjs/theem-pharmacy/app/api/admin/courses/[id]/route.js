@@ -14,7 +14,8 @@ export async function PUT(request, { params }) {
     }
 
     try {
-        const id = parseId(params.id);
+        const { id: rawId } = await params;
+        const id = parseId(rawId);
         const body = await request.json();
 
         if (!id) {
@@ -60,7 +61,8 @@ export async function DELETE(request, { params }) {
     }
 
     try {
-        const id = parseId(params.id);
+        const { id: rawId } = await params;
+        const id = parseId(rawId);
 
         if (!id) {
             return apiError('Invalid course id', { status: 400 });

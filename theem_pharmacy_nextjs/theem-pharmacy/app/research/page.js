@@ -1,21 +1,16 @@
 import ResearchPage from '@/components/pages/ResearchPage'
 import ScrollToTopButton from '@/components/ScrollToTopButton'
 import { generateOGMetadata, generateTwitterMetadata, generateStructuredData } from '@/lib/seo'
+import { db } from '@/lib/db'
+import { researchProjects, publications } from '@/lib/db/schema'
+import { eq, desc } from 'drizzle-orm'
+
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata() {
     return {
-        title: 'Research & Innovation | THEEM College of Pharmacy - Advanced Pharmaceutical Research',
-        description: 'Explore cutting-edge research projects, publications, and state-of-the-art facilities at THEEM College of Pharmacy. Leading pharmaceutical innovation and scientific discovery.',
-        keywords: [
-            'pharmaceutical research',
-            'drug development',
-            'research facilities',
-            'scientific publications',
-            'innovation in pharmacy',
-            'research projects',
-            'pharmaceutical sciences',
-            'laboratory research'
-        ],
+        title: 'Research & Innovation | THEEM College of Pharmacy',
+        description: 'Explore cutting-edge research projects, publications, and state-of-the-art facilities at THEEM College of Pharmacy.',
         openGraph: generateOGMetadata('research', {
             title: 'Research & Innovation | THEEM College of Pharmacy',
             description: 'Explore cutting-edge research projects and state-of-the-art facilities.',
@@ -25,53 +20,21 @@ export async function generateMetadata() {
             title: 'Research & Innovation | THEEM College of Pharmacy',
             description: 'Explore cutting-edge research projects and state-of-the-art facilities.',
         }),
-        alternates: {
-            canonical: 'https://theempharmacy.edu/research',
-        },
     }
 }
 
 async function getResearchData() {
-    return {
-        researchProjects: [
-            {
-                id: 1,
-                title: 'Novel Drug Delivery Systems for Cancer Treatment',
-                description: 'Development of targeted nanoparticle-based drug delivery systems for enhanced cancer therapy with reduced side effects.',
-                principalInvestigator: 'Dr. Meena Sharma',
-                funding: '₹15,00,000 (DST Grant)',
-                duration: '2023-2026',
-                status: 'Ongoing'
-            },
-            {
-                id: 2,
-                title: 'Antimicrobial Resistance in Hospital Settings',
-                description: 'Comprehensive study on antibiotic resistance patterns and development of novel antimicrobial compounds.',
-                principalInvestigator: 'Dr. Rajesh Kumar',
-                funding: '₹12,00,000 (ICMR Grant)',
-                duration: '2022-2025',
-                status: 'Ongoing'
-            }
-        ],
-        publications: [
-            {
-                id: 1,
-                title: 'Advanced Nanotechnology in Drug Delivery: Recent Developments and Future Prospects',
-                authors: 'Dr. Meena Sharma, Dr. Priya Joshi, Dr. Amit Patel',
-                journal: 'International Journal of Pharmaceutics',
-                year: '2024',
-                impactFactor: '5.8'
-            },
-            {
-                id: 2,
-                title: 'Pharmaceutical Analysis of Herbal Medicines: Quality Control and Standardization',
-                authors: 'Dr. Rajesh Kumar, Dr. Anita Desai',
-                journal: 'Journal of Pharmaceutical and Biomedical Analysis',
-                year: '2023',
-                impactFactor: '4.2'
-            }
-        ],
-        facilities: [
+    try {
+        const [projects, pubs] = await Promise.all([
+            db.select().from(researchProjects)
+                .where(eq(researchProjects.isActive, true))
+                .orderBy(desc(researchProjects.startDate)),
+            db.select().from(publications)
+                .where(eq(publications.isActive, true))
+                .orderBy(desc(publications.year)),
+        ]);
+
+        const facilities = [
             {
                 id: 1,
                 name: 'Drug Discovery Lab',
@@ -86,11 +49,23 @@ async function getResearchData() {
                 icon: 'fas fa-atom',
                 equipment: ['Electron Microscopy', 'Particle Size Analyzer', 'Zeta Potential Analyzer']
             }
-        ]
+        ];
+
+        return { 
+            researchProjects: projects.map(p => ({
+                ...p,
+                funding: p.amount ? `₹${Number(p.amount).toLocaleString()} (${p.fundingAgency})` : p.fundingAgency,
+                duration: `${p.startDate ? new Date(p.startDate).getFullYear() : ''} - ${p.endDate ? new Date(p.endDate).getFullYear() : 'Present'}`
+            })), 
+            publications: pubs, 
+            facilities 
+        };
+    } catch (error) {
+        console.error('Error fetching research data:', error);
+        return { researchProjects: [], publications: [], facilities: [] };
     }
 }
 
-// Server Component with data fetching
 export default async function Research() {
     const researchData = await getResearchData()
     const structuredData = generateStructuredData('organization')

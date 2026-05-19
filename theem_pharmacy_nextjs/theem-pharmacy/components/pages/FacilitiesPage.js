@@ -1,406 +1,200 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
+import PageHero from '@/components/PageHero'
 import Link from 'next/link'
 
 const facilities = [
     {
         id: 'pharmaceutics',
-        title: 'Pharmaceutics Laboratory',
-        icon: '💊',
-        color: 'blue',
+        title: 'Pharmaceutics',
+        subtitle: 'Dosage Form Design & Formulation',
+        icon: 'fa-pills',
         description: 'A specialized lab where students gain hands-on experience in designing, formulating, producing, and assessing different pharmaceutical dosage forms.',
-        equipment: [
-            'Dissolution Test Apparatus',
-            'Disintegration Test Apparatus',
-            'Tablet Hardness Tester',
-            'Friability Test Apparatus',
-            'Blenders',
-            'Tablet Compression Machine',
-            'Capsule Filling Machine',
-            'Hot Air Oven',
-            'Tray Drier',
-            'Tablet Coating and Polishing Pan'
-        ],
-        image: '/images/facilities/pharmaceutics-lab.jpg'
+        equipment: ['Dissolution Test Apparatus', 'Disintegration Test Apparatus', 'Tablet Hardness Tester', 'Friability Test Apparatus', 'Tablet Compression Machine', 'Capsule Filling Machine', 'Tablet Coating & Polishing Pan']
     },
     {
         id: 'pharmacology',
-        title: 'Pharmacology Laboratory',
-        icon: '🔬',
-        color: 'green',
+        title: 'Pharmacology',
+        subtitle: 'Drug Action & Mechanisms',
+        icon: 'fa-microscope',
         description: 'Specialized lab where students perform experiments to learn how medications affect living systems and understand drug mechanisms.',
-        equipment: [
-            'Isolated Organ Bath System',
-            'Rota-Rod Apparatus',
-            'Electroconvulsiometer',
-            'Analgesiometers',
-            'Sphygmomanometer & Stethoscope',
-            'Telethermometer',
-            'Histamine Chamber',
-            'Spirometer'
-        ],
-        image: '/images/facilities/pharmacology-lab.jpg'
+        equipment: ['Isolated Organ Bath System', 'Rota-Rod Apparatus', 'Electroconvulsiometer', 'Analgesiometers', 'Sphygmomanometer', 'Histamine Chamber', 'Spirometer']
     },
     {
         id: 'pharmacognosy',
-        title: 'Pharmacognosy Laboratory',
-        icon: '🌿',
-        color: 'emerald',
+        title: 'Pharmacognosy',
+        subtitle: 'Natural Product Investigation',
+        icon: 'fa-leaf',
         description: 'Dedicated to the study of medicinal plants, crude medications, and other natural drug sources with focus on detection, assessment, and investigation.',
-        equipment: [
-            'Soxhlet Extraction Apparatus',
-            'Projection Microscope',
-            'Clevenger Apparatus',
-            'Camera Lucida',
-            'Reflux Condensers',
-            'Muffle Furnace',
-            'Standard Charts of T.S. of Various Crude Drugs'
-        ],
-        image: '/images/facilities/pharmacognosy-lab.jpg'
+        equipment: ['Soxhlet Extraction Apparatus', 'Projection Microscope', 'Clevenger Apparatus', 'Camera Lucida', 'Muffle Furnace', 'Standard Crude Drug Charts']
     },
     {
         id: 'pharmaceutical-chemistry',
-        title: 'Pharmaceutical Chemistry Laboratory',
-        icon: '⚗️',
-        color: 'purple',
+        title: 'Pharm Chemistry',
+        subtitle: 'Drug Analysis & Discovery',
+        icon: 'fa-vial',
         description: 'Specialized laboratory for investigating chemical aspects of drug substances, playing a critical role in drug discovery, development, analysis, and quality control.',
-        equipment: [
-            'Distillation Unit',
-            'Deionization Unit',
-            'pH Meter',
-            'Polarimeter',
-            'Flame Photometer',
-            'Melting Point Apparatus',
-            'Refractometer'
-        ],
-        image: '/images/facilities/pharmaceutical-chemistry-lab.jpg'
+        equipment: ['Distillation Unit', 'Deionization Unit', 'pH Meter', 'Polarimeter', 'Flame Photometer', 'Melting Point Apparatus', 'Refractometer']
     },
     {
         id: 'hap',
-        title: 'Human Anatomy & Physiology Laboratory',
-        icon: '🫀',
-        color: 'red',
+        title: 'Human Anatomy',
+        subtitle: 'Physiology & Physical Realities',
+        icon: 'fa-dna',
         description: 'Helps students connect theoretical knowledge with physical realities of the human body, fostering better awareness of health and illness.',
-        equipment: [
-            'Compound Microscope',
-            'Projection Microscope',
-            'Stethoscope',
-            'Sphygmomanometer',
-            'Human Skeleton',
-            'Pulse Oximeter',
-            'Hemoglobinometer',
-            'Hemocytometer',
-            'ESR & Wintrobe Tube Apparatus',
-            'Models of Various Organs',
-            'Permanent Slides of Various Organs & Tissues'
-        ],
-        image: '/images/facilities/hap-lab.jpg'
+        equipment: ['Compound Microscope', 'Human Skeleton', 'Pulse Oximeter', 'Hemoglobinometer', 'Hemocytometer', 'Permanent Slides Archive', 'Organ Models']
     },
     {
         id: 'machine-room',
         title: 'Machine Room',
-        icon: '⚙️',
-        color: 'slate',
+        subtitle: 'Industrial Scale Simulation',
+        icon: 'fa-cogs',
         description: 'Dedicated workspace containing industrial and pilot-scale pharmaceutical manufacturing machinery, simulating real drug manufacturing facilities.',
-        equipment: [
-            'Tablet Punching Machine',
-            'Capsule Filling Machine',
-            'Ampoule Filling and Sealing Machine',
-            'Collapsible Tube Filling Machine',
-            'Collapsible Tube Sealing Machine',
-            'Clarity Test Apparatus',
-            'Bottle Filling Machine',
-            'Bottle Washing Machine',
-            'Friability Test Apparatus',
-            'Disintegration Test Apparatus',
-            'Monsanto and Pfizer Hardness Tester'
-        ],
-        image: '/images/facilities/machine-room.jpg'
-    },
-    {
-        id: 'microbiology',
-        title: 'Microbiology Laboratory',
-        icon: '🦠',
-        color: 'teal',
-        description: 'Specialized lab for studying microorganisms and their relationship to drugs, human health, and disease, with focus on aseptic techniques and antimicrobial development.',
-        equipment: [
-            'Laminar Air Flow Unit',
-            'Autoclave',
-            'Hot Air Oven',
-            'Membrane Filtration Assembly',
-            'Colony Counter',
-            'Zone Reader'
-        ],
-        image: '/images/facilities/microbiology-lab.jpg'
-    },
-    {
-        id: 'computer',
-        title: 'Computer Laboratory',
-        icon: '💻',
-        color: 'indigo',
-        description: 'Essential for educating students in the increasingly digital and data-driven environment of modern pharmacy practice and research.',
-        equipment: [
-            'Fundamental Computer Skills Training',
-            'Specialized Software Training',
-            'Data Management and Analysis Tools',
-            'High-Speed Internet Connection',
-            'Modern Computing Systems'
-        ],
-        image: '/images/facilities/computer-lab.jpg'
+        equipment: ['Tablet Punching Machine', 'Capsule Filling Machine', 'Ampoule Filling & Sealing', 'Collapsible Tube Sealing', 'Clarity Test Apparatus', 'Bottle Filling Machine']
     }
 ]
-
-const library = {
-    title: 'Library - Centre for Knowledge of Information',
-    icon: '📚',
-    description: 'Located in a clean and quiet atmosphere, our library is fully computerized with SOUL library management software for accuracy and speed.',
-    features: [
-        'Fully Computerized with SOUL Software',
-        'Automated Barcode Technology (IPAC)',
-        'Modern Digital Knowledge Centre',
-        'Computers with Internet Connection',
-        'Print/Xerox Facility',
-        'Book Bank Scheme'
-    ],
-    image: '/images/facilities/library.jpg'
-}
-
-const colorClasses = {
-    blue: { bg: 'bg-blue-50', icon: 'bg-blue-100', text: 'text-blue-600', accent: 'bg-blue-600' },
-    green: { bg: 'bg-green-50', icon: 'bg-green-100', text: 'text-green-600', accent: 'bg-green-600' },
-    emerald: { bg: 'bg-emerald-50', icon: 'bg-emerald-100', text: 'text-emerald-600', accent: 'bg-emerald-600' },
-    purple: { bg: 'bg-purple-50', icon: 'bg-purple-100', text: 'text-purple-600', accent: 'bg-purple-600' },
-    red: { bg: 'bg-red-50', icon: 'bg-red-100', text: 'text-red-600', accent: 'bg-red-600' },
-    slate: { bg: 'bg-slate-50', icon: 'bg-slate-100', text: 'text-slate-600', accent: 'bg-slate-600' },
-    teal: { bg: 'bg-teal-50', icon: 'bg-teal-100', text: 'text-teal-600', accent: 'bg-teal-600' },
-    indigo: { bg: 'bg-indigo-50', icon: 'bg-indigo-100', text: 'text-indigo-600', accent: 'bg-indigo-600' }
-}
 
 export default function FacilitiesPage() {
     const [selectedFacility, setSelectedFacility] = useState(null)
 
     return (
-        <div className="pt-20">
-            {/* Hero Section */}
-            <section className="relative py-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6 text-center">
-                    <h1 className="text-4xl lg:text-5xl font-bold mb-6">Laboratory Facilities</h1>
-                    <p className="text-xl max-w-3xl mx-auto opacity-90">
-                        Theem College of Pharmacy has been established with exceptional infrastructure.
-                        Our state-of-the-art laboratories are the backbone of pharmaceutical education,
-                        bringing real value through practical exposure.
-                    </p>
-                </div>
-            </section>
+        <main className="bg-[#f8fafc] min-h-screen pb-20">
+            <PageHero 
+                title="Academic Infrastructure" 
+                subtitle="Explore our world-class laboratory ecosystem, designed to bridge theoretical concepts with sophisticated practical application."
+            />
 
-            {/* Introduction */}
-            <section className="py-20">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <h2 className="text-3xl lg:text-4xl font-bold mb-6">Excellence in Pharmaceutical Education</h2>
-                        <p className="text-gray-600 text-lg leading-relaxed">
-                            Practical exposure brings real value to a pharmacy degree. Theem College has all the laboratories
-                            equipped with the latest equipment and technology. Our specialized labs cover every aspect of
-                            pharmaceutical sciences, ensuring comprehensive hands-on training for our students.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* Laboratory Cards Grid */}
-            <section className="py-20 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6">
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {facilities.map((facility) => {
-                            const colors = colorClasses[facility.color]
-                            return (
-                                <div
-                                    key={facility.id}
-                                    className="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl card-hover cursor-pointer"
-                                    onClick={() => setSelectedFacility(facility)}
-                                >
-                                    {/* Icon Header */}
-                                    <div className={`${colors.bg} p-8 text-center`}>
-                                        <div className={`w-20 h-20 ${colors.icon} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                                            <span className="text-4xl">{facility.icon}</span>
-                                        </div>
-                                        <h3 className="text-xl font-bold text-gray-800">{facility.title}</h3>
-                                    </div>
-
-                                    {/* Content */}
-                                    <div className="p-6">
-                                        <p className="text-gray-600 leading-relaxed mb-4 line-clamp-3">
-                                            {facility.description}
-                                        </p>
-
-                                        <div className="flex items-center justify-between">
-                                            <span className={`text-sm font-semibold ${colors.text}`}>
-                                                {facility.equipment.length} Equipment Available
-                                            </span>
-                                            <button className={`${colors.accent} text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity`}>
-                                                View Details
-                                            </button>
-                                        </div>
-                                    </div>
+            {/* Labs Grid */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-60px] relative z-20">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    {facilities.map((lab, i) => (
+                        <div 
+                            key={lab.id} 
+                            onClick={() => setSelectedFacility(lab)}
+                            className="bg-white rounded-[2.5rem] p-10 shadow-xl shadow-gray-200/50 border border-gray-100 group cursor-pointer hover:border-[var(--bcp-teal)] transition-all duration-500"
+                        >
+                            <div className="flex items-start justify-between mb-8">
+                                <div className="w-14 h-14 rounded-2xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all">
+                                    <i className={`fas ${lab.icon} text-xl`}></i>
                                 </div>
-                            )
-                        })}
-                    </div>
+                                <div className="text-sm font-bold uppercase tracking-wider text-[var(--bcp-teal)]">0{i+1}</div>
+                            </div>
+                            <h3 className="text-2xl font-black text-[var(--brand-primary)] tracking-tight mb-1">{lab.title}</h3>
+                            <div className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-6">{lab.subtitle}</div>
+                            <p className="text-gray-500 font-medium text-sm leading-relaxed mb-8 line-clamp-3">
+                                {lab.description}
+                            </p>
+                            <button className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)] flex items-center gap-2 group-hover:gap-4 transition-all">
+                                Inventory List <i className="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    ))}
                 </div>
             </section>
 
             {/* Library Section */}
-            <section className="py-20">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6">
-                    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                        <div className="grid lg:grid-cols-2 gap-8">
-                            {/* Content */}
-                            <div className="p-8 lg:p-12">
-                                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
-                                    <span className="text-4xl">{library.icon}</span>
+            <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="bg-[var(--brand-primary)] rounded-[4rem] overflow-hidden relative shadow-2xl">
+                    <div className="grid lg:grid-cols-2">
+                        <div className="p-12 lg:p-20 text-white relative z-10">
+                            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-4">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
+                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Centre for Knowledge</span>
                                 </div>
-                                <h2 className="text-3xl font-bold mb-4">{library.title}</h2>
-                                <p className="text-gray-600 text-lg leading-relaxed mb-8">
-                                    {library.description}
-                                </p>
-
-                                <div className="space-y-3">
-                                    {library.features.map((feature, index) => (
-                                        <div key={index} className="flex items-start gap-3">
-                                            <div className="flex-shrink-0 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mt-0.5">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                            </div>
-                                            <span className="text-gray-700">{feature}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Image */}
-                            <div className="relative h-full min-h-[400px] bg-gradient-to-br from-yellow-100 to-orange-100 flex items-center justify-center">
-                                <span className="text-[150px] opacity-30">📚</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* English Language Lab */}
-            <section className="py-20 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6">
-                    <div className="bg-white rounded-2xl shadow-lg p-8 lg:p-12">
-                        <div className="max-w-4xl mx-auto text-center">
-                            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <span className="text-4xl">🗣️</span>
-                            </div>
-                            <h2 className="text-3xl font-bold mb-6">Multimedia English Language Laboratory</h2>
-                            <p className="text-gray-600 text-lg leading-relaxed">
-                                Apart from labs prescribed for study, we have a multimedia English Language Lab equipped
-                                with all the sophisticated equipment, especially designed to train students in communicative
-                                aspects of English. This facility enhances students' communication skills, essential for
-                                professional success in the pharmaceutical industry.
+                            <h2 className="text-4xl lg:text-5xl font-black tracking-tight mb-8">Institutional Library</h2>
+                            <p className="text-white/70 font-medium text-lg leading-relaxed mb-12">
+                                Fully computerized with SOUL library management software, our library serves as the central information hub with automated barcode protocols and a vast digital knowledge repository.
                             </p>
+                            <ul className="grid sm:grid-cols-2 gap-4">
+                                {[
+                                    'SOUL Automation',
+                                    'IPAC Barcoding',
+                                    'Digital Repository',
+                                    'Book Bank Scheme',
+                                    'High-speed Internet',
+                                    'Global Journals'
+                                ].map((feature, i) => (
+                                    <li key={i} className="flex items-center gap-3 text-sm font-bold text-white/90">
+                                        <i className="fas fa-check-circle text-[var(--brand-accent)]"></i>
+                                        {feature}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="relative h-full min-h-[400px] bg-white/5 flex items-center justify-center group">
+                            <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+                                <i className="fas fa-book-open text-[20rem] text-white opacity-5 rotate-12 group-hover:rotate-0 transition-transform duration-1000"></i>
+                            </div>
+                            <div className="relative z-10 text-center">
+                                <div className="text-6xl font-black text-white mb-2 tracking-tighter">Knowledge</div>
+                                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
+                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Hub & Repository</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    {/* Background Texture */}
+                    <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}></div>
                 </div>
             </section>
 
-            {/* Call to Action */}
-            <section className="py-20 bg-blue-50">
-                <div className="max-w-4xl mx-auto px-4 lg:px-6 text-center">
-                    <h2 className="text-3xl lg:text-4xl font-bold mb-6">Experience Our World-Class Facilities</h2>
-                    <p className="text-gray-600 text-lg mb-8">
-                        Visit our campus to see our state-of-the-art laboratories and infrastructure firsthand.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href="/contact" className="btn-primary">
-                            Schedule a Campus Tour
-                        </Link>
-                        <Link href="/admissions" className="btn-secondary">
-                            Apply Now
-                        </Link>
+            {/* Language Lab & Other Facilities */}
+            <section className="py-24 max-w-5xl mx-auto px-4 text-center">
+                <div className="p-12 lg:p-20 bg-white rounded-[3rem] shadow-xl shadow-gray-200/40 border border-gray-100 relative overflow-hidden">
+                    <div className="relative z-10">
+                        <div className="w-16 h-16 bg-[var(--brand-primary-soft)] rounded-2xl flex items-center justify-center text-[var(--brand-primary)] mx-auto mb-8">
+                            <i className="fas fa-broadcast-tower text-2xl"></i>
+                        </div>
+                        <h2 className="text-3xl lg:text-4xl font-black text-[var(--brand-primary)] mb-6 tracking-tight">Multimedia Language Cell</h2>
+                        <p className="text-gray-600 font-medium text-lg leading-relaxed max-w-3xl mx-auto">
+                            Beyond pharmaceutical labs, we host a sophisticated Multimedia English Language Laboratory. Specifically designed to distill communicative competencies essential for professional leadership in the global pharma landscape.
+                        </p>
                     </div>
                 </div>
             </section>
 
             {/* Modal for Facility Details */}
             {selectedFacility && (
-                <div
-                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-                    onClick={() => setSelectedFacility(null)}
-                >
-                    <div
-                        className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* Modal Header */}
-                        <div className={`${colorClasses[selectedFacility.color].bg} p-8 relative`}>
-                            <button
-                                onClick={() => setSelectedFacility(null)}
-                                className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors"
-                            >
-                                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                            <div className="flex items-center gap-4">
-                                <span className="text-6xl">{selectedFacility.icon}</span>
-                                <div>
-                                    <h3 className="text-3xl font-bold text-gray-800">{selectedFacility.title}</h3>
-                                    <p className="text-gray-600 mt-2">{selectedFacility.description}</p>
+                <div className="fixed inset-0 bg-[var(--brand-primary)]/90 backdrop-blur-md z-[100] flex items-center justify-center p-6" onClick={() => setSelectedFacility(null)}>
+                    <div className="bg-white rounded-[3rem] max-w-2xl w-full p-12 lg:p-20 relative overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => setSelectedFacility(null)} className="absolute top-10 right-10 w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+                            <i className="fas fa-times text-gray-400"></i>
+                        </button>
+                        
+                        <div className="space-y-10">
+                            <div className="flex items-center gap-6">
+                                <div className="w-20 h-20 rounded-[2rem] bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)]">
+                                    <i className={`fas ${selectedFacility.icon} text-3xl`}></i>
+                                </div>
+                                <div className="space-y-1">
+                                    <h3 className="text-3xl font-black text-[var(--brand-primary)] tracking-tight">{selectedFacility.title}</h3>
+                                    <div className="text-sm font-bold uppercase tracking-wider text-[var(--bcp-teal)]">{selectedFacility.subtitle}</div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Modal Content */}
-                        <div className="p-8">
-                            <h4 className="text-2xl font-bold mb-6">Available Equipment</h4>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                {selectedFacility.equipment.map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                                    >
-                                        <div className={`flex-shrink-0 w-6 h-6 ${colorClasses[selectedFacility.color].accent} rounded-full flex items-center justify-center mt-0.5`}>
-                                            <span className="text-white text-xs font-bold">{index + 1}</span>
+                            <div className="space-y-4">
+                                <h4 className="text-sm font-bold uppercase tracking-wider text-gray-400">Primary Inventory</h4>
+                                <div className="grid sm:grid-cols-2 gap-4">
+                                    {selectedFacility.equipment.map((item, i) => (
+                                        <div key={i} className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <div className="w-2 h-2 rounded-full bg-[var(--bcp-teal)]"></div>
+                                            <span className="text-sm font-bold text-gray-700">{item}</span>
                                         </div>
-                                        <span className="text-gray-700">{item}</span>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             )}
 
-            <style jsx>{`
-                .line-clamp-3 {
-                    display: -webkit-box;
-                    -webkit-line-clamp: 3;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                }
-
-                .card-hover {
-                    transform: translateY(0);
-                }
-
-                .card-hover:hover {
-                    transform: translateY(-5px);
-                }
-
-                .btn-primary {
-                    @apply bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300;
-                }
-
-                .btn-secondary {
-                    @apply border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors duration-300;
-                }
-            `}</style>
-        </div>
+            {/* Background Texture Overlay */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-[var(--brand-primary-soft)] skew-x-[-12deg] translate-x-32 z-0 opacity-30"></div>
+                <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23223975' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}></div>
+            </div>
+        </main>
     )
 }

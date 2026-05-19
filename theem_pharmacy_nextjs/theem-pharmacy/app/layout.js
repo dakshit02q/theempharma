@@ -1,8 +1,10 @@
-import { Poppins, Montserrat } from "next/font/google";
+import { Poppins, Montserrat, Playfair_Display } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CursorAnimation from "@/components/CursorAnimation";
+import ScrollReveal from "@/components/ScrollReveal";
 import { siteConfig, generateStructuredData } from "@/lib/seo";
 
 const poppins = Poppins({
@@ -18,7 +20,15 @@ const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
   display: 'swap',
-  preload: true,
+  preload: false,
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["700", "900"],
+  display: 'swap',
+  preload: false,
 });
 
 export const metadata = {
@@ -90,16 +100,57 @@ export const metadata = {
   manifest: '/site.webmanifest',
 };
 
-export default function RootLayout({ children }) {
-  const structuredData = generateStructuredData('organization');
+import { db } from "@/lib/db";
+import { navigationItems } from "@/lib/db/schema";
+
+async function getNavigationData() {
+  try {
+    const items = await db.query.navigationItems.findMany({
+      where: (table, { eq }) => eq(table.isActive, true),
+      orderBy: (table, { asc }) => [asc(table.order), asc(table.id)],
+    });
+
+    const byId = new Map();
+    const roots = [];
+
+    for (const item of items) {
+      byId.set(item.id, { ...item, children: [] });
+    }
+
+    for (const item of items) {
+      const current = byId.get(item.id);
+      if (!item.parentId || !byId.has(item.parentId)) {
+        roots.push(current);
+      } else {
+        byId.get(item.parentId).children.push(current);
+      }
+    }
+
+    const sortByOrder = (a, b) => (a.order ?? 0) - (b.order ?? 0);
+    const sortRecursive = (nodes) => {
+      nodes.sort(sortByOrder);
+      for (const node of nodes) {
+        sortRecursive(node.children);
+      }
+    };
+
+    sortRecursive(roots);
+    return roots;
+  } catch (error) {
+    console.error("Layout: Error fetching navigation:", error);
+    return [];
+  }
+}
+
+export default async function RootLayout({ children }) {
+  const [navData, structuredData] = await Promise.all([
+    getNavigationData(),
+    Promise.resolve(generateStructuredData('organization'))
+  ]);
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
@@ -109,29 +160,32 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content={siteConfig.shortName} />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-config" content="/browserconfig.xml" />
-        <meta name="msapplication-TileColor" content="#223975" />
         <meta name="contact" content={siteConfig.contact.email} />
         <meta name="geo.region" content="IN-MH" />
         <meta name="geo.placename" content="Boisar, Maharashtra" />
-        <meta name="geo.position" content="19.8;72.8" />
-        <meta name="ICBM" content="19.8, 72.8" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(structuredData),
           }}
         />
+        {/* Font Awesome */}
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
       </head>
       <body
-        className={`${poppins.variable} ${montserrat.variable} antialiased font-poppins`}
+        className={`${poppins.variable} ${montserrat.variable} ${playfair.variable} antialiased font-poppins`}
+        suppressHydrationWarning
       >
         <div className="cursor" id="cursor"></div>
         <div className="cursor-follower" id="cursor-follower"></div>
         <CursorAnimation />
-        <Header />
+        <Header initialNavItems={navData} />
         <main>{children}</main>
         <Footer />
+        <ScrollReveal />
 
         {/* Performance optimization script */}
         <script
@@ -139,7 +193,17 @@ export default function RootLayout({ children }) {
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js');
+                  fetch('/sw.js', { method: 'HEAD' })
+                    .then((response) => {
+                      if (!response.ok) {
+                        return;
+                      }
+
+                      return navigator.serviceWorker.register('/sw.js');
+                    })
+                    .catch(() => {
+                      // Ignore missing service worker in environments where sw.js is not configured.
+                    });
                 });
               }
             `,

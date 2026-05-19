@@ -180,21 +180,23 @@ export default function AdminCourses() {
                                         <td className="px-4 lg:px-6 py-4 text-sm text-gray-500">
                                             {new Date(course.createdAt).toLocaleDateString()}
                                         </td>
-                                        <td className="px-4 lg:px-6 py-4 text-right text-sm font-medium">
-                                            <button
-                                                onClick={() => handleEdit(course)}
-                                                className="text-blue-600 hover:text-blue-900 mr-3 p-1 disabled:opacity-50"
-                                                disabled={isSaving || deletingCourseId === course.id}
-                                            >
-                                                <i className="fas fa-edit"></i>
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(course.id)}
-                                                className="text-red-600 hover:text-red-900 p-1 disabled:opacity-50"
-                                                disabled={isSaving || deletingCourseId === course.id}
-                                            >
-                                                <i className={`fas ${deletingCourseId === course.id ? 'fa-spinner fa-spin' : 'fa-trash'}`}></i>
-                                            </button>
+                                        <td className="px-4 lg:px-6 py-4 text-right">
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(course)}
+                                                    className="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors text-xs font-medium disabled:opacity-50"
+                                                    disabled={isSaving || deletingCourseId === course.id}
+                                                >
+                                                    <i className="fas fa-edit mr-1"></i> Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(course.id)}
+                                                    className="inline-flex items-center px-2 py-1 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors text-xs font-medium disabled:opacity-50"
+                                                    disabled={isSaving || deletingCourseId === course.id}
+                                                >
+                                                    <i className={`fas ${deletingCourseId === course.id ? 'fa-spinner fa-spin' : 'fa-trash'} mr-1`}></i> Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

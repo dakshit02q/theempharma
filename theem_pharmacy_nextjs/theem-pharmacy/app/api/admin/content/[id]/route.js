@@ -4,6 +4,7 @@ import { requireAuth } from '@/lib/auth';
 import { eq } from 'drizzle-orm';
 import { apiError, apiSuccess, handleApiError } from '@/lib/api/response';
 import { parseId } from '@/lib/api/validation';
+import { deletePublicFile } from '@/lib/storage/files';
 
 export async function PUT(request, { params }) {
     const authResult = requireAuth(request);
@@ -12,13 +13,22 @@ export async function PUT(request, { params }) {
     }
 
     try {
-        const id = parseId(params.id);
+        const { id: rawId } = await params;
+        const id = parseId(rawId);
         if (!id) {
             return apiError('Invalid content section id', { status: 400 });
         }
 
         const body = await request.json();
         const updates = { updatedAt: new Date() };
+
+        const existing = await db.query.pageContentSections.findFirst({
+            where: (table, { eq }) => eq(table.id, id),
+        });
+
+        if (!existing) {
+            return apiError('Content section not found', { status: 404 });
+        }
 
         if (body.pageSlug !== undefined) {
             updates.pageSlug = String(body.pageSlug).trim();
@@ -34,6 +44,10 @@ export async function PUT(request, { params }) {
 
         if (body.content !== undefined) {
             updates.content = body.content || null;
+        }
+
+        if (body.document !== undefined) {
+            updates.document = body.document || null;
         }
 
         if (body.order !== undefined) {
@@ -53,8 +67,8 @@ export async function PUT(request, { params }) {
             .where(eq(pageContentSections.id, id))
             .returning();
 
-        if (updated.length === 0) {
-            return apiError('Content section not found', { status: 404 });
+        if (body.document !== undefined && existing.document && existing.document !== body.document) {
+            await deletePublicFile(existing.document);
         }
 
         return apiSuccess(updated[0], {
@@ -72,7 +86,8 @@ export async function DELETE(request, { params }) {
     }
 
     try {
-        const id = parseId(params.id);
+        const { id: rawId } = await params;
+        const id = parseId(rawId);
         if (!id) {
             return apiError('Invalid content section id', { status: 400 });
         }
@@ -84,6 +99,8 @@ export async function DELETE(request, { params }) {
         if (deleted.length === 0) {
             return apiError('Content section not found', { status: 404 });
         }
+
+        await deletePublicFile(deleted[0].document);
 
         return apiSuccess({}, {
             message: 'Page content section deleted successfully',

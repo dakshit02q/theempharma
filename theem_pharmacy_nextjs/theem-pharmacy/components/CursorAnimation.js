@@ -1,15 +1,19 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 export default function CursorAnimation() {
+    const animationIdRef = useRef(null)
+    const mousePosRef = useRef({ x: 0, y: 0 })
+    const followerPosRef = useRef({ x: 0, y: 0 })
+    const isRunningRef = useRef(false)
+
     useEffect(() => {
-        // Cursor functionality
         const cursor = document.getElementById('cursor')
         const cursorFollower = document.getElementById('cursor-follower')
 
         if (!cursor || !cursorFollower) return
 
-        // Check if device supports cursor
+        // Check if device supports cursor (skip on touch)
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
         if (isTouchDevice) {
             cursor.style.display = 'none'
@@ -17,32 +21,46 @@ export default function CursorAnimation() {
             return
         }
 
-        let mouseX = 0, mouseY = 0
-        let followerX = 0, followerY = 0
-        let animationId
+        let lastMoveTime = 0
+        const THROTTLE_MS = 16 // ~60fps throttle
 
         const handleMouseMove = (e) => {
-            mouseX = e.clientX
-            mouseY = e.clientY
-            cursor.style.transform = `translate(${mouseX - 5}px, ${mouseY - 5}px)`
+            const now = performance.now()
+            if (now - lastMoveTime < THROTTLE_MS) return
+            lastMoveTime = now
+
+            mousePosRef.current.x = e.clientX
+            mousePosRef.current.y = e.clientY
+            cursor.style.transform = `translate(${e.clientX - 5}px, ${e.clientY - 5}px)`
         }
 
         const animateFollower = () => {
+            if (!isRunningRef.current) return
+
             const speed = 0.15
-            followerX += (mouseX - followerX) * speed
-            followerY += (mouseY - followerY) * speed
-            cursorFollower.style.transform = `translate(${followerX - 15}px, ${followerY - 15}px)`
-            animationId = requestAnimationFrame(animateFollower)
+            const mouseX = mousePosRef.current.x
+            const mouseY = mousePosRef.current.y
+
+            followerPosRef.current.x += (mouseX - followerPosRef.current.x) * speed
+            followerPosRef.current.y += (mouseY - followerPosRef.current.y) * speed
+
+            cursorFollower.style.transform = `translate(${followerPosRef.current.x - 15}px, ${followerPosRef.current.y - 15}px)`
+            animationIdRef.current = requestAnimationFrame(animateFollower)
         }
 
-        document.addEventListener('mousemove', handleMouseMove)
-        animateFollower()
+        isRunningRef.current = true
+        document.addEventListener('mousemove', handleMouseMove, { passive: true })
+        animationIdRef.current = requestAnimationFrame(animateFollower)
 
         return () => {
+            isRunningRef.current = false
             document.removeEventListener('mousemove', handleMouseMove)
-            if (animationId) cancelAnimationFrame(animationId)
+            if (animationIdRef.current) {
+                cancelAnimationFrame(animationIdRef.current)
+                animationIdRef.current = null
+            }
         }
     }, [])
 
-    return null // This component only provides functionality, no visual output
+    return null
 }

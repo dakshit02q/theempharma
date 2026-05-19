@@ -17,7 +17,12 @@ export default function AdminLayout({ children }) {
 
             if (response.ok) {
                 const data = await response.json();
-                setUser(data.user);
+                const verifiedUser = data?.data?.user || data?.user || null;
+                if (verifiedUser) {
+                    setUser(verifiedUser);
+                } else {
+                    router.push('/admin');
+                }
             } else {
                 router.push('/admin');
             }
@@ -49,13 +54,18 @@ export default function AdminLayout({ children }) {
 
     const navigation = [
         { name: 'Dashboard', href: '/admin/dashboard', icon: 'fas fa-tachometer-alt' },
+        { name: 'Home Page', href: '/admin/content/home', icon: 'fas fa-home' },
+        { name: 'About Institution', href: '/admin/content/about', icon: 'fas fa-info-circle' },
         { name: 'Courses', href: '/admin/courses', icon: 'fas fa-graduation-cap' },
-        { name: 'Faculty', href: '/admin/faculty', icon: 'fas fa-chalkboard-teacher' },
-        { name: 'Students', href: '/admin/students', icon: 'fas fa-user-graduate' },
         { name: 'Admissions', href: '/admin/admissions', icon: 'fas fa-file-alt' },
+        { name: 'Institute Cells', href: '/admin/content/institute-cells', icon: 'fas fa-building' },
+        { name: 'Students Corner', href: '/admin/content/students', icon: 'fas fa-user-graduate' },
+        { name: 'IIC Management', href: '/admin/content/iic', icon: 'fas fa-lightbulb' },
+        { name: 'Faculty', href: '/admin/faculty', icon: 'fas fa-chalkboard-teacher' },
         { name: 'Events', href: '/admin/events', icon: 'fas fa-calendar-alt' },
+        { name: 'Approvals', href: '/admin/approvals', icon: 'fas fa-certificate' },
+        { name: 'Gallery', href: '/admin/gallery', icon: 'fas fa-images' },
         { name: 'Placements', href: '/admin/placements', icon: 'fas fa-briefcase' },
-        { name: 'Features', href: '/admin/features', icon: 'fas fa-star' },
         { name: 'Statistics', href: '/admin/statistics', icon: 'fas fa-chart-line' },
         { name: 'Research', href: '/admin/research', icon: 'fas fa-microscope' },
         { name: 'Committee', href: '/admin/committee', icon: 'fas fa-users' },

@@ -4,6 +4,7 @@ import { requireAuth } from '@/lib/auth';
 import { eq } from 'drizzle-orm';
 import { apiError, apiSuccess, handleApiError } from '@/lib/api/response';
 import { parseId, getMissingFields } from '@/lib/api/validation';
+import { deletePublicFile } from '@/lib/storage/files';
 
 function parseOptionalInt(value) {
     if (value === undefined || value === null || value === '') {
@@ -21,7 +22,8 @@ export async function PUT(request, { params }) {
     }
 
     try {
-        const id = parseId(params.id);
+        const { id: rawId } = await params;
+        const id = parseId(rawId);
         if (!id) {
             return apiError('Invalid event id', { status: 400 });
         }
@@ -79,7 +81,8 @@ export async function DELETE(request, { params }) {
     }
 
     try {
-        const id = parseId(params.id);
+        const { id: rawId } = await params;
+        const id = parseId(rawId);
         if (!id) {
             return apiError('Invalid event id', { status: 400 });
         }
@@ -91,6 +94,11 @@ export async function DELETE(request, { params }) {
 
         if (deletedEvent.length === 0) {
             return apiError('Event not found', { status: 404 });
+        }
+
+        // remove uploaded image if present
+        if (deletedEvent[0]?.image) {
+            await deletePublicFile(deletedEvent[0].image);
         }
 
         return apiSuccess({}, {

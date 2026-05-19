@@ -4,6 +4,7 @@ import { requireAuth } from '@/lib/auth';
 import { eq } from 'drizzle-orm';
 import { apiError, apiSuccess, handleApiError } from '@/lib/api/response';
 import { parseId, getMissingFields } from '@/lib/api/validation';
+import { deletePublicFile } from '@/lib/storage/files';
 
 export async function PUT(request, { params }) {
     const authResult = requireAuth(request);
@@ -12,7 +13,8 @@ export async function PUT(request, { params }) {
     }
 
     try {
-        const id = parseId(params.id);
+        const { id: rawId } = await params;
+        const id = parseId(rawId);
         if (!id) {
             return apiError('Invalid faculty id', { status: 400 });
         }
@@ -60,7 +62,8 @@ export async function DELETE(request, { params }) {
     }
 
     try {
-        const id = parseId(params.id);
+        const { id: rawId } = await params;
+        const id = parseId(rawId);
         if (!id) {
             return apiError('Invalid faculty id', { status: 400 });
         }
@@ -72,6 +75,11 @@ export async function DELETE(request, { params }) {
 
         if (deletedFaculty.length === 0) {
             return apiError('Faculty member not found', { status: 404 });
+        }
+
+        // remove uploaded image if present
+        if (deletedFaculty[0]?.image) {
+            await deletePublicFile(deletedFaculty[0].image);
         }
 
         return apiSuccess({}, {

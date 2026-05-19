@@ -12,27 +12,63 @@ const FALLBACK_NAV_ITEMS = [
     label: 'About Us',
     icon: 'fas fa-info-circle',
     children: [
-      { href: '/about/vision', label: 'Vision' },
-      { href: '/about/mission', label: 'Mission' },
-      { href: '/about/quality-policy', label: 'Quality Policy' },
-      { href: '/about/core-values', label: 'Core Values' },
-      { href: '/about/board-of-governance', label: 'Board of Governance' },
-      { href: '/about/messages', label: 'Messages' },
-      { href: '/about/administrative-team', label: 'Administrative Team' },
-      { href: '/about/code-of-conduct', label: 'Code Of Conduct' },
+      { href: '/about#vision', label: 'Vision' },
+      { href: '/about#mission', label: 'Mission' },
+      { href: '/about#quality-policy', label: 'Quality Policy' },
+      { href: '/about#core-values', label: 'Core Values' },
+      { href: '/about#board-of-governance', label: 'Board of Governance' },
+      { href: '/about#messages', label: 'Messages' },
+      { href: '/about#administrative-team', label: 'Administrative Team' },
+      { href: '/about#code-of-conduct', label: 'Code Of Conduct' },
     ],
   },
   {
-    href: '/admissions',
-    label: 'Admission',
+    href: '#',
+    label: 'Academics',
+    icon: 'fas fa-book-open',
+    children: [
+      {
+        href: '#',
+        label: 'Degree',
+        children: [
+          { href: '/academics/b-pharmacy', label: 'B. Pharma' },
+        ],
+      },
+      {
+        href: '#',
+        label: 'Diploma',
+        children: [
+          { href: '/academics/d-pharmacy', label: 'D. Pharma' },
+        ],
+      },
+    ],
+  },
+  {
+    href: '#',
+    label: 'Admissions',
     icon: 'fas fa-file-alt',
     children: [
-      { href: '/admissions/b-pharmacy', label: 'B.Pharmacy' },
-      { href: '/admissions/d-pharmacy', label: 'D.Pharmacy' },
+      {
+        href: '/admissions/b-pharmacy',
+        label: 'B. Pharma',
+      },
+      {
+        href: '/admissions/d-pharmacy',
+        label: 'D. Pharma',
+      },
     ],
   },
   { href: '/gallery', label: 'Gallery', icon: 'fas fa-images' },
-  { href: '/students', label: 'Students Corner', icon: 'fas fa-user-graduate' },
+  {
+    href: '#',
+    label: 'Students Corner',
+    icon: 'fas fa-user-graduate',
+    children: [
+      { href: '/students/syllabus', label: 'Syllabus' },
+      { href: '/students/library', label: 'Library' },
+      { href: '/students/resources', label: 'Student Resources' },
+    ],
+  },
   {
     href: '/iic',
     label: 'IIC',
@@ -43,58 +79,268 @@ const FALLBACK_NAV_ITEMS = [
     ],
   },
   {
-    href: '/institute-cells',
+    href: '#',
     label: 'Institute Cells',
     icon: 'fas fa-building',
     children: [
       { href: '/institute-cells/exam-cell', label: 'Exam Cell' },
-      { href: '/institute-cells/anti-ragging-committee', label: 'Anti Ragging Committee' },
+      { href: '/institute-cells/server-cell', label: 'Server Cell' },
+      { href: '/institute-cells/anti-ragging-committee', label: 'Anti Ragging Cell' },
+      { href: '/institute-cells/anti-discrimination-cell', label: 'Anti Discrimination Cell' },
       { href: '/institute-cells/student-grievance-cell', label: 'Student Grievance Cell' },
+      { href: '/institute-cells/sc-st-cell', label: 'SC/ST Committee and WEGR Cell' },
+      { href: '/institute-cells/cdc-cell', label: 'CDC Cell' },
     ],
   },
   { href: '/contact', label: 'Contact us', icon: 'fas fa-envelope' },
   { href: '/alumni', label: 'Alumni', icon: 'fas fa-graduation-cap' },
+  { href: '/approvals', label: 'Approvals', icon: 'fas fa-certificate' },
 ]
 
 const HEADER_BANNER_SRC = '/THEEM COLLEGE OF PHARMACY AND RESEARCH header footer 30x7 cm-02.png'
+
+const ABOUT_SECTION_KEYS = new Set([
+  'vision',
+  'mission',
+  'quality-policy',
+  'core-values',
+  'board-of-governance',
+  'messages',
+  'administrative-team',
+  'code-of-conduct',
+])
+
+const mapAboutHrefToAnchor = (href) => {
+  if (typeof href !== 'string' || href.length === 0) {
+    return '#'
+  }
+
+  if (!href.startsWith('/about/')) {
+    return href
+  }
+
+  const sectionKey = href.slice('/about/'.length)
+  if (!ABOUT_SECTION_KEYS.has(sectionKey)) {
+    return href
+  }
+
+  return `/about#${sectionKey}`
+}
+
+const normalizeAcademicsHref = (href, label, lineage = []) => {
+  const safeHref = typeof href === 'string' ? href.trim() : '#'
+  const lowerHref = safeHref.toLowerCase()
+  const lowerLabel = (label || '').toLowerCase()
+  const lowerLineage = lineage.map((item) => (item || '').toLowerCase())
+  const isUnderAcademics = lowerLineage.includes('academics')
+
+  if (!isUnderAcademics) {
+    return mapAboutHrefToAnchor(safeHref || '#')
+  }
+
+  const isBPharm =
+    lowerLabel.includes('b. pharma') ||
+    lowerLabel.includes('b.pharma') ||
+    lowerLabel.includes('b pharmacy') ||
+    lowerHref.includes('/academics/b-pharm') ||
+    lowerHref.includes('/academics/b-pharmacy')
+
+  if (isBPharm) {
+    return '/academics/b-pharmacy'
+  }
+
+  const isDPharm =
+    lowerLabel.includes('d. pharma') ||
+    lowerLabel.includes('d.pharma') ||
+    lowerLabel.includes('d pharmacy') ||
+    lowerHref.includes('/academics/d-pharm') ||
+    lowerHref.includes('/academics/d-pharmacy')
+
+  if (isDPharm) {
+    return '/academics/d-pharmacy'
+  }
+
+  return mapAboutHrefToAnchor(safeHref || '#')
+}
+
+const normalizeAdmissionsItem = (item = {}, lineage = []) => {
+  const label = (item.label || '').toLowerCase()
+  const lowerLineage = lineage.map((entry) => (entry || '').toLowerCase())
+  const isUnderAdmissions = lowerLineage.includes('admissions')
+  const slug = typeof item.slug === 'string' ? item.slug.toLowerCase() : ''
+
+  if (!isUnderAdmissions) {
+    return null
+  }
+
+  const isBPharm =
+    label.includes('b. pharma') ||
+    label.includes('b.pharma') ||
+    label.includes('b pharmacy') ||
+    slug.includes('/admissions/b-pharm') ||
+    slug.includes('/admissions/b-pharmacy')
+
+  if (isBPharm) {
+    return {
+      href: '/admissions/b-pharmacy',
+      label: item.label || 'B. Pharma',
+      icon: item.icon || 'fas fa-link',
+      children: [],
+    }
+  }
+
+  const isDPharm =
+    label.includes('d. pharma') ||
+    label.includes('d.pharma') ||
+    label.includes('d pharmacy') ||
+    slug.includes('/admissions/d-pharm') ||
+    slug.includes('/admissions/d-pharmacy')
+
+  if (isDPharm) {
+    return {
+      href: '/admissions/d-pharmacy',
+      label: item.label || 'D. Pharma',
+      icon: item.icon || 'fas fa-link',
+      children: [],
+    }
+  }
+
+  return null
+}
+
+const getPathFromHref = (href) => {
+  if (!href || href === '#') {
+    return href
+  }
+
+  return href.split('#')[0]
+}
+
+const isHrefActive = (pathname, href) => {
+  const hrefPath = getPathFromHref(href)
+  return Boolean(hrefPath && hrefPath !== '#' && pathname === hrefPath)
+}
 
 const normalizeNavigationPayload = (items) => {
   if (!Array.isArray(items) || items.length === 0) {
     return FALLBACK_NAV_ITEMS
   }
 
-  return items.map((item) => ({
-    href: item.slug || '#',
-    label: item.label || 'Untitled',
-    icon: item.icon || 'fas fa-link',
-    children: Array.isArray(item.children)
-      ? item.children.map((child) => ({
-        href: child.slug || '#',
-        label: child.label || 'Untitled',
-      }))
-      : [],
-  }))
+  const normalizeItem = (item, lineage = [], depth = 0) => {
+    if (depth > 5) return null // Prevent deep recursion or cycles
+    const currentLineage = [...lineage, item.label || '']
+    const underAdmissions = lineage.map((entry) => (entry || '').toLowerCase()).includes('admissions') || (item.label || '').toLowerCase() === 'admissions'
+
+    if (underAdmissions && (item.label || '').toLowerCase() !== 'admissions') {
+      const normalizedAdmissionItem = normalizeAdmissionsItem(item, lineage)
+      if (normalizedAdmissionItem) {
+        return normalizedAdmissionItem
+      }
+    }
+
+    let children = Array.isArray(item.children)
+      ? item.children
+        .map((child) => normalizeItem(child, currentLineage, depth + 1))
+        .filter(Boolean)
+      : []
+
+    if ((item.label || '').toLowerCase() === 'admissions') {
+      const flattened = Array.isArray(item.children)
+        ? item.children
+          .flatMap((child) => {
+            const normalizedChild = normalizeAdmissionsItem(child, [item.label || ''])
+            if (normalizedChild) {
+              return [normalizedChild]
+            }
+
+            if (Array.isArray(child.children)) {
+              return child.children
+                .map((grandChild) => normalizeAdmissionsItem(grandChild, [item.label || '', child.label || '']))
+                .filter(Boolean)
+            }
+
+            return []
+          })
+        : []
+
+      const dedupedByHref = new Map()
+      for (const child of flattened) {
+        dedupedByHref.set(child.href, child)
+      }
+      children = Array.from(dedupedByHref.values())
+    }
+
+    return {
+      href: normalizeAcademicsHref(item.slug || '#', item.label || '', lineage),
+      label: item.label || 'Untitled',
+      icon: item.icon || 'fas fa-link',
+      children,
+    }
+  }
+
+  const normalized = items.map((item) => normalizeItem(item, []))
+
+  if (!normalized.some(item => item.href === '/alumni')) {
+    normalized.push({
+      href: '/alumni',
+      label: 'Alumni',
+      icon: 'fas fa-graduation-cap',
+      children: [],
+    })
+  }
+
+  if (!normalized.some(item => item.href === '/contact')) {
+    normalized.push({
+      href: '/contact',
+      label: 'Contact us',
+      icon: 'fas fa-envelope',
+      children: [],
+    })
+  }
+
+  if (!normalized.some(item => item.href === '/approvals')) {
+    normalized.push({
+      href: '/approvals',
+      label: 'Approvals',
+      icon: 'fas fa-certificate',
+      children: [],
+    })
+  }
+
+  const labels = new Set(normalized.map((item) => item.label))
+  const hasExpectedTopLevelMenus =
+    labels.has('Institute Cells') &&
+    labels.has('Students Corner') &&
+    labels.has('Academics') &&
+    labels.has('Admissions')
+
+  return hasExpectedTopLevelMenus ? normalized : FALLBACK_NAV_ITEMS
 }
 
-const isRouteActive = (pathname, href, children = []) => {
-  if (pathname === href) {
+const isRouteActive = (pathname, href, children = [], depth = 0) => {
+  if (depth > 5 || !pathname) return false
+  if (isHrefActive(pathname, href)) {
     return true
   }
 
-  return children.some((child) => pathname === child.href)
+  const safeChildren = Array.isArray(children) ? children : []
+  return safeChildren.some((child) => isRouteActive(pathname, child.href, child.children || [], depth + 1))
 }
 
-const Header = () => {
+const getNavKey = (item, parentKey = '') => `${parentKey}${parentKey ? '>' : ''}${item.label}`
+
+const Header = ({ initialNavItems = [] }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [expandedGroups, setExpandedGroups] = useState({})
-  const [navItems, setNavItems] = useState(FALLBACK_NAV_ITEMS)
+  const [navItems, setNavItems] = useState(() => normalizeNavigationPayload(initialNavItems))
   const [announcementText, setAnnouncementText] = useState('No latest announcements at the moment.')
   const pathname = usePathname()
+  const isAdminRoute = pathname?.startsWith('/admin')
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50)
+    const handleScroll = () => setIsScrolled(window.scrollY > 150)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
@@ -105,24 +351,12 @@ const Header = () => {
   }, [pathname])
 
   useEffect(() => {
+    // Sync navItems if initialNavItems changes (on navigation)
+    setNavItems(normalizeNavigationPayload(initialNavItems));
+  }, [initialNavItems]);
+
+  useEffect(() => {
     let isActive = true
-
-    const loadNavigation = async () => {
-      try {
-        const response = await fetch('/api/navigation', { cache: 'no-store' })
-        const payload = await response.json()
-
-        if (!isActive) {
-          return
-        }
-
-        setNavItems(normalizeNavigationPayload(payload?.data))
-      } catch {
-        if (isActive) {
-          setNavItems(FALLBACK_NAV_ITEMS)
-        }
-      }
-    }
 
     const loadAnnouncements = async () => {
       try {
@@ -152,7 +386,6 @@ const Header = () => {
       }
     }
 
-    loadNavigation()
     loadAnnouncements()
     const refreshId = setInterval(loadAnnouncements, 120000)
 
@@ -174,118 +407,198 @@ const Header = () => {
     document.body.classList.toggle('dark-mode')
   }
 
+  const renderDesktopDropdownItems = (items, parentKey = '') => (
+    <>
+      {items.map((child) => {
+        const childKey = getNavKey(child, parentKey)
+        const hasChildren = child.children?.length > 0
+
+        return (
+          <div key={childKey} className="relative group/submenu">
+            <Link
+              href={child.href || '#'}
+              className={`flex items-center justify-center gap-3 px-5 py-2.5 text-[13px] text-center font-semibold transition-all duration-200 ${isHrefActive(pathname, child.href) ? 'text-[var(--brand-primary)] bg-[#e8f5f8] border-l-2 border-[var(--brand-primary)]' : 'text-gray-600 hover:text-[var(--brand-primary)] hover:bg-gray-50 hover:pl-6 border-l-2 border-transparent'}`}
+              aria-current={isHrefActive(pathname, child.href) ? 'page' : undefined}
+            >
+              <span>{child.label}</span>
+              {hasChildren && <i className="fas fa-chevron-right text-[10px] text-gray-400 group-hover/submenu:text-[var(--brand-primary)] transition-colors absolute right-4" aria-hidden="true" />}
+            </Link>
+
+            {hasChildren && (
+              <div className="absolute top-0 left-full min-w-[240px] rounded-2xl border border-gray-100 bg-white shadow-xl py-2 opacity-0 invisible pointer-events-none group-hover/submenu:opacity-100 group-hover/submenu:visible group-hover/submenu:pointer-events-auto transition-all duration-200 z-[75] ml-1">
+                {renderDesktopDropdownItems(child.children, childKey)}
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </>
+  )
+
+  const renderMobileItems = (items, depth = 0, parentKey = '') => (
+    <>
+      {items.map((item) => {
+        const itemKey = getNavKey(item, parentKey)
+        const hasChildren = item.children?.length > 0
+        const leftPadding = depth === 0 ? 'px-4' : depth === 1 ? 'px-6' : 'px-8'
+
+        return (
+          <div key={itemKey} className={`${depth === 0 ? 'rounded-lg overflow-hidden border border-transparent' : ''}`}>
+            <div className="flex items-center">
+              <Link
+                href={item.href || '#'}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex-1 flex items-center py-3 ${leftPadding} transition-colors text-sm font-medium ${isRouteActive(pathname, item.href, item.children) ? 'bg-[#e8f5f8] text-[var(--brand-primary)]' : 'hover:bg-gray-100'}`}
+                aria-current={isRouteActive(pathname, item.href, item.children) ? 'page' : undefined}
+              >
+                {depth === 0 && <i className={`${item.icon} mr-3 w-4`} />}
+                {item.label}
+              </Link>
+
+              {hasChildren && (
+                <button
+                  onClick={() => toggleMobileGroup(itemKey)}
+                  className="px-4 py-3 text-gray-500 hover:text-[var(--brand-primary)] transition-colors"
+                  aria-label={`Toggle ${item.label} submenu`}
+                  aria-expanded={expandedGroups[itemKey] ? 'true' : 'false'}
+                >
+                  <i className={`fas fa-chevron-${expandedGroups[itemKey] ? 'up' : 'down'} text-xs`} />
+                </button>
+              )}
+            </div>
+
+            {hasChildren && expandedGroups[itemKey] && (
+              <div className="bg-gray-50 border-t border-gray-100">
+                {renderMobileItems(item.children, depth + 1, itemKey)}
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </>
+  )
+
+  if (isAdminRoute) {
+    return null
+  }
+
   return (
     <>
       <header
-        className={`main-header relative z-[60] w-full transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-lg shadow-lg' : 'bg-white/95 backdrop-blur-lg'
-          }`}
+        className={`main-header relative z-[60] w-full`}
       >
-        <div className="border-b border-gray-200 bg-white/95">
-          <div className="w-full relative">
-            <Link href="/" className="block w-full">
-              <div className="relative w-full overflow-hidden bg-white">
-                <Image
-                  src={HEADER_BANNER_SRC}
-                  alt="Theem College of Pharmacy and Research"
-                  width={3544}
-                  height={458}
-                  priority
-                  sizes="100vw"
-                  className="w-full h-auto block object-contain"
-                />
+        {/* Row 0: Top Info Bar - Hides on Scroll */}
+        <div className={`bg-[#f8f9fa] border-b border-gray-100 hidden lg:block transition-all duration-500 overflow-hidden ${isScrolled ? 'h-0 opacity-0' : 'h-10'}`}>
+          <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between text-[11px] font-bold tracking-wider text-gray-500 uppercase">
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center gap-2">
+                <i className="fas fa-phone-alt text-[var(--brand-primary)]"></i>
+                <span>+91 1111111111</span>
               </div>
+              <div className="flex items-center gap-2">
+                <i className="fas fa-envelope text-[var(--brand-primary)]"></i>
+                <span>info@theempharmacy.edu</span>
+              </div>
+            </div>
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center gap-4 border-r border-gray-200 pr-6">
+                <a href="#" className="hover:text-[var(--brand-primary)] transition-colors">Career</a>
+                <a href="#" className="hover:text-[var(--brand-primary)] transition-colors">Alumni</a>
+                <a href="#" className="hover:text-[var(--brand-primary)] transition-colors">Tenders</a>
+              </div>
+              <div className="flex items-center gap-3">
+                {['facebook-f', 'twitter', 'instagram', 'linkedin-in'].map(icon => (
+                  <a key={icon} href="#" className="hover:text-[var(--brand-primary)] transition-colors">
+                    <i className={`fab fa-${icon}`}></i>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Row 1: College Identity Banner */}
+        <div className="bg-white py-6 lg:py-10 border-b border-gray-50">
+          <div className="max-w-7xl mx-auto px-4 flex items-center justify-center">
+            <Link href="/" className="block">
+              <Image
+                src={HEADER_BANNER_SRC}
+                alt="Theem College of Pharmacy"
+                width={800}
+                height={160}
+                className="h-16 lg:h-28 w-auto object-contain"
+                priority
+              />
             </Link>
           </div>
         </div>
 
-        <div className="border-b border-gray-200 bg-white/95">
-          <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="lg:hidden flex items-center justify-between py-2.5 sm:py-3 gap-3">
-              <div className="inline-flex items-center rounded-md bg-[var(--brand-primary-soft)] px-2.5 py-1 text-xs sm:text-sm font-semibold text-[var(--brand-primary)] uppercase tracking-wide">
-                Menu
-              </div>
+        {/* Sticky Container for Nav and Announcements */}
+        <div className={`sticky top-0 z-[70] transition-all duration-300 ${isScrolled ? 'shadow-2xl' : ''}`}>
+          {/* Row 2: Navigation Bar */}
+          <div className="bg-[var(--brand-primary)] hidden lg:block border-b border-white/5 relative z-50">
+            {/* Subtle Texture Overlay */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}></div>
+            
+            <div className="max-w-7xl mx-auto px-4 flex items-center justify-center relative z-10">
+              <nav className="flex items-center">
+                <div className="flex items-center space-x-1">
+                  {navItems.map((item) => (
+                    <div key={`${item.href}-${item.label}`} className="relative group">
+                      <Link
+                        href={item.href}
+                        className={`block px-5 py-4 text-[11px] text-center font-black uppercase tracking-[0.15em] text-white/80 hover:text-white transition-all hover:bg-white/5 rounded-t-2xl relative ${isRouteActive(pathname, item.href, item.children) ? 'text-white bg-white/10' : ''}`}
+                      >
+                        {item.label}
+                        {isRouteActive(pathname, item.href, item.children) && (
+                          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-[var(--brand-accent)] rounded-t-md"></span>
+                        )}
+                      </Link>
 
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
-                aria-label="Toggle mobile menu"
-              >
-                <div className="hamburger flex flex-col space-y-1">
-                  <span
-                    className={`w-5 h-0.5 bg-[var(--brand-primary)] transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''
-                      }`}
-                  />
-                  <span
-                    className={`w-5 h-0.5 bg-[var(--brand-primary)] transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''
-                      }`}
-                  />
-                  <span
-                    className={`w-5 h-0.5 bg-[var(--brand-primary)] transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
-                      }`}
-                  />
-                </div>
-              </button>
-            </div>
-
-            <div className="hidden lg:flex items-center justify-between py-3 gap-3">
-              <nav className="flex items-center gap-4 xl:gap-6 text-sm xl:text-base whitespace-nowrap">
-                {navItems.map((item) => (
-                  <div key={`${item.href}-${item.label}`} className="relative group">
-                    <Link
-                      href={item.href}
-                      className={`nav-link inline-flex items-center gap-1 ${isRouteActive(pathname, item.href, item.children) ? 'active' : ''}`}
-                      aria-current={isRouteActive(pathname, item.href, item.children) ? 'page' : undefined}
-                    >
-                      {item.label}
                       {item.children?.length > 0 && (
-                        <i className="fas fa-chevron-down text-[10px] mt-[1px]" aria-hidden="true" />
+                        <div className="absolute top-full left-0 min-w-[260px] rounded-b-2xl rounded-tr-2xl bg-white shadow-2xl py-3 opacity-0 invisible translate-y-4 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-[70] border border-gray-100">
+                          {renderDesktopDropdownItems(item.children, item.label)}
+                        </div>
                       )}
-                    </Link>
-
-                    {item.children?.length > 0 && (
-                      <div className="absolute top-full left-0 mt-2 min-w-[220px] rounded-lg border border-gray-200 bg-white shadow-lg py-2 opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:visible group-focus-within:pointer-events-auto transition-all duration-200 z-[70]">
-                        {item.children.map((child) => (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            className={`block px-4 py-2 text-sm transition-colors ${pathname === child.href ? 'text-[var(--brand-primary)] bg-[#e8f5f8]' : 'text-gray-700 hover:text-[var(--brand-primary)] hover:bg-gray-50'}`}
-                            aria-current={pathname === child.href ? 'page' : undefined}
-                          >
-                            {child.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </nav>
-
-              <div className="flex items-center space-x-4">
+                    </div>
+                  ))}
+                </div>
+                <div className="w-px h-8 bg-white/20 mx-8"></div>
                 <Link
-                  href="/contact"
-                  className="btn-apply bg-[var(--brand-primary)] text-white px-4 sm:px-6 py-2 rounded-lg font-semibold hover:bg-[var(--brand-primary-dark)] transition-all duration-300 transform hover:-translate-y-1 text-sm sm:text-base"
+                  href="/admissions"
+                  className="bg-white text-[var(--brand-primary)] px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-[var(--brand-accent)] hover:text-white transition-all shadow-lg hover:-translate-y-0.5"
                 >
                   Apply Now
                 </Link>
-
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-full bg-gray-100 hover:bg-[var(--brand-primary)] hover:text-white transition-all duration-300"
-                  aria-label="Toggle theme"
-                >
-                  <i className={`fas ${isDarkMode ? 'fa-sun' : 'fa-moon'} text-sm`} />
-                </button>
-              </div>
+              </nav>
             </div>
           </div>
-        </div>
 
-        <div className="announcement-bar" role="status" aria-live="polite">
-          <div className="announcement-label">Latest Announcements</div>
-          <div className="announcement-marquee">
-            <div className="announcement-track">
-              <span>{announcementText}</span>
-              <span aria-hidden="true">{announcementText}</span>
+          {/* Row 3: Announcement Bar & Mobile Menu Control */}
+          <div className="bg-[var(--brand-secondary)] py-2.5 overflow-hidden border-b border-white/5 shadow-md relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-primary)] to-transparent opacity-50"></div>
+            <div className="max-w-7xl mx-auto px-4 flex items-center justify-between lg:justify-start relative z-10">
+              <div className="flex items-center flex-1">
+                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full mr-6 shrink-0 border border-white/10 shadow-inner">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)] animate-pulse"></span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-white/90">Live Feed</span>
+                </div>
+                <div className="announcement-marquee flex-1">
+                  <div className="announcement-track text-white/80 text-xs font-semibold tracking-wide">
+                    <span>{announcementText}</span>
+                    <span aria-hidden="true" className="ml-[100%]">{announcementText}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile Toggle */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden ml-4 p-2 text-white hover:bg-white/10 rounded-xl transition-colors"
+                aria-label="Toggle Navigation"
+              >
+                <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} text-lg`}></i>
+              </button>
             </div>
           </div>
         </div>
@@ -319,46 +632,7 @@ const Header = () => {
           </div>
 
           <nav className="space-y-2">
-            {navItems.map((item) => (
-              <div key={`${item.href}-${item.label}`} className="rounded-lg overflow-hidden border border-transparent">
-                <div className="flex items-center">
-                  <Link
-                    href={item.href}
-                    className={`flex-1 flex items-center py-3 px-4 transition-colors text-sm font-medium ${isRouteActive(pathname, item.href, item.children) ? 'bg-[#e8f5f8] text-[var(--brand-primary)]' : 'hover:bg-gray-100'}`}
-                    aria-current={isRouteActive(pathname, item.href, item.children) ? 'page' : undefined}
-                  >
-                    <i className={`${item.icon} mr-3 w-4`} />
-                    {item.label}
-                  </Link>
-
-                  {item.children?.length > 0 && (
-                    <button
-                      onClick={() => toggleMobileGroup(item.label)}
-                      className="px-4 py-3 text-gray-500 hover:text-[var(--brand-primary)] transition-colors"
-                      aria-label={`Toggle ${item.label} submenu`}
-                      aria-expanded={expandedGroups[item.label] ? 'true' : 'false'}
-                    >
-                      <i className={`fas fa-chevron-${expandedGroups[item.label] ? 'up' : 'down'} text-xs`} />
-                    </button>
-                  )}
-                </div>
-
-                {item.children?.length > 0 && expandedGroups[item.label] && (
-                  <div className="bg-gray-50 border-t border-gray-100">
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        className={`block py-2.5 px-6 text-sm transition-colors ${pathname === child.href ? 'text-[var(--brand-primary)] bg-[#e8f5f8]' : 'text-gray-700 hover:bg-gray-100'}`}
-                        aria-current={pathname === child.href ? 'page' : undefined}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+            {renderMobileItems(navItems)}
           </nav>
 
           <div className="mt-6 pt-6 border-t">

@@ -1,8 +1,7 @@
 'use client'
+
 import { useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import ScrollToTopButton from '@/components/ScrollToTopButton'
+import PageHero from '@/components/PageHero'
 import { apiClient } from '@/lib/api-client'
 
 export default function Contact() {
@@ -18,10 +17,7 @@ export default function Contact() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }))
+        setFormData(prev => ({ ...prev, [name]: value }))
     }
 
     const handleSubmit = async (e) => {
@@ -32,13 +28,7 @@ export default function Contact() {
         try {
             await apiClient.submitContact(formData)
             setSubmitStatus('success')
-            setFormData({
-                name: '',
-                email: '',
-                phone: '',
-                subject: '',
-                message: ''
-            })
+            setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
         } catch (error) {
             setSubmitStatus('error')
         } finally {
@@ -46,305 +36,198 @@ export default function Contact() {
         }
     }
 
+    const contactInfo = [
+        { title: 'Campus Address', content: 'Theem College of Pharmacy and Research, Boisar, Maharashtra, India', icon: 'fas fa-map-marker-alt', color: 'blue' },
+        { title: 'Phone Support', content: '+91 98765 43210', icon: 'fas fa-phone', color: 'emerald', link: 'tel:+919876543210' },
+        { title: 'Email Inquiries', content: 'info@theemcollege.edu', icon: 'fas fa-envelope', color: 'purple', link: 'mailto:info@theemcollege.edu' },
+        { title: 'Office Hours', content: 'Mon - Fri: 9:00 AM - 5:00 PM', icon: 'fas fa-clock', color: 'amber' },
+    ];
+
     return (
-        <div className="pt-20">
-            {/* Hero Section */}
-            <section className="relative py-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6 text-center">
-                    <h1 className="text-4xl lg:text-5xl font-bold mb-6">Contact Us</h1>
-                    <p className="text-xl max-w-3xl mx-auto opacity-90">
-                        Get in touch with us for admissions, inquiries, or any information about Theem College of Pharmacy and Research.
-                    </p>
-                </div>
-            </section>
+        <main className="bg-[#fcfdfe] min-h-screen pb-20">
+            <PageHero 
+                title="Connect With Us" 
+                subtitle="Have questions? Our team is here to assist you with admissions, academic inquiries, and more."
+            />
 
-            {/* Contact Information & Form */}
-            <section className="py-20">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6">
-                    <div className="grid lg:grid-cols-3 gap-12">
-                        {/* Contact Information */}
-                        <div className="lg:col-span-1">
-                            <h2 className="text-3xl font-bold mb-8">Get In Touch</h2>
-                            <div className="space-y-6">
-                                <div className="flex items-start space-x-4">
-                                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                        <i className="fas fa-map-marker-alt text-blue-600"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-lg mb-2">Address</h3>
-                                        <p className="text-gray-600">
-                                            Theem College of Pharmacy and Research<br />
-                                            Boisar, Maharashtra, India
-                                        </p>
-                                    </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-60px] relative z-20">
+                <div className="grid lg:grid-cols-3 gap-8">
+                    {/* Contact Sidebar */}
+                    <aside className="space-y-6">
+                        {contactInfo.map((info, index) => (
+                            <div 
+                                key={index} 
+                                className="bg-white rounded-2xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 flex items-start gap-4 group hover:border-[var(--bcp-teal)] transition-all duration-300"
+                            >
+                                <div className="w-12 h-12 shrink-0 rounded-xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] group-hover:scale-110 transition-transform">
+                                    <i className={`${info.icon} text-xl`}></i>
                                 </div>
-
-                                <div className="flex items-start space-x-4">
-                                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                                        <i className="fas fa-phone text-green-600"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-lg mb-2">Phone</h3>
-                                        <p className="text-gray-600">
-                                            <a href="tel:+919876543210" className="hover:text-blue-600 transition-colors">
-                                                +91 98765 43210
-                                            </a>
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start space-x-4">
-                                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                                        <i className="fas fa-envelope text-purple-600"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-lg mb-2">Email</h3>
-                                        <p className="text-gray-600">
-                                            <a href="mailto:info@theemcollege.edu" className="hover:text-blue-600 transition-colors">
-                                                info@theemcollege.edu
-                                            </a>
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start space-x-4">
-                                    <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                                        <i className="fas fa-clock text-yellow-600"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-lg mb-2">Office Hours</h3>
-                                        <p className="text-gray-600">
-                                            Monday - Friday: 9:00 AM - 5:00 PM<br />
-                                            Saturday: 9:00 AM - 1:00 PM
-                                        </p>
-                                    </div>
+                                <div>
+                                    <h3 className="font-black text-[var(--brand-primary)] text-sm uppercase tracking-wider mb-1">{info.title}</h3>
+                                    {info.link ? (
+                                        <a href={info.link} className="text-gray-600 hover:text-[var(--bcp-teal)] transition-colors break-all font-medium">
+                                            {info.content}
+                                        </a>
+                                    ) : (
+                                        <p className="text-gray-600 leading-relaxed font-medium">{info.content}</p>
+                                    )}
                                 </div>
                             </div>
+                        ))}
 
-                            {/* Quick Links */}
-                            <div className="mt-12">
-                                <h3 className="text-xl font-bold mb-6">Quick Links</h3>
-                                <div className="space-y-3">
-                                    <Link href="/admissions" className="block text-gray-600 hover:text-blue-600 transition-colors">
-                                        <i className="fas fa-arrow-right mr-2"></i>
-                                        Admissions Information
-                                    </Link>
-                                    <Link href="/about" className="block text-gray-600 hover:text-blue-600 transition-colors">
-                                        <i className="fas fa-arrow-right mr-2"></i>
-                                        About Our College
-                                    </Link>
-                                    <a href="tel:+919876543210" className="block text-gray-600 hover:text-blue-600 transition-colors">
-                                        <i className="fas fa-arrow-right mr-2"></i>
-                                        Speak with Admissions
-                                    </a>
-                                </div>
+                        {/* Quick Map Preview Card */}
+                        <div className="bg-white rounded-2xl overflow-hidden shadow-xl shadow-gray-200/50 border border-gray-100">
+                            <div className="h-56 bg-gray-100 relative">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d103049.550799981!2d72.78818576158936!3d19.688285721088192!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be71ebb9116e5c5%3A0xe33b4d6900b0671c!2sTheem%20College%20of%20Engineering!5e0!3m2!1sen!2sin!4v1777019600074!5m2!1sen!2sin"
+                                    width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy"
+                                />
+                            </div>
+                            <div className="p-4 bg-gray-50 text-center">
+                                <a 
+                                    href="https://maps.google.com/?q=Theem+College+of+Engineering" 
+                                    target="_blank" rel="noreferrer"
+                                    className="text-xs font-black uppercase tracking-widest text-[var(--brand-primary)] hover:text-[var(--bcp-teal)]"
+                                >
+                                    Get Directions <i className="fas fa-external-link-alt ml-1"></i>
+                                </a>
                             </div>
                         </div>
+                    </aside>
 
-                        {/* Contact Form */}
-                        <div className="lg:col-span-2">
-                            <div className="bg-white rounded-2xl shadow-xl p-8">
-                                <h2 className="text-3xl font-bold mb-8">Send us a Message</h2>
-
-                                {submitStatus === 'success' && (
-                                    <div className="mb-6 p-4 bg-green-100 border border-green-300 text-green-700 rounded-lg">
-                                        <i className="fas fa-check-circle mr-2"></i>
-                                        Thank you for your message! We&apos;ll get back to you soon.
-                                    </div>
-                                )}
-
-                                {submitStatus === 'error' && (
-                                    <div className="mb-6 p-4 bg-red-100 border border-red-300 text-red-700 rounded-lg">
-                                        <i className="fas fa-exclamation-circle mr-2"></i>
-                                        There was an error sending your message. Please try again.
-                                    </div>
-                                )}
-
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                                                Full Name *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="name"
-                                                name="name"
-                                                value={formData.name}
-                                                onChange={handleInputChange}
-                                                required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                placeholder="Enter your full name"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                                Email Address *
-                                            </label>
-                                            <input
-                                                type="email"
-                                                id="email"
-                                                name="email"
-                                                value={formData.email}
-                                                onChange={handleInputChange}
-                                                required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                placeholder="Enter your email address"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                                                Phone Number
-                                            </label>
-                                            <input
-                                                type="tel"
-                                                id="phone"
-                                                name="phone"
-                                                value={formData.phone}
-                                                onChange={handleInputChange}
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                placeholder="Enter your phone number"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                                                Subject *
-                                            </label>
-                                            <select
-                                                id="subject"
-                                                name="subject"
-                                                value={formData.subject}
-                                                onChange={handleInputChange}
-                                                required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            >
-                                                <option value="">Select a subject</option>
-                                                <option value="admissions">Admissions Inquiry</option>
-                                                <option value="information">General Information</option>
-                                                <option value="facilities">Facilities & Infrastructure</option>
-                                                <option value="faculty">Faculty Information</option>
-                                                <option value="placement">Placement & Career</option>
-                                                <option value="other">Other</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Message *
-                                        </label>
-                                        <textarea
-                                            id="message"
-                                            name="message"
-                                            value={formData.message}
-                                            onChange={handleInputChange}
-                                            required
-                                            rows={6}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            placeholder="Please describe your inquiry in detail..."
-                                        ></textarea>
-                                    </div>
-
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {isSubmitting ? (
-                                            <>
-                                                <i className="fas fa-spinner fa-spin mr-2"></i>
-                                                Sending Message...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <i className="fas fa-paper-plane mr-2"></i>
-                                                Send Message
-                                            </>
-                                        )}
-                                    </button>
-                                </form>
+                    {/* Contact Form */}
+                    <div className="lg:col-span-2">
+                        <div className="bg-white rounded-[2.5rem] p-8 lg:p-12 shadow-2xl shadow-gray-200/60 border-t-8 border-[var(--bcp-teal)]">
+                            <div className="mb-10">
+                                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-6">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
+                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Get in Touch</span>
+                                </div>
+                                <h2 className="text-4xl font-black text-[var(--brand-primary)] tracking-tight mb-4">Send a Message</h2>
+                                <p className="text-gray-500 font-medium">Please fill out the form below and our representative will contact you shortly.</p>
                             </div>
+
+                            {submitStatus === 'success' && (
+                                <div className="mb-8 p-4 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-xl flex items-center gap-3">
+                                    <i className="fas fa-check-circle text-xl"></i>
+                                    <p className="font-bold">Thank you! Your message has been sent successfully.</p>
+                                </div>
+                            )}
+
+                            {submitStatus === 'error' && (
+                                <div className="mb-8 p-4 bg-rose-50 border border-rose-100 text-rose-700 rounded-xl flex items-center gap-3">
+                                    <i className="fas fa-exclamation-circle text-xl"></i>
+                                    <p className="font-bold">Error sending message. Please try again later.</p>
+                                </div>
+                            )}
+
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-bold uppercase tracking-wider text-gray-500 ml-1">Full Name</label>
+                                        <input
+                                            type="text" name="name" value={formData.name} onChange={handleInputChange} required
+                                            className="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[var(--bcp-teal)] focus:ring-4 focus:ring-[var(--bcp-teal)]/5 transition-all outline-none font-medium"
+                                            placeholder="John Doe"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-bold uppercase tracking-wider text-gray-500 ml-1">Email Address</label>
+                                        <input
+                                            type="email" name="email" value={formData.email} onChange={handleInputChange} required
+                                            className="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[var(--bcp-teal)] focus:ring-4 focus:ring-[var(--bcp-teal)]/5 transition-all outline-none font-medium"
+                                            placeholder="john@example.com"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-bold uppercase tracking-wider text-gray-500 ml-1">Phone Number</label>
+                                        <input
+                                            type="tel" name="phone" value={formData.phone} onChange={handleInputChange}
+                                            className="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[var(--bcp-teal)] focus:ring-4 focus:ring-[var(--bcp-teal)]/5 transition-all outline-none font-medium"
+                                            placeholder="+91 00000 00000"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-bold uppercase tracking-wider text-gray-500 ml-1">Subject</label>
+                                        <select
+                                            name="subject" value={formData.subject} onChange={handleInputChange} required
+                                            className="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[var(--bcp-teal)] focus:ring-4 focus:ring-[var(--bcp-teal)]/5 transition-all outline-none bg-white font-medium"
+                                        >
+                                            <option value="">Select Inquiry Type</option>
+                                            <option value="admissions">Admissions</option>
+                                            <option value="academic">Academic Programs</option>
+                                            <option value="facilities">Infrastructure</option>
+                                            <option value="placements">Placements</option>
+                                            <option value="other">General Inquiry</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold uppercase tracking-wider text-gray-500 ml-1">Your Message</label>
+                                    <textarea
+                                        name="message" value={formData.message} onChange={handleInputChange} required rows={5}
+                                        className="w-full px-6 py-4 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-[var(--bcp-teal)] focus:ring-4 focus:ring-[var(--bcp-teal)]/5 transition-all outline-none resize-none font-medium"
+                                        placeholder="How can we help you?"
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit" disabled={isSubmitting}
+                                    className="w-full py-5 px-8 bg-[var(--brand-primary)] text-white rounded-xl font-bold uppercase tracking-wider text-sm hover:bg-[var(--brand-primary-dark)] hover:shadow-2xl hover:shadow-blue-900/20 hover:translate-y-[-2px] transition-all disabled:opacity-50 disabled:translate-y-0"
+                                >
+                                    {isSubmitting ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <i className="fas fa-circle-notch animate-spin"></i> Processing...
+                                        </span>
+                                    ) : (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <i className="fas fa-paper-plane"></i> Send Message
+                                        </span>
+                                    )}
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </section>
 
-            {/* Map Section */}
-            <section className="py-20 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 lg:px-6">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl font-bold mb-6">Find Us</h2>
-                        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                            Visit our campus located in the heart of Boisar, easily accessible by road and public transportation.
-                        </p>
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                        <div className="aspect-video bg-gray-200 flex items-center justify-center">
-                            <div className="text-center">
-                                <i className="fas fa-map-marked-alt text-6xl text-gray-400 mb-4"></i>
-                                <h3 className="text-2xl font-bold text-gray-600 mb-2">Interactive Map</h3>
-                                <p className="text-gray-500">
-                                    Map integration will be added here<br />
-                                    Theem College of Pharmacy and Research, Boisar
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* FAQ Section */}
-            <section className="py-20">
-                <div className="max-w-4xl mx-auto px-4 lg:px-6">
+                {/* FAQ Section - Clean Institutional Style */}
+                <section className="mt-32">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-bold mb-6">Frequently Asked Questions</h2>
-                        <p className="text-gray-600 text-lg">
-                            Find answers to common questions about our college and admission process.
-                        </p>
+                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-6">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
+                            <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Support Center</span>
+                        </div>
+                        <h2 className="text-4xl font-black text-[var(--brand-primary)] tracking-tight">Frequently Asked Questions</h2>
                     </div>
 
-                    <div className="space-y-6">
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-xl font-bold mb-3">What are the admission requirements?</h3>
-                            <p className="text-gray-600">
-                                For B.Pharm: 12th pass with PCM/PCB and minimum 50% marks. For D.Pharm: 12th pass with PCM/PCB and minimum 45% marks.
-                                Valid entrance exam scores are required.
-                            </p>
-                        </div>
-
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-xl font-bold mb-3">When do admissions open?</h3>
-                            <p className="text-gray-600">
-                                Admissions typically open in April every year. The application deadline is usually in June,
-                                followed by merit list publication in July.
-                            </p>
-                        </div>
-
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-xl font-bold mb-3">What facilities does the college provide?</h3>
-                            <p className="text-gray-600">
-                                We offer state-of-the-art laboratories, modern classrooms, library, computer lab,
-                                and dedicated spaces for research activities.
-                            </p>
-                        </div>
-
-                        <div className="bg-white rounded-xl shadow-lg p-6">
-                            <h3 className="text-xl font-bold mb-3">Is placement assistance provided?</h3>
-                            <p className="text-gray-600">
-                                Yes, we have a dedicated placement cell that assists students with career guidance,
-                                internships, and job placements in pharmaceutical companies and hospitals.
-                            </p>
-                        </div>
+                    <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                        {[
+                            { q: "What are the admission requirements?", a: "Minimum 50% in 12th (PCM/PCB) for B.Pharm and 45% for D.Pharm, along with valid entrance scores." },
+                            { q: "When do admissions typically open?", a: "Applications usually open in April, with the process continuing through June/July each year." },
+                            { q: "Do you provide hostel facilities?", a: "Yes, we offer safe and comfortable accommodation for both boys and girls with modern amenities." },
+                            { q: "What about placement support?", a: "Our dedicated cell coordinates with top pharmaceutical companies for internships and final placements." }
+                        ].map((faq, i) => (
+                            <div 
+                                key={i} 
+                                className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-xl shadow-gray-200/30 group hover:border-[var(--bcp-teal)] transition-all duration-300"
+                            >
+                                <h3 className="text-xl font-black text-[var(--brand-primary)] mb-4 flex items-start gap-4 leading-tight">
+                                    <span className="w-8 h-8 rounded-lg bg-[var(--bcp-teal)] flex items-center justify-center text-white text-[10px] font-black shrink-0 mt-1">Q</span>
+                                    {faq.q}
+                                </h3>
+                                <p className="text-gray-600 leading-relaxed font-medium ml-12">{faq.a}</p>
+                            </div>
+                        ))}
                     </div>
-                </div>
-            </section>
-            <ScrollToTopButton />
-        </div>
+                </section>
+            </div>
+
+            {/* Background Texture Overlay */}
+            <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-0" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23223975' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}></div>
+        </main>
     )
-}
+}
