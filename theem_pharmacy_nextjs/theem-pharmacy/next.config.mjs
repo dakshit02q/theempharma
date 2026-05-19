@@ -8,7 +8,6 @@ const nextConfig = {
   },
 
   // Build optimizations
-  swcMinify: true,
   productionBrowserSourceMaps: false,
 
   // Image optimization - reduced sizes to prevent memory exhaustion

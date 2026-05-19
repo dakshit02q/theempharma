@@ -140,9 +140,9 @@ export default function StudentsPage({ studentsData = defaultStudentsData, isFal
                             <div className="bg-white rounded-[3rem] p-10 shadow-xl shadow-gray-200/50 border border-gray-100">
                                 <div className="mb-12">
                                     <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Wall of Fame</span>
-                                </div>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
+                                        <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Wall of Fame</span>
+                                    </div>
                                     <h2 className="text-3xl font-black text-[var(--brand-primary)] tracking-tight">Student Laurels</h2>
                                 </div>
 
@@ -188,6 +188,4 @@ export default function StudentsPage({ studentsData = defaultStudentsData, isFal
             </div>
         </main>
     );
-}
-
 }
