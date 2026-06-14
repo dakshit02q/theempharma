@@ -33,17 +33,17 @@ export default function NewsSlider({ items = [] }) {
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
                 {items.map((item, index) => (
-                    <div key={index} className="min-w-[320px] md:min-w-[400px] snap-center bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 group hover:border-[var(--brand-accent)] transition-all duration-300 flex flex-col shrink-0">
+                    <div key={index} className="min-w-[280px] md:min-w-[340px] snap-center bg-white rounded-2xl p-5 shadow-xl shadow-gray-200/50 border border-gray-100 group hover:border-[var(--brand-accent)] transition-all duration-300 flex flex-col shrink-0">
                         {item.image ? (
-                            <div className="w-full h-48 rounded-2xl overflow-hidden mb-6 relative bg-gray-100">
+                            <div className="w-full h-40 rounded-xl overflow-hidden mb-4 relative bg-gray-100">
                                 <Image src={item.image} alt={item.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                                 <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)] shadow-sm">
                                     {item.category || 'News'}
                                 </div>
                             </div>
                         ) : (
-                            <div className="w-full h-48 rounded-2xl overflow-hidden mb-6 relative bg-gradient-to-br from-[var(--brand-primary-soft)] to-blue-50 flex items-center justify-center">
-                                <i className="fas fa-newspaper text-5xl text-[var(--brand-primary)] opacity-20"></i>
+                            <div className="w-full h-40 rounded-xl overflow-hidden mb-4 relative bg-gradient-to-br from-[var(--brand-primary-soft)] to-blue-50 flex items-center justify-center">
+                                <i className="fas fa-newspaper text-4xl text-[var(--brand-primary)] opacity-20"></i>
                                 <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)] shadow-sm">
                                     {item.category || 'News'}
                                 </div>
@@ -52,8 +52,8 @@ export default function NewsSlider({ items = [] }) {
                         <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">
                             <span><i className="far fa-calendar-alt mr-1 text-[var(--brand-accent)]"></i> {item.date}</span>
                         </div>
-                        <h3 className="text-xl font-black text-gray-900 mb-3 leading-tight group-hover:text-[var(--brand-primary)] transition-colors">{item.title}</h3>
-                        <p className="text-sm text-gray-500 line-clamp-3 mb-6 font-medium flex-1">{item.excerpt}</p>
+                        <h3 className="text-lg font-black text-gray-900 mb-2 leading-tight group-hover:text-[var(--brand-primary)] transition-colors">{item.title}</h3>
+                        <p className="text-sm text-gray-500 line-clamp-2 mb-4 font-medium flex-1">{item.excerpt}</p>
                         <Link href={item.link || '#'} className="inline-flex items-center text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)] group-hover:text-[var(--brand-accent)] transition-colors mt-auto w-fit">
                             Read Full Story <i className="fas fa-arrow-right ml-2 text-xs transition-transform group-hover:translate-x-1"></i>
                         </Link>

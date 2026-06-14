@@ -59,7 +59,7 @@ export default function FacilitiesPage() {
     const [selectedFacility, setSelectedFacility] = useState(null)
 
     return (
-        <main className="bg-[#f8fafc] min-h-screen pb-20">
+        <main className="bg-[#f8fafc] min-h-screen pb-12">
             <PageHero 
                 title="Academic Infrastructure" 
                 subtitle="Explore our world-class laboratory ecosystem, designed to bridge theoretical concepts with sophisticated practical application."
@@ -67,20 +67,20 @@ export default function FacilitiesPage() {
 
             {/* Labs Grid */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-60px] relative z-20">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {facilities.map((lab, i) => (
                         <div 
                             key={lab.id} 
                             onClick={() => setSelectedFacility(lab)}
-                            className="bg-white rounded-[2.5rem] p-10 shadow-xl shadow-gray-200/50 border border-gray-100 group cursor-pointer hover:border-[var(--bcp-teal)] transition-all duration-500"
+                            className="bg-white rounded-2xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 group cursor-pointer hover:border-[var(--bcp-teal)] transition-all duration-500"
                         >
-                            <div className="flex items-start justify-between mb-8">
-                                <div className="w-14 h-14 rounded-2xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all">
-                                    <i className={`fas ${lab.icon} text-xl`}></i>
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="w-10 h-10 rounded-xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all">
+                                    <i className={`fas ${lab.icon} text-sm`}></i>
                                 </div>
                                 <div className="text-sm font-bold uppercase tracking-wider text-[var(--bcp-teal)]">0{i+1}</div>
                             </div>
-                            <h3 className="text-2xl font-black text-[var(--brand-primary)] tracking-tight mb-1">{lab.title}</h3>
+                            <h3 className="text-xl font-black text-[var(--brand-primary)] tracking-tight mb-1">{lab.title}</h3>
                             <div className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-6">{lab.subtitle}</div>
                             <p className="text-gray-500 font-medium text-sm leading-relaxed mb-8 line-clamp-3">
                                 {lab.description}
@@ -94,16 +94,16 @@ export default function FacilitiesPage() {
             </section>
 
             {/* Library Section */}
-            <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="bg-[var(--brand-primary)] rounded-[4rem] overflow-hidden relative shadow-2xl">
+            <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="bg-[var(--brand-primary)] rounded-2xl overflow-hidden relative shadow-2xl">
                     <div className="grid lg:grid-cols-2">
-                        <div className="p-12 lg:p-20 text-white relative z-10">
-                            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-4">
+                        <div className="p-8 lg:p-14 text-white relative z-10">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-3">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Centre for Knowledge</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Centre for Knowledge</span>
                                 </div>
-                            <h2 className="text-4xl lg:text-5xl font-black tracking-tight mb-8">Institutional Library</h2>
-                            <p className="text-white/70 font-medium text-lg leading-relaxed mb-12">
+                            <h2 className="text-3xl lg:text-4xl font-black tracking-tight mb-6">Institutional Library</h2>
+                            <p className="text-white/70 font-medium text-base leading-relaxed mb-8">
                                 Fully computerized with SOUL library management software, our library serves as the central information hub with automated barcode protocols and a vast digital knowledge repository.
                             </p>
                             <ul className="grid sm:grid-cols-2 gap-4">
@@ -141,14 +141,14 @@ export default function FacilitiesPage() {
             </section>
 
             {/* Language Lab & Other Facilities */}
-            <section className="py-24 max-w-5xl mx-auto px-4 text-center">
-                <div className="p-12 lg:p-20 bg-white rounded-[3rem] shadow-xl shadow-gray-200/40 border border-gray-100 relative overflow-hidden">
+            <section className="py-14 max-w-5xl mx-auto px-4 text-center">
+                <div className="p-8 lg:p-14 bg-white rounded-2xl shadow-xl shadow-gray-200/40 border border-gray-100 relative overflow-hidden">
                     <div className="relative z-10">
-                        <div className="w-16 h-16 bg-[var(--brand-primary-soft)] rounded-2xl flex items-center justify-center text-[var(--brand-primary)] mx-auto mb-8">
-                            <i className="fas fa-broadcast-tower text-2xl"></i>
+                        <div className="w-12 h-12 bg-[var(--brand-primary-soft)] rounded-xl flex items-center justify-center text-[var(--brand-primary)] mx-auto mb-6">
+                            <i className="fas fa-broadcast-tower text-xl"></i>
                         </div>
-                        <h2 className="text-3xl lg:text-4xl font-black text-[var(--brand-primary)] mb-6 tracking-tight">Multimedia Language Cell</h2>
-                        <p className="text-gray-600 font-medium text-lg leading-relaxed max-w-3xl mx-auto">
+                        <h2 className="text-2xl lg:text-3xl font-black text-[var(--brand-primary)] mb-4 tracking-tight">Multimedia Language Cell</h2>
+                        <p className="text-gray-600 font-medium text-base leading-relaxed max-w-3xl mx-auto">
                             Beyond pharmaceutical labs, we host a sophisticated Multimedia English Language Laboratory. Specifically designed to distill communicative competencies essential for professional leadership in the global pharma landscape.
                         </p>
                     </div>
@@ -158,18 +158,18 @@ export default function FacilitiesPage() {
             {/* Modal for Facility Details */}
             {selectedFacility && (
                 <div className="fixed inset-0 bg-[var(--brand-primary)]/90 backdrop-blur-md z-[100] flex items-center justify-center p-6" onClick={() => setSelectedFacility(null)}>
-                    <div className="bg-white rounded-[3rem] max-w-2xl w-full p-12 lg:p-20 relative overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => setSelectedFacility(null)} className="absolute top-10 right-10 w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center hover:bg-gray-100 transition-colors">
+                    <div className="bg-white rounded-2xl max-w-2xl w-full p-8 lg:p-12 relative overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => setSelectedFacility(null)} className="absolute top-6 right-6 w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors">
                             <i className="fas fa-times text-gray-400"></i>
                         </button>
                         
-                        <div className="space-y-10">
-                            <div className="flex items-center gap-6">
-                                <div className="w-20 h-20 rounded-[2rem] bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)]">
-                                    <i className={`fas ${selectedFacility.icon} text-3xl`}></i>
+                            <div className="space-y-6">
+                            <div className="flex items-center gap-4">
+                                <div className="w-14 h-14 rounded-2xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)]">
+                                    <i className={`fas ${selectedFacility.icon} text-2xl`}></i>
                                 </div>
                                 <div className="space-y-1">
-                                    <h3 className="text-3xl font-black text-[var(--brand-primary)] tracking-tight">{selectedFacility.title}</h3>
+                                    <h3 className="text-2xl font-black text-[var(--brand-primary)] tracking-tight">{selectedFacility.title}</h3>
                                     <div className="text-sm font-bold uppercase tracking-wider text-[var(--bcp-teal)]">{selectedFacility.subtitle}</div>
                                 </div>
                             </div>

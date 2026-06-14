@@ -6,7 +6,7 @@ import Image from 'next/image'
 
 export default function CoursesPage({ courses }) {
     return (
-        <main className="bg-[#f8fafc] min-h-screen pb-20">
+        <main className="bg-[#f8fafc] min-h-screen pb-12">
             <PageHero 
                 title="Academic Programs" 
                 subtitle="Excellence in pharmaceutical education through diverse programs tailored for future industry leaders."
@@ -14,34 +14,34 @@ export default function CoursesPage({ courses }) {
 
             {/* Course Grid */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-60px] relative z-20">
-                <div className="grid lg:grid-cols-2 gap-12">
+                <div className="grid lg:grid-cols-2 gap-8">
                     {courses.map((course, index) => (
                         <article 
                             key={course.id || index}
-                            className="bg-white rounded-[2.5rem] shadow-2xl shadow-gray-200/60 border-t-8 border-[var(--bcp-teal)] overflow-hidden group hover:translate-y-[-8px] transition-all duration-500 flex flex-col"
+                            className="bg-white rounded-2xl shadow-2xl shadow-gray-200/60 border-t-8 border-[var(--bcp-teal)] overflow-hidden group hover:translate-y-[-8px] transition-all duration-500 flex flex-col"
                         >
                             {/* Course Header */}
-                            <div className="p-8 lg:p-12 pb-0">
-                                <div className="flex items-start justify-between mb-8">
+                            <div className="p-6 lg:p-8 pb-0">
+                                <div className="flex items-start justify-between mb-6">
                                     <div className="space-y-1">
-                                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10">
+                                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Program</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Program</span>
                                 </div>
-                                        <h2 className="text-4xl font-black text-[var(--brand-primary)] tracking-tight">{course.name}</h2>
+                                        <h2 className="text-3xl font-black text-[var(--brand-primary)] tracking-tight">{course.name}</h2>
                                     </div>
-                                    <div className="w-16 h-16 rounded-2xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all duration-500">
-                                        <i className="fas fa-graduation-cap text-2xl"></i>
+                                    <div className="w-12 h-12 rounded-xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all duration-500">
+                                        <i className="fas fa-graduation-cap text-xl"></i>
                                     </div>
                                 </div>
                                 
-                                <p className="text-gray-600 leading-relaxed font-medium mb-10 text-lg">
+                                <p className="text-gray-600 leading-relaxed font-medium mb-8 text-base">
                                     {course.description}
                                 </p>
 
-                                <div className="grid sm:grid-cols-2 gap-6 mb-10">
-                                    <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[var(--bcp-teal)] shadow-sm">
+                                <div className="grid sm:grid-cols-2 gap-4 mb-8">
+                                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[var(--bcp-teal)] shadow-sm">
                                             <i className="fas fa-calendar-alt"></i>
                                         </div>
                                         <div>
@@ -49,8 +49,8 @@ export default function CoursesPage({ courses }) {
                                             <p className="font-bold text-[var(--brand-primary)]">{course.duration}</p>
                                         </div>
                                     </div>
-                                    <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[var(--bcp-teal)] shadow-sm">
+                                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[var(--bcp-teal)] shadow-sm">
                                             <i className="fas fa-check-double"></i>
                                         </div>
                                         <div>
@@ -62,7 +62,7 @@ export default function CoursesPage({ courses }) {
                             </div>
 
                             {/* Program Highlights */}
-                            <div className="px-8 lg:px-12 pb-12 flex-grow">
+                            <div className="px-6 lg:px-8 pb-8 flex-grow">
                                 <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)] mb-6 flex items-center gap-2">
                                     <span className="w-6 h-[1px] bg-[var(--brand-primary)]"></span>
                                     Key Program Insights
@@ -77,7 +77,7 @@ export default function CoursesPage({ courses }) {
                                 </ul>
                             </div>
 
-                            <div className="p-8 lg:p-12 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                            <div className="p-6 lg:p-8 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
                                 <Link 
                                     href={`/courses/${course.name.toLowerCase().replace(/\./g, '').replace(/\s+/g, '-')}`}
                                     className="text-xs font-black uppercase tracking-widest text-[var(--brand-primary)] hover:text-[var(--bcp-teal)] flex items-center gap-2 transition-colors"
@@ -97,9 +97,9 @@ export default function CoursesPage({ courses }) {
             </section>
 
             {/* Professional Stats / Features */}
-            <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="bg-[var(--brand-primary)] rounded-[3rem] p-12 lg:p-20 text-white relative overflow-hidden">
-                    <div className="grid lg:grid-cols-3 gap-12 relative z-10">
+            <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="bg-[var(--brand-primary)] rounded-2xl p-8 lg:p-14 text-white relative overflow-hidden">
+                    <div className="grid lg:grid-cols-3 gap-8 relative z-10">
                         {[
                             { label: 'Excellence', title: 'Modern Facilities', desc: 'State-of-the-art laboratories and research equipment for practical mastery.', icon: 'fas fa-vial' },
                             { label: 'Growth', title: 'Global Placements', desc: 'Strong industry ties ensuring 90%+ placement rate in top pharma firms.', icon: 'fas fa-briefcase' },
@@ -113,7 +113,7 @@ export default function CoursesPage({ courses }) {
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
                                     <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">{feature.label}</span>
                                 </div>
-                                <h3 className="text-2xl font-black">{feature.title}</h3>
+                                <h3 className="text-xl font-black">{feature.title}</h3>
                                 <p className="text-white/70 font-medium leading-relaxed">{feature.desc}</p>
                             </div>
                         ))}
@@ -124,13 +124,13 @@ export default function CoursesPage({ courses }) {
             </section>
 
             {/* Admission Timeline - BCP Style */}
-            <section className="py-24 max-w-5xl mx-auto px-4">
-                <div className="text-center mb-16">
-                    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
+            <section className="py-14 max-w-5xl mx-auto px-4">
+                <div className="text-center mb-10">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Process</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Process</span>
                                 </div>
-                    <h2 className="text-4xl font-black text-[var(--brand-primary)] tracking-tight">Admission Cycle</h2>
+                    <h2 className="text-2xl font-black text-[var(--brand-primary)] tracking-tight">Admission Cycle</h2>
                 </div>
                 
                 <div className="space-y-4">
@@ -140,12 +140,12 @@ export default function CoursesPage({ courses }) {
                         { step: '03', title: 'Counselling', desc: 'Interactive session to align candidate goals with program objectives.' },
                         { step: '04', title: 'Enrollment', desc: 'Finalizing admission protocols and institutional integration.' }
                     ].map((item, i) => (
-                        <div key={i} className="bg-white rounded-2xl p-8 border border-gray-100 shadow-xl shadow-gray-200/30 flex items-center gap-8 group hover:border-[var(--bcp-teal)] transition-all">
-                            <div className={`w-16 h-16 rounded-2xl ${item.stepColor || 'bg-[var(--brand-primary)]'} text-white flex items-center justify-center text-xl font-black shadow-lg group-hover:scale-110 transition-transform`}>
+                        <div key={i} className="bg-white rounded-xl p-6 border border-gray-100 shadow-xl shadow-gray-200/30 flex items-center gap-6 group hover:border-[var(--bcp-teal)] transition-all">
+                            <div className={`w-12 h-12 rounded-xl ${item.stepColor || 'bg-[var(--brand-primary)]'} text-white flex items-center justify-center text-lg font-black shadow-lg group-hover:scale-110 transition-transform`}>
                                 {item.step}
                             </div>
                             <div>
-                                <h3 className="text-xl font-black text-[var(--brand-primary)] mb-1">{item.title}</h3>
+                                <h3 className="text-lg font-black text-[var(--brand-primary)] mb-1">{item.title}</h3>
                                 <p className="text-gray-500 font-medium">{item.desc}</p>
                             </div>
                         </div>

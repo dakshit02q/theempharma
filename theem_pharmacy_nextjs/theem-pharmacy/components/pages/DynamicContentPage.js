@@ -59,16 +59,16 @@ export default function DynamicContentPage({ title, subtitle, sections: initialS
                         ))}
                     </div>
                 ) : isSyncing ? (
-                    <div className="flex flex-col items-center justify-center py-20 lg:py-32 gap-6">
-                        <div className="w-12 h-12 border-4 border-[var(--brand-primary-soft)] border-t-[var(--brand-primary)] rounded-full animate-spin" />
+                    <div className="flex flex-col items-center justify-center py-14 lg:py-20 gap-4">
+                        <div className="w-10 h-10 border-4 border-[var(--brand-primary-soft)] border-t-[var(--brand-primary)] rounded-full animate-spin" />
                         <p className="text-sm font-bold uppercase tracking-wider text-gray-400">Syncing Campus Insights…</p>
                     </div>
                 ) : (
-                    <div className="max-w-4xl mx-auto px-4 py-24 text-center">
-                        <div className="w-20 h-20 bg-white rounded-3xl shadow-xl flex items-center justify-center mx-auto mb-8 border border-gray-100">
-                            <i className="fas fa-file-signature text-3xl text-gray-200" />
+                    <div className="max-w-4xl mx-auto px-4 py-16 text-center">
+                        <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center mx-auto mb-6 border border-gray-100">
+                            <i className="fas fa-file-signature text-2xl text-gray-200" />
                         </div>
-                        <h3 className="text-2xl font-black text-[var(--brand-primary)] mb-4">Academic Documentation in Progress</h3>
+                        <h3 className="text-xl font-black text-[var(--brand-primary)] mb-3">Academic Documentation in Progress</h3>
                         <p className="text-gray-500 font-medium max-w-md mx-auto">We are currently curating the official documentation and insights for this section. Please visit again shortly.</p>
                     </div>
                 )}

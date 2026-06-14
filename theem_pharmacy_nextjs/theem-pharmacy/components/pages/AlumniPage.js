@@ -22,7 +22,7 @@ export default function AlumniPage({ statistics }) {
     ];
 
     return (
-        <main className="bg-[#f8fafc] min-h-screen pb-24">
+        <main className="bg-[#f8fafc] min-h-screen pb-12">
             <PageHero 
                 title="Global Alumni Network" 
                 subtitle={`A prestigious community of ${statistics.totalAlumni}+ pharmaceutical professionals architecting the future of global healthcare.`}
@@ -30,19 +30,19 @@ export default function AlumniPage({ statistics }) {
 
             <div className="relative z-20 mt-[-60px] lg:mt-[-80px] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Statistics Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-32">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
                     {stats.map((stat, index) => (
                         <div 
                             key={index} 
-                            className="bg-white rounded-[2.5rem] p-10 shadow-xl shadow-gray-200/50 border border-gray-100 group hover:border-[var(--bcp-teal)] transition-all duration-500"
+                            className="bg-white rounded-2xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 group hover:border-[var(--bcp-teal)] transition-all duration-500"
                         >
-                            <div className="flex items-start justify-between mb-8">
-                                <div className="w-14 h-14 rounded-2xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all">
-                                    <i className={`fas ${stat.icon} text-xl`}></i>
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="w-10 h-10 rounded-xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all">
+                                    <i className={`fas ${stat.icon} text-sm`}></i>
                                 </div>
                                 <div className="text-sm font-bold uppercase tracking-wider text-gray-300">0{index+1}</div>
                             </div>
-                            <div className="text-4xl font-black text-[var(--brand-primary)] tracking-tight mb-2">{stat.value}</div>
+                            <div className="text-3xl font-black text-[var(--brand-primary)] tracking-tight mb-1">{stat.value}</div>
                             <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--bcp-teal)] mb-4">{stat.label}</h3>
                             <p className="text-gray-500 font-medium text-sm leading-relaxed">{stat.subtitle}</p>
                         </div>
@@ -50,27 +50,27 @@ export default function AlumniPage({ statistics }) {
                 </div>
 
                 {/* Services Section */}
-                <section className="mb-32">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
+                <section className="mb-14">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
                         <div className="space-y-2">
-                            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Institutional Support</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Institutional Support</span>
                                 </div>
-                            <h2 className="text-4xl lg:text-5xl font-black text-[var(--brand-primary)] tracking-tight">Alumni Services</h2>
+                            <h2 className="text-2xl lg:text-3xl font-black text-[var(--brand-primary)] tracking-tight">Alumni Services</h2>
                         </div>
-                        <p className="text-gray-500 font-medium text-lg max-w-xl mt-8 md:mt-0">
+                        <p className="text-gray-500 font-medium text-base max-w-xl mt-6 md:mt-0">
                             We provide a sophisticated ecosystem to ensure our graduates continue to lead and thrive in the global pharmaceutical landscape.
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {services.map((service, index) => (
-                            <div key={index} className="p-10 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
-                                <div className="w-12 h-12 rounded-2xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] mb-8">
-                                    <i className={`fas ${service.icon} text-lg`}></i>
+                            <div key={index} className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
+                                <div className="w-10 h-10 rounded-xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] mb-4">
+                                    <i className={`fas ${service.icon} text-sm`}></i>
                                 </div>
-                                <h3 className="text-2xl font-black text-[var(--brand-primary)] tracking-tight mb-4">{service.title}</h3>
+                                <h3 className="text-lg font-black text-[var(--brand-primary)] tracking-tight mb-3">{service.title}</h3>
                                 <p className="text-gray-500 font-medium leading-relaxed">{service.desc}</p>
                             </div>
                         ))}
@@ -79,21 +79,21 @@ export default function AlumniPage({ statistics }) {
 
                 {/* CTA Section */}
                 <section>
-                    <div className="bg-[var(--brand-primary)] rounded-[4rem] overflow-hidden relative p-12 lg:p-24 text-center text-white shadow-2xl">
+                    <div className="bg-[var(--brand-primary)] rounded-2xl overflow-hidden relative p-8 lg:p-14 text-center text-white shadow-2xl">
                         <div className="relative z-10 max-w-4xl mx-auto">
-                            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-6">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-4">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Stay Integrated</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Stay Integrated</span>
                                 </div>
-                            <h2 className="text-4xl lg:text-6xl font-black tracking-tighter mb-8 leading-none">Register with the Alma Mater</h2>
-                            <p className="text-white/60 font-medium text-xl leading-relaxed mb-12">
+                            <h2 className="text-3xl lg:text-4xl font-black tracking-tighter mb-6 leading-none">Register with the Alma Mater</h2>
+                            <p className="text-white/60 font-medium text-base leading-relaxed mb-8">
                                 Access the global directory, scientific collaboration protocols, and exclusive career leadership events.
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                                <button className="px-10 py-5 bg-[var(--brand-accent)] text-white text-sm font-bold uppercase tracking-wider rounded-2xl hover:scale-105 transition-transform shadow-lg shadow-[var(--brand-accent)]/20">
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                <button className="px-8 py-3 bg-[var(--brand-accent)] text-white text-sm font-bold uppercase tracking-wider rounded-xl hover:scale-105 transition-transform shadow-lg shadow-[var(--brand-accent)]/20">
                                     Alumni Registration
                                 </button>
-                                <button className="px-10 py-5 bg-white/5 backdrop-blur-md border border-white/20 text-white text-sm font-bold uppercase tracking-wider rounded-2xl hover:bg-white/10 transition-all">
+                                <button className="px-8 py-3 bg-white/5 backdrop-blur-md border border-white/20 text-white text-sm font-bold uppercase tracking-wider rounded-xl hover:bg-white/10 transition-all">
                                     Network Directory
                                 </button>
                             </div>

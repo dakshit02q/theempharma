@@ -4,7 +4,7 @@ import PageHero from '@/components/PageHero';
 
 export default function AcademicsPage({ academicCalendar }) {
     return (
-        <main className="bg-[#f8fafc] min-h-screen pb-24">
+        <main className="bg-[#f8fafc] min-h-screen pb-12">
             <PageHero 
                 title="Academic Excellence" 
                 subtitle="Nurturing scientific discipline through a rigorous academic calendar, industry-aligned curricula, and sophisticated pedagogical frameworks."
@@ -12,30 +12,30 @@ export default function AcademicsPage({ academicCalendar }) {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-60px] relative z-30">
                 {/* Academic Calendar */}
-                <section className="mb-32">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
+                <section className="mb-14">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
                         <div className="space-y-2">
-                            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Institutional Schedule</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Institutional Schedule</span>
                                 </div>
-                            <h2 className="text-4xl lg:text-5xl font-black text-[var(--brand-primary)] tracking-tight">Academic Calendar 2024-25</h2>
+                            <h2 className="text-2xl lg:text-3xl font-black text-[var(--brand-primary)] tracking-tight">Academic Calendar 2024-25</h2>
                         </div>
-                        <p className="text-gray-500 font-medium text-lg max-w-xl mt-8 md:mt-0">
+                        <p className="text-gray-500 font-medium text-base max-w-xl mt-6 md:mt-0">
                             Stay synchronized with our critical academic milestones, examination protocols, and institutional observances.
                         </p>
                     </div>
 
                     <div className="grid lg:grid-cols-2 gap-10">
                         {academicCalendar.map((event, i) => (
-                            <div key={event.id} className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-gray-200/50 border border-gray-100 group hover:border-[var(--bcp-teal)] transition-all duration-500">
-                                <div className="flex items-start gap-8">
+                            <div key={event.id} className="bg-white rounded-2xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 group hover:border-[var(--bcp-teal)] transition-all duration-500">
+                                <div className="flex items-start gap-6">
                                     <div className="flex-shrink-0">
-                                        <div className="w-20 h-20 bg-[var(--brand-primary-soft)] rounded-[1.5rem] flex flex-col items-center justify-center border border-[var(--brand-primary)]/10">
+                                        <div className="w-16 h-16 bg-[var(--brand-primary-soft)] rounded-xl flex flex-col items-center justify-center border border-[var(--brand-primary)]/10">
                                             <span className="text-[10px] font-black text-[var(--brand-primary)] uppercase tracking-widest mb-1">
                                                 {new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}
                                             </span>
-                                            <span className="text-3xl font-black text-[var(--brand-primary)] tracking-tighter">
+                                            <span className="text-2xl font-black text-[var(--brand-primary)] tracking-tighter">
                                                 {new Date(event.date).getDate()}
                                             </span>
                                         </div>
@@ -61,23 +61,23 @@ export default function AcademicsPage({ academicCalendar }) {
                 </section>
 
                 {/* Programs Overview */}
-                <section className="mb-32">
-                    <div className="text-center mb-16">
-                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
+                <section className="mb-14">
+                    <div className="text-center mb-10">
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Curriculum Framework</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Curriculum Framework</span>
                                 </div>
-                        <h2 className="text-4xl lg:text-5xl font-black text-[var(--brand-primary)] tracking-tight">Our Programs</h2>
+                        <h2 className="text-2xl lg:text-3xl font-black text-[var(--brand-primary)] tracking-tight">Our Programs</h2>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-12">
-                        <div className="bg-white rounded-[3rem] p-12 shadow-xl shadow-gray-200/50 border border-gray-100 group relative overflow-hidden">
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <div className="bg-white rounded-2xl p-8 shadow-xl shadow-gray-200/50 border border-gray-100 group relative overflow-hidden">
                             <div className="relative z-10">
-                                <div className="w-16 h-16 bg-[var(--brand-primary-soft)] rounded-2xl flex items-center justify-center mb-8 text-[var(--brand-primary)]">
-                                    <i className="fas fa-user-md text-2xl"></i>
+                                <div className="w-12 h-12 bg-[var(--brand-primary-soft)] rounded-xl flex items-center justify-center mb-6 text-[var(--brand-primary)]">
+                                    <i className="fas fa-user-md text-xl"></i>
                                 </div>
-                                <h3 className="text-3xl font-black text-[var(--brand-primary)] tracking-tight mb-6">B.Pharmacy (4 Years)</h3>
-                                <p className="text-gray-500 font-medium leading-relaxed mb-8">
+                                <h3 className="text-2xl font-black text-[var(--brand-primary)] tracking-tight mb-4">B.Pharmacy (4 Years)</h3>
+                                <p className="text-gray-500 font-medium leading-relaxed mb-6">
                                     Comprehensive undergraduate program in pharmaceutical sciences with a strategic focus on drug discovery, formulation engineering, and global pharmaceutical care protocols.
                                 </p>
                                 <div className="space-y-4">
@@ -96,13 +96,13 @@ export default function AcademicsPage({ academicCalendar }) {
                             <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--brand-primary-soft)] skew-x-[-20deg] translate-x-16 -translate-y-16 opacity-50"></div>
                         </div>
 
-                        <div className="bg-white rounded-[3rem] p-12 shadow-xl shadow-gray-200/50 border border-gray-100 group relative overflow-hidden">
+                        <div className="bg-white rounded-2xl p-8 shadow-xl shadow-gray-200/50 border border-gray-100 group relative overflow-hidden">
                             <div className="relative z-10">
-                                <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mb-8 text-green-600">
-                                    <i className="fas fa-pills text-2xl"></i>
+                                <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mb-6 text-green-600">
+                                    <i className="fas fa-pills text-xl"></i>
                                 </div>
-                                <h3 className="text-3xl font-black text-[var(--brand-primary)] tracking-tight mb-6">D.Pharmacy (2 Years)</h3>
-                                <p className="text-gray-500 font-medium leading-relaxed mb-8">
+                                <h3 className="text-2xl font-black text-[var(--brand-primary)] tracking-tight mb-4">D.Pharmacy (2 Years)</h3>
+                                <p className="text-gray-500 font-medium leading-relaxed mb-6">
                                     Intensive diploma program architected for precision in practical pharmacy skills, pharmaceutical logistics, and community healthcare management.
                                 </p>
                                 <div className="space-y-4">
@@ -125,13 +125,13 @@ export default function AcademicsPage({ academicCalendar }) {
 
                 {/* Admin Panel Notice */}
                 <section>
-                    <div className="bg-[var(--brand-primary)] rounded-[4rem] p-12 lg:p-24 text-center text-white shadow-2xl relative overflow-hidden">
+                    <div className="bg-[var(--brand-primary)] rounded-2xl p-8 lg:p-14 text-center text-white shadow-2xl relative overflow-hidden">
                         <div className="relative z-10 max-w-3xl mx-auto">
-                            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-[var(--brand-accent)] mx-auto mb-8">
-                                <i className="fas fa-network-wired text-2xl"></i>
+                            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-[var(--brand-accent)] mx-auto mb-6">
+                                <i className="fas fa-network-wired text-xl"></i>
                             </div>
-                            <h3 className="text-3xl lg:text-4xl font-black tracking-tighter mb-6">Centralized Academic Sync</h3>
-                            <p className="text-white/60 font-medium text-lg leading-relaxed">
+                            <h3 className="text-2xl lg:text-3xl font-black tracking-tighter mb-4">Centralized Academic Sync</h3>
+                            <p className="text-white/60 font-medium text-base leading-relaxed">
                                 Our academic framework is synchronized in real-time via the institutional administration portal, ensuring absolute transparency and data integrity for scholars and faculty.
                             </p>
                         </div>

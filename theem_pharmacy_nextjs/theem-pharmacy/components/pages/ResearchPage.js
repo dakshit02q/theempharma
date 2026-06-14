@@ -4,7 +4,7 @@ import PageHero from '@/components/PageHero';
 
 export default function ResearchPage({ researchProjects = [], publications = [], facilities = [] }) {
     return (
-        <main className="bg-[#f8fafc] min-h-screen pb-24">
+        <main className="bg-[#f8fafc] min-h-screen pb-12">
             <PageHero 
                 title="Research & Innovation" 
                 subtitle="Advancing pharmaceutical sciences through cutting-edge discovery, intellectual property development, and high-impact industrial collaborations."
@@ -12,32 +12,32 @@ export default function ResearchPage({ researchProjects = [], publications = [],
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-60px] relative z-20">
                 {/* Strategic Focus */}
-                <section className="mb-32">
-                    <div className="bg-[var(--brand-primary)] rounded-[3rem] p-12 lg:p-20 text-white relative overflow-hidden shadow-2xl">
+                <section className="mb-14">
+                    <div className="bg-[var(--brand-primary)] rounded-2xl p-8 lg:p-14 text-white relative overflow-hidden shadow-2xl">
                         <div className="relative z-10">
-                            <div className="flex items-center gap-4 mb-12">
-                                <div className="h-10 w-1 bg-[var(--brand-accent)] rounded-full"></div>
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="h-8 w-1 bg-[var(--brand-accent)] rounded-full"></div>
                                 <div>
-                                    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-1">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-1">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Strategic Framework</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Strategic Framework</span>
                                 </div>
-                                    <h2 className="text-4xl lg:text-5xl font-black tracking-tighter">Core Scientific Focus Areas</h2>
+                                    <h2 className="text-2xl lg:text-3xl font-black tracking-tighter">Core Scientific Focus Areas</h2>
                                 </div>
                             </div>
                             
-                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 {[
                                     { title: 'Drug Discovery', icon: 'fa-pills', desc: 'Novel drug development and advanced formulation research.' },
                                     { title: 'Natural Products', icon: 'fa-leaf', desc: 'Phytochemical studies and standardization of herbal actives.' },
                                     { title: 'Clinical Research', icon: 'fa-microscope', desc: 'Evaluating therapeutic efficacy through rigorous clinical trials.' },
                                     { title: 'Biotechnology', icon: 'fa-dna', desc: 'Biopharmaceuticals and diagnostics in modern medicine.' }
                                 ].map((item, idx) => (
-                                    <div key={idx} className="space-y-4">
-                                        <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-[var(--brand-accent)]">
-                                            <i className={`fas ${item.icon} text-xl`}></i>
+                                    <div key={idx} className="space-y-3">
+                                        <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-[var(--brand-accent)]">
+                                            <i className={`fas ${item.icon} text-lg`}></i>
                                         </div>
-                                        <h3 className="text-xl font-black tracking-tight">{item.title}</h3>
+                                        <h3 className="text-lg font-black tracking-tight">{item.title}</h3>
                                         <p className="text-white/60 text-sm font-medium leading-relaxed">{item.desc}</p>
                                     </div>
                                 ))}
@@ -47,20 +47,20 @@ export default function ResearchPage({ researchProjects = [], publications = [],
                     </div>
                 </section>
 
-                <div className="grid lg:grid-cols-12 gap-16">
+                <div className="grid lg:grid-cols-12 gap-10">
                     {/* Left Column: Projects & Publications */}
-                    <div className="lg:col-span-8 space-y-32">
+                    <div className="lg:col-span-8 space-y-14">
                         {/* Research Projects */}
                         <section>
-                            <div className="mb-12 border-l-8 border-[var(--bcp-teal)] pl-8">
-                                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
+                            <div className="mb-8 border-l-8 border-[var(--bcp-teal)] pl-6">
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Active Research</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Active Research</span>
                                 </div>
-                                <h2 className="text-4xl lg:text-5xl font-black text-[var(--brand-primary)] tracking-tight">Research Projects</h2>
+                                <h2 className="text-2xl lg:text-3xl font-black text-[var(--brand-primary)] tracking-tight">Research Projects</h2>
                             </div>
                             
-                            <div className="overflow-hidden rounded-[2.5rem] bg-white shadow-xl shadow-gray-200/50 border border-gray-100">
+                            <div className="overflow-hidden rounded-2xl bg-white shadow-xl shadow-gray-200/50 border border-gray-100">
                                 <table className="w-full text-left border-collapse">
                                     <thead className="bg-[var(--bcp-teal)] text-white">
                                         <tr>
@@ -98,23 +98,23 @@ export default function ResearchPage({ researchProjects = [], publications = [],
 
                         {/* Recent Publications */}
                         <section>
-                            <div className="mb-12 border-l-8 border-[var(--bcp-teal)] pl-8">
-                                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
+                            <div className="mb-8 border-l-8 border-[var(--bcp-teal)] pl-6">
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Academic Output</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Academic Output</span>
                                 </div>
-                                <h2 className="text-4xl lg:text-5xl font-black text-[var(--brand-primary)] tracking-tight">Publications</h2>
+                                <h2 className="text-2xl lg:text-3xl font-black text-[var(--brand-primary)] tracking-tight">Publications</h2>
                             </div>
                             
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                                 {publications.length > 0 ? publications.map((pub, idx) => (
-                                    <div key={pub.id || idx} className="p-10 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 transition-all group">
-                                        <div className="flex items-start gap-6">
-                                            <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-[var(--bcp-teal)] group-hover:bg-[var(--bcp-teal)] group-hover:text-white transition-all">
-                                                <i className="fas fa-file-alt text-xl"></i>
+                                    <div key={pub.id || idx} className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 transition-all group">
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-[var(--bcp-teal)] group-hover:bg-[var(--bcp-teal)] group-hover:text-white transition-all">
+                                                <i className="fas fa-file-alt text-lg"></i>
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="text-xl font-black text-[var(--brand-primary)] leading-tight mb-4 tracking-tight group-hover:text-[var(--bcp-teal)] transition-colors">{pub.title}</h3>
+                                                <h3 className="text-lg font-black text-[var(--brand-primary)] leading-tight mb-3 tracking-tight group-hover:text-[var(--bcp-teal)] transition-colors">{pub.title}</h3>
                                                 <div className="flex flex-wrap gap-x-8 gap-y-4 items-center">
                                                     <div className="text-xs text-gray-500 font-medium">Authors: <span className="text-[var(--brand-primary)] font-black">{pub.authors}</span></div>
                                                     <div className="h-4 w-px bg-gray-200 hidden sm:block"></div>
@@ -139,24 +139,24 @@ export default function ResearchPage({ researchProjects = [], publications = [],
                     </div>
 
                     {/* Right Column: Facilities & Stats */}
-                    <div className="lg:col-span-4 space-y-16">
-                        <section className="bg-white rounded-[3rem] p-10 shadow-xl shadow-gray-200/50 border border-gray-100">
-                            <div className="mb-12 border-l-4 border-[var(--bcp-teal)] pl-4">
-                                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
+                    <div className="lg:col-span-4 space-y-10">
+                        <section className="bg-white rounded-2xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100">
+                            <div className="mb-8 border-l-4 border-[var(--bcp-teal)] pl-3">
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Research Assets</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Research Assets</span>
                                 </div>
-                                <h2 className="text-3xl font-black text-[var(--brand-primary)] tracking-tight">Facilities</h2>
+                                <h2 className="text-2xl font-black text-[var(--brand-primary)] tracking-tight">Facilities</h2>
                             </div>
                             
                             <div className="space-y-12">
                                 {facilities.map((fac, idx) => (
-                                    <div key={fac.id || idx} className="space-y-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)]">
-                                                <i className={`fas ${fac.icon || 'fa-tools'}`}></i>
+                                    <div key={fac.id || idx} className="space-y-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-lg bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)]">
+                                                <i className={`fas ${fac.icon || 'fa-tools'} text-sm`}></i>
                                             </div>
-                                            <h3 className="text-xl font-black text-[var(--brand-primary)] tracking-tight">{fac.name}</h3>
+                                            <h3 className="text-lg font-black text-[var(--brand-primary)] tracking-tight">{fac.name}</h3>
                                         </div>
                                         <p className="text-sm text-gray-500 font-medium leading-relaxed">{fac.description}</p>
                                         <div className="flex flex-wrap gap-2">
@@ -172,12 +172,12 @@ export default function ResearchPage({ researchProjects = [], publications = [],
                         </section>
 
                         {/* Call to Action Card */}
-                        <section className="bg-[var(--brand-primary)] rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden">
+                        <section className="bg-[var(--brand-primary)] rounded-2xl p-8 text-white shadow-2xl relative overflow-hidden">
                             <div className="relative z-10">
-                                <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-8 text-[var(--brand-accent)]">
-                                    <i className="fas fa-shield-alt text-2xl"></i>
+                                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mb-6 text-[var(--brand-accent)]">
+                                    <i className="fas fa-shield-alt text-xl"></i>
                                 </div>
-                                <h3 className="text-2xl font-black mb-6 tracking-tight">Institutional Research Board</h3>
+                                <h3 className="text-xl font-black mb-4 tracking-tight">Institutional Research Board</h3>
                                 <p className="text-white/60 text-sm font-medium leading-relaxed mb-10">
                                     Our ethical committee ensures all scientific investigations adhere to the highest standards of biosafety and professional protocols.
                                 </p>

@@ -23,19 +23,19 @@ export default function GalleryShowcasePage({ title, subtitle, carouselItems, ph
     const currentSlide = safeCarousel[activeIndex] || null;
 
     return (
-        <main className="bg-[#f8fafc] min-h-screen pb-24">
+        <main className="bg-[#f8fafc] min-h-screen pb-12">
             <PageHero title={title} subtitle={subtitle} />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-60px] relative z-20">
                 {/* Featured Carousel */}
-                <section className="mb-32">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <section className="mb-12">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
                         <div className="space-y-2">
-                            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Highlights</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Highlights</span>
                                 </div>
-                            <h2 className="text-4xl lg:text-5xl font-black text-[var(--brand-primary)] tracking-tight">Institutional Moments</h2>
+                            <h2 className="text-2xl lg:text-3xl font-black text-[var(--brand-primary)] tracking-tight">Institutional Moments</h2>
                         </div>
                         {safeCarousel.length > 1 && (
                             <div className="flex gap-4 mt-8 md:mt-0">
@@ -57,7 +57,7 @@ export default function GalleryShowcasePage({ title, subtitle, carouselItems, ph
 
                     {currentSlide ? (
                         <div className="relative group">
-                            <article className="relative rounded-[3rem] overflow-hidden bg-white shadow-2xl shadow-gray-200/60 border-8 border-white aspect-[16/9] lg:aspect-[21/9]">
+                            <article className="relative rounded-2xl overflow-hidden bg-white shadow-2xl shadow-gray-200/60 border-4 border-white aspect-[16/9] lg:aspect-[21/9]">
                                 <Image
                                     src={currentSlide.image}
                                     alt={currentSlide.title}
@@ -66,10 +66,10 @@ export default function GalleryShowcasePage({ title, subtitle, carouselItems, ph
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--brand-primary)]/80 via-transparent to-transparent"></div>
                                 
-                                <div className="absolute bottom-0 left-0 right-0 p-12 lg:p-20 text-white">
-                                    <div className="text-sm font-bold uppercase tracking-wider text-[var(--brand-accent)] mb-4">Featured Moment</div>
-                                    <h3 className="text-4xl lg:text-6xl font-black tracking-tighter mb-4">{currentSlide.title}</h3>
-                                    {currentSlide.caption && <p className="text-lg text-white/80 max-w-2xl font-medium leading-relaxed">{currentSlide.caption}</p>}
+                                <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-10 text-white">
+                                    <div className="text-xs font-bold uppercase tracking-wider text-[var(--brand-accent)] mb-2">Featured Moment</div>
+                                    <h3 className="text-2xl lg:text-4xl font-black tracking-tighter mb-3">{currentSlide.title}</h3>
+                                    {currentSlide.caption && <p className="text-base text-white/80 max-w-2xl font-medium leading-relaxed">{currentSlide.caption}</p>}
                                 </div>
                             </article>
                             
@@ -86,33 +86,33 @@ export default function GalleryShowcasePage({ title, subtitle, carouselItems, ph
                             )}
                         </div>
                     ) : (
-                        <div className="p-32 text-center bg-white rounded-[3rem] border border-gray-100 shadow-xl shadow-gray-200/40">
-                            <i className="fas fa-images text-6xl text-gray-100 mb-8 block"></i>
-                            <h3 className="text-xl font-black text-gray-300 uppercase tracking-widest">Archival highlights coming soon</h3>
+                        <div className="p-16 text-center bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/40">
+                            <i className="fas fa-images text-4xl text-gray-100 mb-6 block"></i>
+                            <h3 className="text-lg font-black text-gray-300 uppercase tracking-widest">Archival highlights coming soon</h3>
                         </div>
                     )}
                 </section>
 
                 {/* Photo Grid Section */}
                 <section>
-                    <div className="text-center mb-20">
-                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
+                    <div className="text-center mb-10">
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Full Archive</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Full Archive</span>
                                 </div>
-                        <h2 className="text-4xl lg:text-5xl font-black text-[var(--brand-primary)] tracking-tight">Institutional Memory</h2>
+                        <h2 className="text-2xl lg:text-3xl font-black text-[var(--brand-primary)] tracking-tight">Institutional Memory</h2>
                     </div>
 
                     {safePhotos.length === 0 ? (
-                        <div className="p-32 text-center bg-white rounded-[3rem] border border-gray-100 shadow-xl shadow-gray-200/40">
-                            <i className="fas fa-camera text-6xl text-gray-100 mb-8 block"></i>
-                            <h3 className="text-xl font-black text-gray-300 uppercase tracking-widest">Curating the visual history</h3>
+                        <div className="p-16 text-center bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/40">
+                            <i className="fas fa-camera text-4xl text-gray-100 mb-6 block"></i>
+                            <h3 className="text-lg font-black text-gray-300 uppercase tracking-widest">Curating the visual history</h3>
                         </div>
                     ) : (
-                        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {safePhotos.map((item, index) => (
                                 <article key={item.id || index} className="group">
-                                    <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-8 shadow-xl shadow-gray-200/50 border-4 border-white group-hover:translate-y-[-8px] transition-all duration-500">
+                                    <div className="relative aspect-[4/5] rounded-2xl overflow-hidden mb-4 shadow-xl shadow-gray-200/50 border-4 border-white group-hover:translate-y-[-8px] transition-all duration-500">
                                         <Image
                                             src={item.image}
                                             alt={item.title}
@@ -125,9 +125,9 @@ export default function GalleryShowcasePage({ title, subtitle, carouselItems, ph
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="px-4 space-y-2">
-                                        <div className="text-sm font-bold uppercase tracking-wider text-[var(--bcp-teal)]">Album Archive</div>
-                                        <h3 className="text-2xl font-black text-[var(--brand-primary)] tracking-tight group-hover:text-[var(--bcp-teal)] transition-colors">{item.title}</h3>
+                                    <div className="px-2 space-y-1">
+                                        <div className="text-xs font-bold uppercase tracking-wider text-[var(--bcp-teal)]">Album Archive</div>
+                                        <h3 className="text-lg font-black text-[var(--brand-primary)] tracking-tight group-hover:text-[var(--bcp-teal)] transition-colors">{item.title}</h3>
                                         {item.caption && <p className="text-gray-500 text-sm font-medium leading-relaxed">{item.caption}</p>}
                                     </div>
                                 </article>

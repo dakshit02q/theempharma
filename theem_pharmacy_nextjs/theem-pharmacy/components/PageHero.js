@@ -24,7 +24,7 @@ export default function PageHero({ title, subtitle, breadcrumbs = [], imageSrc =
     return (
         <section className="institutional-hero">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full relative z-10">
-                <div className="grid lg:grid-cols-2 gap-12 items-center h-full pt-32 pb-16 lg:pt-40 lg:pb-24">
+                <div className="grid lg:grid-cols-2 gap-8 items-center h-full pt-24 pb-10 lg:pt-28 lg:pb-14">
                     {/* Hero Content */}
                     <div className="space-y-6">
                         <nav className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[var(--bcp-teal)] mb-4" aria-label="Breadcrumb">
@@ -43,13 +43,13 @@ export default function PageHero({ title, subtitle, breadcrumbs = [], imageSrc =
 
                         <div className="relative">
                             <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--brand-primary)] rounded-full"></div>
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-[var(--brand-primary)] leading-[1.1] pl-8 tracking-tight">
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-[var(--brand-primary)] leading-[1.1] pl-8 tracking-tight">
                                 {title}
                             </h1>
                         </div>
 
                         {subtitle && (
-                            <p className="text-lg text-gray-600 leading-relaxed max-w-xl pl-8">
+                            <p className="text-base text-gray-600 leading-relaxed max-w-xl pl-8">
                                 {subtitle}
                             </p>
                         )}
@@ -63,7 +63,7 @@ export default function PageHero({ title, subtitle, breadcrumbs = [], imageSrc =
                                 alt={title}
                                 width={800}
                                 height={600}
-                                className="w-full h-[400px] object-cover transition-transform duration-700 group-hover:scale-110"
+                                className="w-full h-[320px] object-cover transition-transform duration-700 group-hover:scale-110"
                                 priority
                             />
                             <div className="absolute inset-0 bg-gradient-to-tr from-[var(--brand-primary)]/20 to-transparent"></div>

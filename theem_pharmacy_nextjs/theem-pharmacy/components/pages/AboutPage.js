@@ -49,7 +49,7 @@ export default function AboutPage({ initialContent = [], initialCommittee = [] }
     }
 
     return (
-        <main className="bg-[#f8fafc] min-h-screen pb-20 relative overflow-hidden">
+        <main className="bg-[#f8fafc] min-h-screen pb-12 relative overflow-hidden">
             <PageHero
                 title="About Our Institute"
                 subtitle="Dedicated to fostering excellence in pharmaceutical education, research, and professional ethics since inception."
@@ -77,7 +77,7 @@ export default function AboutPage({ initialContent = [], initialCommittee = [] }
             </div>
 
             {/* Leadership Section */}
-            <div className="mt-12">
+            <div className="mt-8">
                 <CommitteeSection members={committee} />
             </div>
 

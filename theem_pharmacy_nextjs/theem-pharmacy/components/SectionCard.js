@@ -206,34 +206,34 @@ export default function SectionCard({ id, title, content, document, icon, index 
             id={id}
             className="institutional-section scroll-mt-32"
         >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-                <div className="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 border-t-8 border-[var(--bcp-teal)] overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                    <div className="p-8 lg:p-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
+                <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border-t-8 border-[var(--bcp-teal)] overflow-hidden group hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                    <div className="p-6 lg:p-8">
                         {/* Section Header */}
-                        <div className="flex items-center gap-6 mb-10">
-                            <div className="w-16 h-16 rounded-2xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] group-hover:scale-110 transition-transform duration-500">
-                                <i className={`${icon || 'fas fa-info-circle'} text-2xl`} />
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 rounded-xl bg-[var(--brand-primary-soft)] flex items-center justify-center text-[var(--brand-primary)] group-hover:scale-110 transition-transform duration-500">
+                                <i className={`${icon || 'fas fa-info-circle'} text-xl`} />
                             </div>
                             <div>
                                 <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-1">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
                                     <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Section {String(index + 1).padStart(2, '0')}</span>
                                 </div>
-                                <h2 className="text-3xl lg:text-4xl font-black text-[var(--brand-primary)] tracking-tight">
+                                <h2 className="text-2xl lg:text-3xl font-black text-[var(--brand-primary)] tracking-tight">
                                     {title}
                                 </h2>
                             </div>
                         </div>
 
                         {/* Section Content */}
-                        <div className="space-y-12">
+                        <div className="space-y-8">
                             <div className="space-y-6">
                                 {renderLayout()}
                             </div>
 
                             {/* Resource / Document Area */}
                             {document && (
-                                <div className="bg-[var(--brand-primary-soft)] rounded-[2rem] p-8 lg:p-12 border border-[var(--brand-primary)]/10 shadow-inner">
+                                <div className="bg-[var(--brand-primary-soft)] rounded-xl p-6 lg:p-8 border border-[var(--brand-primary)]/10 shadow-inner">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                                         <h4 className="text-lg md:text-xl font-black text-[var(--brand-primary)] tracking-tight flex items-center gap-3">
                                             <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-sm">
@@ -245,7 +245,7 @@ export default function SectionCard({ id, title, content, document, icon, index 
                                             <i className="fas fa-download group-hover:-translate-y-1 transition-transform"></i> Download Protocol
                                         </a>
                                     </div>
-                                    <div className="rounded-3xl overflow-hidden shadow-2xl border-8 border-white bg-white">
+                                    <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white">
                                         <PdfViewer src={document} title={`${title} PDF`} />
                                     </div>
                                 </div>

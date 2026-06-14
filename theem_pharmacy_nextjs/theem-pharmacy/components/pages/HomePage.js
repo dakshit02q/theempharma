@@ -161,7 +161,7 @@ export default function HomePage({ homeData }) {
             <EnquiryModal isOpen={isEnquiryModalOpen} onClose={() => setIsEnquiryModalOpen(false)} />
 
             {/* High-Impact Hero Section */}
-            <section className="relative min-h-screen flex flex-col justify-center pt-20">
+            <section className="relative min-h-[85vh] flex flex-col justify-center pt-16">
                 {/* Full-width Carousel Background */}
                 <div className="absolute inset-0 z-0">
                     <Carousel
@@ -173,26 +173,26 @@ export default function HomePage({ homeData }) {
                                 {/* Dark Overlay for Text Readability - crossfades with slide */}
                                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent z-0 pointer-events-none"></div>
                                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full h-full relative z-20 flex flex-col justify-center">
-                                    <div className="max-w-3xl space-y-10 text-center lg:text-left py-20">
-                                        <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-full shadow-sm border border-white/20">
-                                            <span className="w-2 h-2 rounded-full bg-[var(--brand-accent)] animate-pulse"></span>
-                                            <span className="text-sm font-bold uppercase tracking-wider text-white">{slide.label}</span>
+                                    <div className="max-w-3xl space-y-6 text-center lg:text-left py-12">
+                                        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full shadow-sm border border-white/20">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)] animate-pulse"></span>
+                                            <span className="text-xs font-bold uppercase tracking-wider text-white">{slide.label}</span>
                                         </div>
 
                                         <h1
-                                            className="text-5xl md:text-6xl lg:text-8xl font-black text-white leading-[0.95] tracking-tighter"
+                                            className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[0.95] tracking-tighter"
                                             dangerouslySetInnerHTML={{ __html: slide.heading }}
                                         />
 
-                                        <p className="text-xl text-white/80 font-medium leading-relaxed max-w-xl">
+                                        <p className="text-base text-white/80 font-medium leading-relaxed max-w-xl">
                                             {slide.description}
                                         </p>
 
-                                        <div className="flex flex-wrap gap-6 justify-center lg:justify-start">
-                                            <Link href={slide.primaryCtaLink} className="bg-[var(--brand-accent)] text-white px-10 py-5 rounded-2xl text-sm font-bold uppercase tracking-wider shadow-2xl hover:scale-105 transition-all">
+                                        <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                                            <Link href={slide.primaryCtaLink} className="bg-[var(--brand-accent)] text-white px-8 py-3 rounded-xl text-sm font-bold uppercase tracking-wider shadow-2xl hover:scale-105 transition-all">
                                                 {slide.primaryCtaText} <i className="fas fa-arrow-right ml-2"></i>
                                             </Link>
-                                            <Link href={slide.secondaryCtaLink} className="bg-white/10 backdrop-blur-sm text-white border-2 border-white/20 px-10 py-5 rounded-2xl text-sm font-bold uppercase tracking-wider hover:bg-white/20 transition-all">
+                                            <Link href={slide.secondaryCtaLink} className="bg-white/10 backdrop-blur-sm text-white border-2 border-white/20 px-8 py-3 rounded-xl text-sm font-bold uppercase tracking-wider hover:bg-white/20 transition-all">
                                                 {slide.secondaryCtaText}
                                             </Link>
                                         </div>
@@ -205,15 +205,15 @@ export default function HomePage({ homeData }) {
             </section>
 
             {/* Institutional Metrics */}
-            <section className="py-32 relative">
+            <section className="py-16 relative">
                 <div className="max-w-7xl mx-auto px-4">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                         {metrics.items.map((stat, i) => (
                             <div key={i} className="flex flex-col items-center text-center group">
-                                <div className="w-20 h-20 bg-white rounded-3xl shadow-lg border border-gray-100 flex items-center justify-center mb-8 group-hover:-translate-y-3 transition-all duration-500">
-                                    <i className={`fas ${stat.icon} text-2xl text-[var(--brand-primary)]`}></i>
+                                <div className="w-14 h-14 bg-white rounded-2xl shadow-lg border border-gray-100 flex items-center justify-center mb-4 group-hover:-translate-y-3 transition-all duration-500">
+                                    <i className={`fas ${stat.icon} text-xl text-[var(--brand-primary)]`}></i>
                                 </div>
-                                <div className="text-5xl font-black text-[var(--brand-primary)] mb-3 tracking-tighter">{stat.value}</div>
+                                <div className="text-3xl font-black text-[var(--brand-primary)] mb-2 tracking-tighter">{stat.value}</div>
                                 <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">{stat.label}</div>
                             </div>
                         ))}
@@ -222,9 +222,9 @@ export default function HomePage({ homeData }) {
             </section>
 
             {/* Global Directory: Quick Navigation */}
-            <section className="py-20 bg-white border-y border-gray-100">
+            <section className="py-12 bg-white border-y border-gray-100">
                 <div className="max-w-7xl mx-auto px-4">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                         {[
                             { label: 'Academic Sync', icon: 'fa-calendar-alt', path: '/academics' },
                             { label: 'Scholastic Hub', icon: 'fa-book-reader', path: '/students/syllabus' },
@@ -233,11 +233,11 @@ export default function HomePage({ homeData }) {
                             { label: 'Alumni Network', icon: 'fa-users-cog', path: '/alumni' },
                             { label: 'Contact Us', icon: 'fa-phone', path: '/contact' },
                         ].map((link, i) => (
-                            <Link key={i} href={link.path} className="flex flex-col items-center p-8 rounded-[2.5rem] border border-gray-50 hover:border-[var(--brand-primary)] hover:bg-gray-50/50 hover:shadow-2xl hover:shadow-blue-900/5 transition-all group">
-                                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-sm border border-gray-50 group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all">
-                                    <i className={`fas ${link.icon} text-lg`}></i>
+                            <Link key={i} href={link.path} className="flex flex-col items-center p-4 rounded-2xl border border-gray-50 hover:border-[var(--brand-primary)] hover:bg-gray-50/50 hover:shadow-2xl hover:shadow-blue-900/5 transition-all group">
+                                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center mb-3 shadow-sm border border-gray-50 group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all">
+                                    <i className={`fas ${link.icon} text-sm`}></i>
                                 </div>
-                                <span className="text-sm font-bold uppercase tracking-wider text-center text-gray-500 group-hover:text-[var(--brand-primary)] transition-colors">{link.label}</span>
+                                <span className="text-xs font-bold uppercase tracking-wider text-center text-gray-500 group-hover:text-[var(--brand-primary)] transition-colors">{link.label}</span>
                             </Link>
                         ))}
                     </div>
@@ -245,29 +245,29 @@ export default function HomePage({ homeData }) {
             </section>
 
             {/* Academic Paradigms Section */}
-            <section className="py-32">
+            <section className="py-16">
                 <div className="max-w-7xl mx-auto px-4">
-                    <div className="text-center mb-24">
-                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-6">
+                    <div className="text-center mb-10">
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-4">
                             <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                            <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">{programs.subheading}</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">{programs.subheading}</span>
                         </div>
-                        <h2 className="text-5xl lg:text-6xl font-black text-[var(--brand-primary)] tracking-tight">{programs.heading}</h2>
+                        <h2 className="text-3xl lg:text-4xl font-black text-[var(--brand-primary)] tracking-tight">{programs.heading}</h2>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-16">
+                    <div className="grid md:grid-cols-2 gap-8">
                         {programs.items.map((program, i) => (
-                            <div key={i} className="group bg-white rounded-[4rem] p-12 lg:p-16 shadow-2xl shadow-gray-200/50 hover:shadow-blue-900/10 transition-all duration-700 border border-gray-50 relative overflow-hidden flex flex-col">
-                                <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--brand-primary-soft)] rounded-bl-[6rem] -mr-16 -mt-16 opacity-30 group-hover:opacity-100 transition-opacity"></div>
+                            <div key={i} className="group bg-white rounded-3xl p-8 lg:p-10 shadow-2xl shadow-gray-200/50 hover:shadow-blue-900/10 transition-all duration-700 border border-gray-50 relative overflow-hidden flex flex-col">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--brand-primary-soft)] rounded-bl-[4rem] -mr-8 -mt-8 opacity-30 group-hover:opacity-100 transition-opacity"></div>
 
-                                <div className="w-20 h-20 rounded-3xl bg-[var(--brand-primary-soft)] flex items-center justify-center mb-10 text-[var(--brand-primary)] shadow-sm">
-                                    <i className={`fas ${program.icon} text-3xl`}></i>
+                                <div className="w-14 h-14 rounded-2xl bg-[var(--brand-primary-soft)] flex items-center justify-center mb-6 text-[var(--brand-primary)] shadow-sm">
+                                    <i className={`fas ${program.icon} text-2xl`}></i>
                                 </div>
 
-                                <div className="space-y-6 mb-12 flex-1">
-                                    <div className="inline-block px-4 py-1.5 rounded-xl bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest border border-gray-100">{program.duration}</div>
-                                    <h3 className="text-4xl font-black text-[var(--brand-primary)] leading-[1.1] tracking-tight">{program.title}</h3>
-                                    <p className="text-gray-500 font-medium text-lg leading-relaxed">{program.description}</p>
+                                <div className="space-y-4 mb-8 flex-1">
+                                    <div className="inline-block px-3 py-1 rounded-lg bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest border border-gray-100">{program.duration}</div>
+                                    <h3 className="text-2xl font-black text-[var(--brand-primary)] leading-[1.1] tracking-tight">{program.title}</h3>
+                                    <p className="text-gray-500 font-medium text-base leading-relaxed">{program.description}</p>
 
                                     <div className="flex items-center gap-6 pt-6">
                                         <div className="flex items-center gap-2 text-[var(--bcp-teal)] font-black text-[10px] uppercase tracking-widest">
@@ -280,7 +280,7 @@ export default function HomePage({ homeData }) {
                                     </div>
                                 </div>
 
-                                <Link href={program.link} className="mt-auto inline-flex items-center justify-between w-full p-8 bg-gray-50 rounded-[2.5rem] group/btn hover:bg-[var(--brand-primary)] transition-all duration-500">
+                                <Link href={program.link} className="mt-auto inline-flex items-center justify-between w-full p-5 bg-gray-50 rounded-2xl group/btn hover:bg-[var(--brand-primary)] transition-all duration-500">
                                     <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)] group-hover/btn:text-white transition-colors">Learn More</span>
                                     <i className="fas fa-chevron-right text-xs text-[var(--brand-primary)] group-hover/btn:text-white group-hover/btn:translate-x-2 transition-all"></i>
                                 </Link>
@@ -291,14 +291,14 @@ export default function HomePage({ homeData }) {
             </section>
 
             {/* News and Events Section */}
-            <section className="py-24 bg-white">
-                <div className="max-w-7xl mx-auto px-4 mb-16 md:flex justify-between items-end">
+            <section className="py-14 bg-white">
+                <div className="max-w-7xl mx-auto px-4 mb-8 md:flex justify-between items-end">
                     <div>
-                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-6">
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-4">
                             <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                            <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">{newsData.subheading}</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">{newsData.subheading}</span>
                         </div>
-                        <h2 className="text-5xl font-black text-[var(--brand-primary)] tracking-tight">{newsData.heading}</h2>
+                        <h2 className="text-3xl font-black text-[var(--brand-primary)] tracking-tight">{newsData.heading}</h2>
                     </div>
                     <Link href="/news" className="hidden md:inline-flex items-center text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-[var(--brand-accent)] transition-colors">
                         View All Archives <i className="fas fa-arrow-right ml-2"></i>
@@ -308,52 +308,52 @@ export default function HomePage({ homeData }) {
             </section>
 
             {/* Institutional Synergy: About & Facilities */}
-            <section className="py-32 bg-gray-50/50">
+            <section className="py-16 bg-gray-50/50">
                 <div className="max-w-7xl mx-auto px-4">
-                    <div className="grid lg:grid-cols-2 gap-24 items-center mb-40">
-                        <div className="space-y-10">
+                    <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+                        <div className="space-y-6">
                             <div>
-                                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-6">
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-4">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Institutional Identity</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Institutional Identity</span>
                                 </div>
-                                <h2 className="text-5xl lg:text-6xl font-black text-[var(--brand-primary)] tracking-tight leading-[0.95]">{synergy.heading1}</h2>
+                                <h2 className="text-3xl lg:text-4xl font-black text-[var(--brand-primary)] tracking-tight leading-[0.95]">{synergy.heading1}</h2>
                             </div>
-                            <p className="text-xl text-gray-500 font-medium leading-relaxed">
+                            <p className="text-base text-gray-500 font-medium leading-relaxed">
                                 {synergy.desc1}
                             </p>
-                            <Link href="/about" className="inline-flex items-center gap-4 px-10 py-5 bg-[var(--brand-primary)] text-white rounded-2xl text-sm font-bold uppercase tracking-wider hover:translate-x-2 transition-all">
+                            <Link href="/about" className="inline-flex items-center gap-3 px-8 py-3 bg-[var(--brand-primary)] text-white rounded-xl text-sm font-bold uppercase tracking-wider hover:translate-x-2 transition-all">
                                 Discover Institutional Core <i className="fas fa-long-arrow-alt-right"></i>
                             </Link>
                         </div>
                         <div className="relative">
-                            <div className="rounded-[4rem] overflow-hidden shadow-3xl border-[12px] border-white">
-                                <Image src="/images/camilo-botia-k4vFDPJoDZk-unsplash.jpg" alt="Institutional Laboratory" width={800} height={600} className="w-full h-[500px] object-cover" />
+                            <div className="rounded-3xl overflow-hidden shadow-3xl border-8 border-white">
+                                <Image src="/images/camilo-botia-k4vFDPJoDZk-unsplash.jpg" alt="Institutional Laboratory" width={800} height={600} className="w-full h-[360px] object-cover" />
                             </div>
-                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[var(--brand-accent)] rounded-full flex items-center justify-center shadow-2xl animate-bounce-slow">
-                                <span className="text-white font-black text-center text-[10px] uppercase tracking-widest leading-tight">Elite <br /> Accreditation</span>
+                            <div className="absolute -top-6 -right-6 w-28 h-28 bg-[var(--brand-accent)] rounded-full flex items-center justify-center shadow-2xl animate-bounce-slow">
+                                <span className="text-white font-black text-center text-[9px] uppercase tracking-widest leading-tight">Elite <br /> Accreditation</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="grid lg:grid-cols-2 gap-24 items-center">
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div className="order-2 lg:order-1 relative">
-                            <div className="rounded-[4rem] overflow-hidden shadow-3xl border-[12px] border-white">
-                                <Image src="/images/roberto-sorin-RS0-h_pyByk-unsplash.jpg" alt="Advanced Learning Ecosystem" width={800} height={600} className="w-full h-[500px] object-cover" />
+                            <div className="rounded-3xl overflow-hidden shadow-3xl border-8 border-white">
+                                <Image src="/images/roberto-sorin-RS0-h_pyByk-unsplash.jpg" alt="Advanced Learning Ecosystem" width={800} height={600} className="w-full h-[360px] object-cover" />
                             </div>
                         </div>
-                        <div className="order-1 lg:order-2 space-y-10">
+                        <div className="order-1 lg:order-2 space-y-6">
                             <div>
-                                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-6">
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/10 mb-4">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-accent)]"></span>
-                                    <span className="text-sm font-bold uppercase tracking-wider text-[var(--brand-primary)]">Ecosystem Integrity</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Ecosystem Integrity</span>
                                 </div>
-                                <h2 className="text-5xl lg:text-6xl font-black text-[var(--brand-primary)] tracking-tight leading-[0.95]">{synergy.heading2}</h2>
+                                <h2 className="text-3xl lg:text-4xl font-black text-[var(--brand-primary)] tracking-tight leading-[0.95]">{synergy.heading2}</h2>
                             </div>
-                            <p className="text-xl text-gray-500 font-medium leading-relaxed">
+                            <p className="text-base text-gray-500 font-medium leading-relaxed">
                                 {synergy.desc2}
                             </p>
-                            <Link href="/facilities" className="inline-flex items-center gap-4 px-10 py-5 border-2 border-[var(--brand-primary)] text-[var(--brand-primary)] rounded-2xl text-sm font-bold uppercase tracking-wider hover:bg-[var(--brand-primary)] hover:text-white transition-all">
+                            <Link href="/facilities" className="inline-flex items-center gap-3 px-8 py-3 border-2 border-[var(--brand-primary)] text-[var(--brand-primary)] rounded-xl text-sm font-bold uppercase tracking-wider hover:bg-[var(--brand-primary)] hover:text-white transition-all">
                                 Explore Infrastructure <i className="fas fa-microscope"></i>
                             </Link>
                         </div>
@@ -362,22 +362,22 @@ export default function HomePage({ homeData }) {
             </section>
 
             {/* Institutional Call to Action */}
-            <section className="py-32 relative">
+            <section className="py-16 relative">
                 <div className="max-w-5xl mx-auto px-4 relative z-10">
-                    <div className="bg-[var(--brand-primary)] rounded-[5rem] overflow-hidden p-16 lg:p-24 text-center text-white shadow-3xl relative">
+                    <div className="bg-[var(--brand-primary)] rounded-3xl overflow-hidden p-10 lg:p-16 text-center text-white shadow-3xl relative">
                         <div className="relative z-10">
                             <h2
-                                className="text-4xl lg:text-6xl font-black tracking-tighter mb-8 leading-tight"
+                                className="text-3xl lg:text-4xl font-black tracking-tighter mb-6 leading-tight"
                                 dangerouslySetInnerHTML={{ __html: cta.heading }}
                             />
-                            <p className="text-white/60 text-xl font-medium mb-12 max-w-2xl mx-auto">
+                            <p className="text-white/60 text-base font-medium mb-8 max-w-2xl mx-auto">
                                 {cta.description}
                             </p>
-                            <div className="flex flex-wrap justify-center gap-6">
-                                <Link href="/admissions" className="bg-[var(--brand-accent)] text-white px-12 py-6 rounded-2xl text-sm font-bold uppercase tracking-wider shadow-xl hover:scale-105 transition-all">
+                            <div className="flex flex-wrap justify-center gap-4">
+                                <Link href="/admissions" className="bg-[var(--brand-accent)] text-white px-8 py-4 rounded-xl text-sm font-bold uppercase tracking-wider shadow-xl hover:scale-105 transition-all">
                                     Secure Admission <i className="fas fa-signature ml-2"></i>
                                 </Link>
-                                <Link href="/contact" className="bg-white/10 text-white border border-white/20 px-12 py-6 rounded-2xl text-sm font-bold uppercase tracking-wider hover:bg-white/20 transition-all">
+                                <Link href="/contact" className="bg-white/10 text-white border border-white/20 px-8 py-4 rounded-xl text-sm font-bold uppercase tracking-wider hover:bg-white/20 transition-all">
                                     Contact Registry
                                 </Link>
                             </div>

@@ -547,7 +547,7 @@ const Header = ({ initialNavItems = [] }) => {
                     <div key={`${item.href}-${item.label}`} className="relative group">
                       <Link
                         href={item.href}
-                        className={`block px-5 py-4 text-[11px] text-center font-black uppercase tracking-[0.15em] text-white/80 hover:text-white transition-all hover:bg-white/5 rounded-t-2xl relative ${isRouteActive(pathname, item.href, item.children) ? 'text-white bg-white/10' : ''}`}
+                        className={`block px-4 py-3 text-sm text-center font-semibold tracking-normal text-white/80 hover:text-white transition-all hover:bg-white/5 rounded-t-2xl relative ${isRouteActive(pathname, item.href, item.children) ? 'text-white bg-white/10' : ''}`}
                       >
                         {item.label}
                         {isRouteActive(pathname, item.href, item.children) && (
@@ -566,7 +566,7 @@ const Header = ({ initialNavItems = [] }) => {
                 <div className="w-px h-8 bg-white/20 mx-8"></div>
                 <Link
                   href="/admissions"
-                  className="bg-white text-[var(--brand-primary)] px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-[var(--brand-accent)] hover:text-white transition-all shadow-lg hover:-translate-y-0.5"
+                  className="bg-white text-[var(--brand-primary)] px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[var(--brand-accent)] hover:text-white transition-all shadow-lg hover:-translate-y-0.5"
                 >
                   Apply Now
                 </Link>
